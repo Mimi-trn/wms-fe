@@ -1,0 +1,315 @@
+<div style="display: block; border: 1px solid #ddd" class="common-bg">
+  <h2>
+    {{ title }}
+    <span class="error-span" style="margin-left: 20px; font-size: 16px">{{
+      this.errorMessage
+    }}</span>
+  </h2>
+  <nz-table
+    nzBordered
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+    [nzScroll]="{ x: 'auto', y: '400px' }"
+    [nzData]="dataLocations"
+    #table
+    nzSize="small"
+  >
+    <thead>
+      <tr>
+        <ng-container *ngFor="let column of columns; let i = index">
+          <ng-container *ngIf="column.check">
+            <th
+              nz-resizable
+              [nzWidth]="column.width"
+              (nzResize)="onResize($event, i)"
+              [nzMaxWidth]="500"
+              [nzMinWidth]="100"
+            >
+              <div class="editable-cell">
+                {{ column.keyTitle | translate }}
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </div>
+            </th>
+          </ng-container>
+        </ng-container>
+        <th nzWidth="100px" nzAlign="center" nzRight>
+          {{ "table.action" | translate }}
+        </th>
+      </tr>
+    </thead>
+    <tbody [class]="listLocation.length > 0 ? 'striped-tr' : ''">
+      <ng-container *ngFor="let row of dataLocations; let i = index">
+        <tr>
+          <ng-container *ngFor="let column of columns; let j = index">
+            <ng-container
+              *ngIf="column.check && column.keyName == 'warehouseCode'"
+            >
+              <td>
+                {{ warehouseCode }}
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                column.check &&
+                (column.keyName == 'locationCode' ||
+                  column.keyName == 'locationName')
+              "
+            >
+              <td>
+                {{ row[column.keyName] }}
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="column.check && column.keyName == 'itemQuantity'"
+            >
+              <td nzAlign="right">
+                <input
+                  *ngIf="!isView"
+                  nz-input
+                  type="number"
+                  [(ngModel)]="row.itemQuantity"
+                  (ngModelChange)="calculateTotalActualQuantity(row)"
+                />
+                <span *ngIf="isView">
+                  {{ row.itemQuantity ?? 0 | number }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="column.check && column.keyName == 'packageQuantity'"
+            >
+              <td nzAlign="right">
+                <input
+                  *ngIf="!isView"
+                  nz-input
+                  type="number"
+                  [(ngModel)]="row.packageQuantity"
+                  (ngModelChange)="calculateTotalActualQuantity(row)"
+                />
+                <span *ngIf="isView">
+                  {{ row.packageQuantity ?? 0 | number }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container
+              *ngIf="column.check && column.keyName == 'totalQuantity'"
+            >
+              <td nzAlign="right">
+                {{ row.itemQuantity * row.packageQuantity || 0 }}
+                <p
+                  *ngIf="
+                    row.itemQuantity * row.packageQuantity >
+                      row.stockLocationQuantity && isFromWarehouse
+                  "
+                  style="color: red; font-size: 12px"
+                >
+                  * Vượt quá sl tồn kho
+                </p>
+                <p
+                  *ngIf="row.itemQuantity * row.packageQuantity <= 0"
+                  style="color: red; font-size: 12px"
+                >
+                  * SL hàng phải lớn hơn 0
+                </p>
+              </td>
+            </ng-container>
+
+            <ng-container
+              *ngIf="column.check && column.keyName == 'stockLocationQuantity'"
+            >
+              <td nzAlign="right">
+                {{ row[column.keyName] | number }}
+              </td>
+            </ng-container>
+          </ng-container>
+          <td nzRight>
+            <div class="d-flex a-items-center j-content-center">
+              <app-button
+                [iconTheme]="'fill'"
+                [iconType]="'delete'"
+                [buttonType]="'text'"
+                (btnClick)="onHandleDelete(row)"
+              >
+              </app-button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <div nz-row nzJustify="space-between" *ngIf="!isView">
+    <nz-col>
+      <button
+        nz-button
+        (click)="addRow()"
+        nzType="text"
+        nz-popover
+        style="color: #ff7a00"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate"
+        nzPopoverPlacement="topRight"
+        [nzPopoverVisible]="isShowPopoverTableLocation"
+        (nzPopoverVisibleChange)="changeVisible($event)"
+      >
+        <span nz-icon nzType="plus"></span>
+        Thêm mới vị trí
+      </button>
+
+      <ng-template #contentTemplate>
+        <nz-table
+          #rowSelectionTable
+          [nzData]="listLocation"
+          style="width: 1200px"
+          [nzScroll]="{ y: '600px' }"
+          nzBordered
+          [nzFrontPagination]="false"
+          [nzShowPagination]="false"
+          [nzPaginationType]="'small'"
+          nzSize="small"
+        >
+          <!-- (nzCurrentPageDataChange)="onCurrentPageDataChange($event)" -->
+          <thead>
+            <tr>
+              <th
+                nzWidth="50px"
+                [(nzChecked)]="checked"
+                [nzIndeterminate]="indeterminate"
+                (nzCheckedChange)="onAllChecked($event)"
+              ></th>
+              <th>Mã kho</th>
+              <th>Mã vị trí</th>
+              <th>Tên vị trí</th>
+              <th>Số lượng hàng mỗi kiện</th>
+              <th>Số lượng kiện hàng</th>
+              <th>Số lượng tồn kho</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td>
+                <nz-input-group
+                  [nzSuffix]="locationWarehouseNameSuffix"
+                  [nzPrefix]="locationWarehouseNamePrefix"
+                  (keyup)="filter($event)"
+                >
+                  <input nz-input [(ngModel)]="filterLocation.warehouseCode" />
+                </nz-input-group>
+                <ng-template #locationWarehouseNamePrefix>
+                  <span
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9; cursor: pointer"
+                    (click)="filter($event)"
+                  ></span>
+                </ng-template>
+                <ng-template #locationWarehouseNameSuffix>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterLocation.warehouseCode"
+                    (click)="clearFilter('warehouseCode')"
+                  ></span>
+                </ng-template>
+              </td>
+              <td>
+                <nz-input-group
+                  [nzSuffix]="locationCodeSuffix"
+                  [nzPrefix]="locationCodePrefix"
+                  (keyup)="filter($event)"
+                >
+                  <input nz-input [(ngModel)]="filterLocation.locationCode" />
+                </nz-input-group>
+                <ng-template #locationCodePrefix>
+                  <span
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9; cursor: pointer"
+                    (click)="filter($event)"
+                  ></span>
+                </ng-template>
+                <ng-template #locationCodeSuffix>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterLocation.locationCode"
+                    (click)="clearFilter('locationCode')"
+                  ></span>
+                </ng-template>
+              </td>
+              <td>
+                <nz-input-group
+                  [nzSuffix]="locationNameSuffix"
+                  [nzPrefix]="locationNamePrefix"
+                  (keyup)="filter($event)"
+                >
+                  <input nz-input [(ngModel)]="filterLocation.locationName" />
+                </nz-input-group>
+                <ng-template #locationNamePrefix>
+                  <span
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9; cursor: pointer"
+                    (click)="filter($event)"
+                  ></span>
+                </ng-template>
+                <ng-template #locationNameSuffix>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterLocation.locationName"
+                    (click)="clearFilter('locationName')"
+                  ></span>
+                </ng-template>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr
+              *ngFor="let data of rowSelectionTable.data"
+              (click)="clickRow(data)"
+              style="cursor: pointer"
+              class="click-row"
+            >
+              <td
+                [nzChecked]="setOfCheckedId.has(data.id)"
+                (nzCheckedChange)="clickRow(data)"
+              ></td>
+              <td>{{ warehouseCode }}</td>
+              <td>{{ data.locationCode }}</td>
+              <td>{{ data.locationName }}</td>
+              <td>{{ data.itemQuantity | number }}</td>
+              <td>{{ data.packageQuantity | number }}</td>
+              <td>{{ data.stockLocationQuantity | number }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <nz-row
+          *ngIf="totalLocation"
+          nzGutter="24"
+          nzAlign="middle"
+          nzJustify="center"
+          class="mt-12"
+        >
+          <div nz-col nzSpan="24">
+            <app-pagination
+              [currentPage]="pageLocation"
+              [currentSize]="perPageLocation"
+              [total]="totalLocation"
+              (emitPage)="paginationLocation($event)"
+            ></app-pagination>
+          </div>
+        </nz-row>
+      </ng-template>
+    </nz-col>
+  </div>
+</div>

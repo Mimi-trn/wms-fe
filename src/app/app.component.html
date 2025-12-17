@@ -1,0 +1,83 @@
+<nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="xl" [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null" [nzCollapsedWidth]="64" style="box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35)">
+    <div [class]="isCollapsed ? 'sidebar-logo__collapse' : 'sidebar-logo'">
+      <a routerLink="./">
+        <img src="./assets/image/Logo_MK_LOGO_3.png" alt="logo" (click)="goToExternalSite()" />
+        <h1></h1>
+      </a>
+    </div>
+    <app-menu [isCollapsed]="isCollapsed"></app-menu>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header d-flex j-content-between">
+        <span class="header-trigger d-flex a-items-center">
+          <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            (click)="isCollapsed = !isCollapsed"></span>
+          <span class="tenant-title">
+            <h1 *ngIf="!isCollapsed">Warehouse Management System</h1>
+            <h1 *ngIf="isCollapsed">WMS</h1>
+            <!-- <h1>Warehouse Management System</h1> -->
+          </span>
+        </span>
+
+        <span class="d-flex a-items-center header-trigger">
+          <span *ngIf="!isCollapsed" class="d-flex" nz-tooltip nzTooltipPlacement="bottom"
+            nzTooltipTitle="{{ 'header_avatar' | translate }}">
+            <nz-avatar [nzSize]="32" nzIcon="user"></nz-avatar>
+          </span>
+          <div *ngIf="!isCollapsed">
+            <span class="m-0 name-hello">
+              {{ "title.hello" | translate }}
+            </span>
+            <span class="m-0 name-manage">{{ username }}</span>
+          </div>
+          <span *ngIf="!isCollapsed" class="pl-24 d-flex">
+            <img class="national-photo" [src]="srcImg" alt="National photo" />
+          </span>
+          <span *ngIf="!isCollapsed" class="d-flex">
+            <!-- nz-tooltip
+            nzTooltipTitle="{{ 'header_language' | translate }}"
+            nzTooltipPlacement="left" -->
+            <nz-select nzBorderless class="select-language select-national" [(ngModel)]="selectLanguage"
+              (ngModelChange)="changeLanguage($event)">
+              <nz-option *ngFor="let option of options" [nzLabel]="option.label | translate"
+                [nzValue]="option.value"></nz-option>
+            </nz-select>
+          </span>
+          <span *ngIf="isFullScreen" nz-tooltip nzTooltipPlacement="bottom"
+            [nzTooltipTitle]="'header_exit_fullsize' | translate" class="trigger " nz-icon style="padding-left: 13px"
+            [nzType]="isFullScreen ? 'fullscreen-exit' : 'fullscreen'" nzTheme="outline"
+            (click)="onClickFullScreen()"></span>
+          <span *ngIf="!isFullScreen" nz-tooltip nzTooltipPlacement="bottom"
+            [nzTooltipTitle]="'header_fullsize' | translate" class="trigger " nz-icon style="padding-left: 13px"
+            [nzType]="isFullScreen ? 'fullscreen-exit' : 'fullscreen'" nzTheme="outline"
+            (click)="onClickFullScreen()"></span>
+          <span nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="{{ 'header_notify' | translate }}"
+            class="trigger pl-24" nz-icon nzType="bell" nzTheme="fill" style="position: relative" nz-dropdown
+            nzTrigger="click" [nzDropdownMenu]="menu" nzPlacement="bottomRight">
+            <nz-badge [nzCount]="countNotify" [style]="
+                countNotify >= 10
+                  ? 'position: absolute; top: -8px; right: -20px'
+                  : 'position: absolute; top: -8px; right: -6px'
+              " [nzOverflowCount]="9" nzSize="small" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+            </nz-badge>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <app-notify-quick (childDataChange)="onHandleCount($event)"></app-notify-quick>
+            </nz-dropdown-menu>
+          </span>
+          <span nz-tooltip nzTooltipPlacement="bottom" nzTooltipTitle="{{ 'header_logout' | translate }}"
+            class="trigger pl-24" nz-icon nzType="logout" nzTheme="outline" (click)="logout()"></span>
+        </span>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+        <ngx-ui-loader></ngx-ui-loader>
+      </div>
+    </nz-content>
+    
+  </nz-layout>
+</nz-layout>

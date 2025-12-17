@@ -1,0 +1,152 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="modalFooter"
+  (nzOnCancel)="onCancel()"
+  [nzWidth]="800"
+>
+  <ng-template #modalTitle>
+    <div style="display: flex; align-items: center">
+      <svg
+        style="margin-right: 19px"
+        width="24"
+        height="25"
+        viewBox="0 0 24 25"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_2984_41573)">
+          <path
+            d="M21.6 0.5H2.4C1.08 0.5 0 1.58 0 2.9V24.5L4.8 19.7H21.6C22.92 19.7 24 18.62 24 17.3V2.9C24 1.58 22.92 0.5 21.6 0.5ZM12 11.3C11.34 11.3 10.8 10.76 10.8 10.1V5.3C10.8 4.64 11.34 4.1 12 4.1C12.66 4.1 13.2 4.64 13.2 5.3V10.1C13.2 10.76 12.66 11.3 12 11.3ZM13.2 16.1H10.8V13.7H13.2V16.1Z"
+            fill="#FF7A00"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_2984_41573">
+            <rect
+              width="24"
+              height="24"
+              fill="white"
+              transform="translate(0 0.5)"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+      <span style="font-size: 16px; font-weight: 700">
+        {{ title | translate }}:
+      </span>
+      <span style="font-size: 16px; font-weight: 400; margin-left: 5px">
+        {{ importRequestCode }}
+      </span>
+    </div>
+  </ng-template>
+
+  <ng-template #modalContent>
+    <div>
+      <span style="font-size: 18px; font-weight: 700">
+        {{ "popup.withDraw.reason" | translate }}
+      </span>
+      <span class="error-span" style="font-size: 18px">*</span>
+    </div>
+    <nz-col nzSpan="24">
+      <nz-input-group
+        [nzSuffix]="inputClearNote"
+        class="ant-input-affix-wrapper-textarea-with-clear-btn"
+      >
+        <textarea
+          style="font-size: 16px"
+          nz-input
+          [(ngModel)]="reasonWithDrawRequest"
+          [placeholder]="'popup.withDraw.placeholder' | translate"
+        ></textarea>
+      </nz-input-group>
+      <ng-template #inputClearNote>
+        <span
+          nz-icon
+          class="ant-input-clear-icon"
+          nzTheme="fill"
+          nzType="close-circle"
+          *ngIf="reasonWithDrawRequest"
+          (click)="reasonWithDrawRequest = ''"
+        ></span>
+      </ng-template>
+    </nz-col>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <nz-row nzJustify="end" nzGutter="24" style="padding: 14px 10px 8px">
+      <nz-col>
+        <app-button
+          (btnClick)="isVisibleCancel = true"
+          [className]="'common-btn-close'"
+          [title]="'button.cancel'"
+        >
+        </app-button>
+      </nz-col>
+      <nz-col>
+        <app-button
+          (btnClick)="isVisiblePopupConfirm = true"
+          [title]="'button.confirm'"
+        >
+        </app-button>
+      </nz-col>
+    </nz-row>
+  </ng-template>
+</nz-modal>
+
+<app-popup-cancel
+  [isVisible]="isVisibleCancel"
+  (cancel)="isVisibleCancel = $event"
+  (isVisibleChange)="onHandleConfirmPopup($event)"
+>
+</app-popup-cancel>
+
+<nz-modal
+  [(nzVisible)]="isVisiblePopupConfirm"
+  [nzTitle]="modalTitlePopupConfirm"
+  [nzContent]="modalContentPopupConfirm"
+  [nzFooter]="null"
+  (nzOnCancel)="isVisiblePopupConfirm = false"
+  [nzWidth]="600"
+>
+  <ng-template #modalTitlePopupConfirm>
+    <h2 style="text-align: center; color: #FF7A00" class="m-0">
+      Xác nhận thu hồi yêu cầu IQC
+    </h2>
+  </ng-template>
+
+  <ng-template #modalContentPopupConfirm>
+    <p>
+      Bạn có chắc chắn muốn
+      <span style="font-weight: 800">Thu hồi yêu cầu IQC</span>?
+    </p>
+    <div nz-row nzJustify="center" nzGutter="24" class="mt-24">
+      <nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6" nzXXl="6">
+        <button
+          nz-button
+          (click)="isVisiblePopupConfirm = false"
+          style="
+            background-color: #e5e5e5;
+            color: #000;
+            border: 1px solid #e5e5e5;
+            width: 100%;
+          "
+          nzType="primary"
+        >
+          {{ "btn.cancel" | translate }}
+        </button>
+      </nz-col>
+      <nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6" nzXXl="6">
+        <button
+          nz-button
+          (click)="onConfirm()"
+          style="width: 100%"
+          nzType="primary"
+        >
+          {{ "btn.confirm" | translate }}
+        </button>
+      </nz-col>
+    </div>
+  </ng-template>
+</nz-modal>

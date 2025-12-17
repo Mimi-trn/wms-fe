@@ -1,0 +1,29 @@
+.close-status {
+  border: 1px solid #00af12;
+  background-color: #00af12;
+  color: #fff;
+  border-radius: 6px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  padding: 4px 0;
+}
+
+.open-status {
+  border: 1px solid #0047ff;
+  background-color: #0047ff;
+  color: #fff;
+  border-radius: 6px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  padding: 4px 0;
+}
+
+::ng-deep
+  .ant-table.ant-table-small
+  .ant-table-tbody
+  .ant-table-wrapper:only-child
+  .ant-table {
+  margin: 0;
+}

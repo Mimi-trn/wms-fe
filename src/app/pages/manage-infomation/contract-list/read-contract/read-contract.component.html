@@ -1,0 +1,1064 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    [nzSpan]="23"
+    *ngIf="isBreadcrumb"
+    [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"
+  ></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row>
+    <h2 class="m-0">
+      {{
+        "sidebar.information.child.listContract.child.information" | translate
+      }}
+    </h2>
+  </nz-row>
+  <nz-row
+    nzAlign="top"
+    nzJustify="start"
+    [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }"
+  >
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{
+            "sidebar.information.child.listContract.child.consignmentContractCode"
+              | translate
+          }}<span
+            class="ml-4"
+            nz-icon
+            nzType="question-circle"
+            nzTheme="outline"
+            nz-tooltip="Nếu không nhập mã hợp đồng ký gửi, hệ thống tự sinh theo quy tắc: <HDKG>-<NămThángNgày>-<STT hợp đồng ký gửi trong ngày>"
+          ></span
+        ></nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group [nzSuffix]="inputClearconsignmentContractCode">
+            <input
+              [disabled]="dataInformation.status !== 0"
+              placeholder="Nhập mã hợp đồng ký gửi"
+              type="text"
+              nz-input
+              [(ngModel)]="dataInformation.consignmentContractCode"
+            />
+          </nz-input-group>
+          <ng-template #inputClearconsignmentContractCode>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="
+                dataInformation.consignmentContractCode &&
+                dataInformation.status == 0
+              "
+              (click)="dataInformation.consignmentContractCode = ''"
+            ></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{
+            "sidebar.information.child.listContract.child.contractCreatedAt"
+              | translate
+          }}
+          <span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            [disabled]="dataInformation.status !== 0"
+            nzPlaceHolder="dd/MM/yyyy"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.contractCreatedAt"
+          ></nz-date-picker>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.contractCreatedAt">
+          <span class="error-span"> Bạn chưa chọn ngày tài liệu </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{
+            "sidebar.information.child.listContract.child.deliveryDate"
+              | translate
+          }}
+          <span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            [disabled]="dataInformation.status !== 0"
+            nzPlaceHolder="dd/MM/yyyy"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.deliveryAt"
+          ></nz-date-picker>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.deliveryAt">
+          <span class="error-span"> Bạn chưa chọn ngày giao hàng </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <!-- <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "table.status" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <nz-select [disabled]="true" nzShowSearch nzAllowClear nzPlaceHolder="-- Chọn --"
+            [(ngModel)]="dataInformation.status" class="w-100">
+            <nz-option *ngFor="let option of listStatus" [nzValue]="option.value" [nzLabel]="option.text"></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="
+            dataInformation.status !== 0 &&
+            dataInformation.status !== 1 &&
+            dataInformation.status !== 2
+          ">
+          <span class="error-span"> Bạn chưa chọn trạng thái </span>
+        </nz-col>
+      </nz-row>
+    </nz-col> -->
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{
+            "sidebar.information.child.listContract.child.customerCode"
+              | translate
+          }}
+          <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-input-group
+            [nzSuffix]="inputClearcustomerCode"
+            (click)="showPopoverCustomer()"
+          >
+            <input
+              placeholder="-- Chọn -- "
+              type="text"
+              nz-input
+              [(ngModel)]="dataInformation.customerCode"
+              [disabled]="dataInformation.status !== 0"
+            />
+            <span
+              nz-popover
+              [nzPopoverTitle]="
+                'Danh sách khách hàng ' + '(' + listCustomer.length + ')'
+              "
+              nzPopoverTrigger="click"
+              [nzPopoverContent]="contentCustomer"
+              nzPopoverPlacement="bottomLeft"
+              [nzPopoverVisible]="showCustomer"
+              (nzPopoverVisibleChange)="popoverVisibleChangeSupplier($event)"
+            >
+            </span>
+          </nz-input-group>
+          <ng-template #inputClearcustomerCode>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="outline"
+              nzType="down"
+              (click)="dataInformation.customerCode = ''"
+            ></span>
+          </ng-template>
+          <!-- Start: Danh sách khách hàng -->
+          <ng-template #contentCustomer>
+            <nz-table
+              #nzTableCustomer
+              [nzData]="listCustomer"
+              nzBordered
+              nzFrontPagination="false"
+              style="width: 900px"
+              [nzScroll]="{ y: '600px' }"
+              nzSize="small"
+            >
+              <thead>
+                <tr>
+                  <th>
+                    {{
+                      "sidebar.information.child.listContract.child.customerCode"
+                        | translate
+                    }}
+                  </th>
+                  <th>
+                    {{
+                      "sidebar.information.child.listContract.child.customerName"
+                        | translate
+                    }}
+                  </th>
+                  <th>
+                    {{
+                      "sidebar.information.child.listContract.child.address"
+                        | translate
+                    }}
+                  </th>
+                  <th>
+                    {{
+                      "sidebar.information.child.listContract.child.customerPhone"
+                        | translate
+                    }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <nz-input-group
+                      [nzSuffix]="customerCode"
+                      [nzPrefix]="customerCodePre"
+                      (keyup)="filterSearchCustomer($event)"
+                    >
+                      <input
+                        type="text"
+                        nz-input
+                        [(ngModel)]="dataFilterCustomer.customerCode"
+                      />
+                    </nz-input-group>
+                    <ng-template #customerCodePre>
+                      <span
+                        nz-icon
+                        nzType="search"
+                        style="cursor: pointer; color: #d9d9d9"
+                        (click)="filterSearchCustomer($event)"
+                      ></span>
+                    </ng-template>
+                    <ng-template #customerCode>
+                      <span
+                        nz-icon
+                        class="ant-input-clear-icon"
+                        nzTheme="fill"
+                        nzType="close-circle"
+                        *ngIf="dataFilterCustomer.customerCode"
+                        (click)="dataFilterCustomer.customerCode = ''"
+                      ></span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <nz-input-group
+                      [nzSuffix]="customerName"
+                      [nzPrefix]="customerNamePre"
+                      (keyup)="filterSearchCustomer($event)"
+                    >
+                      <input
+                        type="text"
+                        nz-input
+                        [(ngModel)]="dataFilterCustomer.customerName"
+                      />
+                    </nz-input-group>
+                    <ng-template #customerNamePre>
+                      <span
+                        nz-icon
+                        nzType="search"
+                        style="cursor: pointer; color: #d9d9d9"
+                        (click)="filterSearchCustomer($event)"
+                      ></span>
+                    </ng-template>
+                    <ng-template #customerName>
+                      <span
+                        nz-icon
+                        class="ant-input-clear-icon"
+                        nzTheme="fill"
+                        nzType="close-circle"
+                        *ngIf="dataFilterCustomer.customerName"
+                        (click)="dataFilterCustomer.customerName = ''"
+                      ></span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <nz-input-group
+                      [nzSuffix]="address"
+                      [nzPrefix]="addressPre"
+                      (keyup)="filterSearchCustomer($event)"
+                    >
+                      <input
+                        type="text"
+                        nz-input
+                        [(ngModel)]="dataFilterCustomer.address"
+                      />
+                    </nz-input-group>
+                    <ng-template #addressPre>
+                      <span
+                        nz-icon
+                        nzType="search"
+                        style="cursor: pointer; color: #d9d9d9"
+                        (click)="filterSearchCustomer($event)"
+                      ></span>
+                    </ng-template>
+                    <ng-template #address>
+                      <span
+                        nz-icon
+                        class="ant-input-clear-icon"
+                        nzTheme="fill"
+                        nzType="close-circle"
+                        *ngIf="dataFilterCustomer.address"
+                        (click)="dataFilterCustomer.address = ''"
+                      ></span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <nz-input-group
+                      [nzSuffix]="customerPhone"
+                      [nzPrefix]="customerPhonePre"
+                      (keyup)="filterSearchCustomer($event)"
+                    >
+                      <input
+                        type="text"
+                        nz-input
+                        [(ngModel)]="dataFilterCustomer.customerPhone"
+                      />
+                    </nz-input-group>
+                    <ng-template #customerPhonePre>
+                      <span
+                        nz-icon
+                        nzType="search"
+                        style="cursor: pointer; color: #d9d9d9"
+                        (click)="filterSearchCustomer($event)"
+                      ></span>
+                    </ng-template>
+                    <ng-template #customerPhone>
+                      <span
+                        nz-icon
+                        class="ant-input-clear-icon"
+                        nzTheme="fill"
+                        nzType="close-circle"
+                        *ngIf="dataFilterCustomer.customerPhone"
+                        (click)="dataFilterCustomer.customerPhone = ''"
+                      ></span>
+                    </ng-template>
+                  </td>
+                </tr>
+                <tr
+                  style="cursor: pointer"
+                  class="click-row"
+                  *ngFor="let row of nzTableCustomer.data"
+                  (click)="chooseCustomer(row)"
+                >
+                  <td>{{ row.customerCode }}</td>
+                  <td>{{ row.customerName }}</td>
+                  <td>{{ row.address }}</td>
+                  <td>{{ row.customerPhone }}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+            <nz-row
+              *ngIf="totalCustomer"
+              nzGutter="24"
+              nzAlign="middle"
+              nzJustify="center"
+              class="mt-12"
+            >
+              <div nz-col nzSpan="24">
+                <app-pagination
+                  [currentPage]="pageCustomer"
+                  [currentSize]="perPageCustomer"
+                  [total]="totalCustomer"
+                  (emitPage)="paginationCustomer($event)"
+                ></app-pagination>
+              </div>
+            </nz-row>
+          </ng-template>
+          <!-- End -->
+        </nz-col>
+        <nz-col
+          nzSpan="24"
+          class="error-span"
+          *ngIf="!dataInformation.customerCode"
+        >
+          Bạn chưa chọn mã khách hàng
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listContract.child.customerName"
+            | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            [disabled]="true"
+            type="text"
+            nz-input
+            [(ngModel)]="dataInformation.customerName"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listContract.child.address" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            [disabled]="true"
+            type="text"
+            nz-input
+            [(ngModel)]="dataInformation.address"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listContract.child.customerPhone"
+            | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            [disabled]="true"
+            type="text"
+            nz-input
+            [(ngModel)]="dataInformation.customerPhone"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listContract.child.createdBy" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            [disabled]="true"
+            type="text"
+            nz-input
+            [(ngModel)]="dataInformation.createdBy"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{
+            "sidebar.information.child.listContract.child.createdAt" | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            [disabled]="true"
+            nzPlaceHolder="dd/MM/yyyy"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.createdAt"
+          ></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{
+            "sidebar.information.child.listContract.child.updatedAt" | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            [disabled]="true"
+            nzPlaceHolder="dd/MM/yyyy"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.updatedAt"
+          ></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpa n="24">{{
+          "sidebar.information.child.listContract.child.note" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group
+            [nzSuffix]="dataInformation.status == 0 ? inputClearNote : ''"
+            class="ant-input-affix-wrapper-textarea-with-clear-btn"
+          >
+            <textarea
+              rows="3"
+              [disabled]="dataInformation.status !== 0"
+              nz-input
+              [(ngModel)]="dataInformation.note"
+              placeholder="Nhập nội dung ghi chú"
+            ></textarea>
+          </nz-input-group>
+          <ng-template #inputClearNote>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="dataInformation.note"
+              (click)="dataInformation.note = null"
+            ></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+<div class="common-bg mt-24">
+  <nz-row class="mb-12">
+    <h2 class="m-0">
+      {{
+        "sidebar.information.child.listContract.child.listProduct" | translate
+      }}
+    </h2>
+  </nz-row>
+  <nz-row>
+    <nz-table
+      nzBordered
+      [nzFrontPagination]="false"
+      [nzShowPagination]="false"
+      [nzScroll]="{ x: 'auto', y: '500px' }"
+      [nzData]="dataItems"
+      #dataItem
+      nzSize="small"
+      class="w-100"
+    >
+      <thead>
+        <tr>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <ng-container *ngIf="column.check && column.keyName !== 'amount'">
+              <!-- <th nz-resizable nzBounds="window" nzPreview [nzWidth]="column.width" [nzMaxWidth]="300"
+                [nzMinWidth]="100" (nzResizeEnd)="onResize($event, column)" nzAlign="center"> -->
+              <th
+                nz-resizable
+                [nzWidth]="column.width"
+                (nzResize)="onResize($event, i)"
+                [nzMaxWidth]="500"
+                [nzMinWidth]="100"
+              >
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+            <ng-container *ngIf="column.check && column.keyName == 'amount'">
+              <th
+                nz-resizable
+                nzBounds="window"
+                nzPreview
+                [nzWidth]="column.width"
+                [nzMaxWidth]="300"
+                [nzMinWidth]="100"
+                (nzResizeEnd)="onResize($event, column)"
+                nzAlign="center"
+              >
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }} (VNĐ)
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+          </ng-container>
+          <th
+            nzWidth="100px"
+            nzAlign="center"
+            nzRight
+            *ngIf="dataInformation.status == 0"
+          >
+            {{ "table.action" | translate }}
+          </th>
+        </tr>
+      </thead>
+      <tbody [class]="dataItems.length > 0 ? 'striped-tr' : ''">
+        <tr>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <ng-container *ngIf="column.check">
+              <td
+                *ngIf="
+                  column.keyName !== 'openQuantity' &&
+                  column.keyName !== 'quantityInContract'
+                "
+              >
+                <nz-input-group
+                  [nzPrefix]="preSearch"
+                  [nzSuffix]="suffixSearch"
+                >
+                  <input
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilterProduct[column.keyName]"
+                  />
+                </nz-input-group>
+                <ng-template #preSearch>
+                  <span nz-icon nzType="search" style="color: #d9d9d9"></span>
+                </ng-template>
+                <ng-template #suffixSearch
+                  ><span
+                    *ngIf="dataFilterProduct[column.keyName]"
+                    (click)="clear(column.keyName)"
+                    nz-icon
+                    nzType="close-circle"
+                    nzTheme="fill"
+                    style="
+                      font-size: 12px;
+                      cursor: pointer;
+                      color: rgb(172, 170, 170);
+                    "
+                  ></span
+                ></ng-template>
+              </td>
+              <td *ngIf="column.keyName == 'openQuantity'" nzAlign="right">
+                <b>
+                  {{ countOpenQuantity | number }}
+                </b>
+              </td>
+              <td
+                *ngIf="column.keyName == 'quantityInContract'"
+                nzAlign="right"
+              >
+                <b>
+                  {{ countQuantityInContract | number }}
+                </b>
+              </td>
+            </ng-container>
+          </ng-container>
+          <td nzRight *ngIf="dataInformation.status == 0"></td>
+        </tr>
+        <tr
+          *ngFor="
+            let row of dataItem.data
+              | FilterItemInContract
+                : dataFilterProduct.productCode
+                : dataFilterProduct.itemName
+                : dataFilterProduct.description
+                : dataFilterProduct.uom
+          "
+        >
+          <ng-container *ngFor="let column of columns">
+            <ng-container *ngIf="column.check">
+              <td *ngIf="column.keyName == 'productCode'">
+                {{ row["productCode"] }}
+              </td>
+              <td *ngIf="column.keyName == 'itemName'">
+                {{ row["itemName"] }}
+              </td>
+              <td *ngIf="column.keyName == 'description'">
+                {{ row["description"] }}
+              </td>
+              <td *ngIf="column.keyName == 'uom'">
+                {{ row["uom"] }}
+              </td>
+              <td *ngIf="column.keyName == 'openQuantity'" nzAlign="right">
+                {{ row["openQuantity"] | number }}
+              </td>
+              <td
+                *ngIf="column.keyName == 'quantityInContract'"
+                nzAlign="right"
+              >
+                <span *ngIf="this.dataInformation.status !== 0">
+                  {{ row["quantityInContract"] | number }}
+                </span>
+                <input
+                  *ngIf="this.dataInformation.status == 0"
+                  type="number"
+                  nz-input
+                  [(ngModel)]="row['quantityInContract']"
+                  placeholder="Nhập tỷ số quy đổi"
+                  min="0"
+                  (ngModelChange)="onHandleQuantityInContract(row)"
+                  [disabled]="row['productCode'] ? false : true"
+                />
+                <div *ngIf="row['quantityInContract'] <= 0">
+                  <span class="error-span">
+                    Bạn phải nhập số lượng theo hợp đồng lớn hơn 0
+                  </span>
+                </div>
+              </td>
+            </ng-container>
+          </ng-container>
+          <td nzRight nzAlign="center" *ngIf="dataInformation.status == 0">
+            <app-button
+              [buttonType]="'text'"
+              [iconType]="'delete'"
+              [iconTheme]="'fill'"
+              [tooltipTitle]="'Click here to delete record'"
+              (btnClick)="deleteRecord(row)"
+            ></app-button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+  <nz-row class="mt-24" nzJustify="space-between">
+    <nz-col nzSpan="4">
+      <button
+        nz-button
+        (click)="onHandleVisiblePopup()"
+        nzType="primary"
+        nz-popover
+        [nzPopoverTitle]="'Danh sách hàng hóa ' + '(' + totalItem + ')'"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate"
+        nzPopoverPlacement="bottomLeft"
+        [nzPopoverVisible]="visiblePopup"
+        (nzPopoverVisibleChange)="changeVisible($event)"
+        *ngIf="dataInformation.status == 0"
+      >
+        <span nz-icon nzType="plus" nzTheme="outline"></span>Thêm hàng hóa
+      </button>
+      <ng-template #contentTemplate>
+        <nz-table
+          #rowSelectionTable
+          [nzData]="listItem"
+          style="width: 900px"
+          [nzScroll]="{ y: '600px' }"
+          nzBordered
+          [nzFrontPagination]="false"
+          [nzShowPagination]="false"
+          [nzPaginationType]="'small'"
+          nzSize="small"
+          (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+        >
+          <thead>
+            <tr>
+              <th
+                nzWidth="50px"
+                [(nzChecked)]="checked"
+                [nzIndeterminate]="indeterminate"
+                (nzCheckedChange)="onAllChecked($event)"
+              ></th>
+              <th>
+                {{ "menu.manage.po.item.itemCode" | translate }}
+              </th>
+              <th>
+                {{ "menu.manage.po.item.itemName" | translate }}
+              </th>
+              <th>
+                {{ "menu.manage.po.item.description" | translate }}
+              </th>
+              <th>{{ "menu.manage.po.item.uom" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td>
+                <nz-input-group
+                  [nzSuffix]="productCodeSuffix"
+                  [nzPrefix]="productCodePrefix"
+                  (keyup)="filterSearchItem($event)"
+                >
+                  <input nz-input [(ngModel)]="filterChildItems.productCode" />
+                </nz-input-group>
+                <ng-template #productCodePrefix>
+                  <span
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9"
+                    (click)="filterSearchItem($event)"
+                  ></span>
+                </ng-template>
+                <ng-template #productCodeSuffix>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterChildItems.productCode"
+                    (click)="filterChildItems.productCode = ''"
+                  ></span>
+                </ng-template>
+              </td>
+              <td>
+                <nz-input-group
+                  [nzSuffix]="proNameSuffix"
+                  [nzPrefix]="proNamePrefix"
+                  (keyup)="filterSearchItem($event)"
+                >
+                  <input nz-input [(ngModel)]="filterChildItems.proName" />
+                </nz-input-group>
+                <ng-template #proNamePrefix>
+                  <span
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9"
+                    (click)="filterSearchItem($event)"
+                  ></span>
+                </ng-template>
+                <ng-template #proNameSuffix>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterChildItems.proName"
+                    (click)="filterChildItems.proName = ''"
+                  ></span>
+                </ng-template>
+              </td>
+              <td>
+                <nz-input-group
+                  [nzSuffix]="descriptionSuffix"
+                  [nzPrefix]="descriptionPrefix"
+                  (keyup)="filterSearchItem($event)"
+                >
+                  <input nz-input [(ngModel)]="filterChildItems.proName" />
+                </nz-input-group>
+                <ng-template #descriptionPrefix>
+                  <span
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9"
+                    (click)="filterSearchItem($event)"
+                  ></span>
+                </ng-template>
+                <ng-template #descriptionSuffix>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterChildItems.proName"
+                    (click)="filterChildItems.proName = ''"
+                  ></span>
+                </ng-template>
+              </td>
+              <td>
+                <nz-input-group
+                  [nzSuffix]="unitSuffix"
+                  [nzPrefix]="unitPrefix"
+                  (keyup)="filterSearchItem($event)"
+                >
+                  <input nz-input [(ngModel)]="filterChildItems.unit" />
+                </nz-input-group>
+                <ng-template #unitPrefix>
+                  <span
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9"
+                    (click)="filterSearchItem($event)"
+                  ></span>
+                </ng-template>
+                <ng-template #unitSuffix>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterChildItems.unit"
+                    (click)="filterChildItems.unit = ''"
+                  ></span>
+                </ng-template>
+              </td>
+            </tr>
+            <tr
+              *ngFor="let data of rowSelectionTable.data"
+              (click)="clickRow(data)"
+              style="cursor: pointer"
+            >
+              <td
+                [nzChecked]="setOfCheckedId.has(data.productCode)"
+                (nzCheckedChange)="onItemChecked(data, $event)"
+              ></td>
+              <td>{{ data.productCode }}</td>
+              <td>{{ data.proName }}</td>
+              <td>{{ data.proName }}</td>
+              <td>{{ data.unit }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <nz-row
+          *ngIf="totalItem"
+          nzGutter="24"
+          nzAlign="middle"
+          nzJustify="center"
+          class="mt-12"
+        >
+          <div nz-col nzSpan="24">
+            <app-pagination
+              [currentPage]="pageItem"
+              [currentSize]="perPageItem"
+              [total]="totalItem"
+              (emitPage)="paginationItem($event)"
+            ></app-pagination>
+          </div>
+        </nz-row>
+      </ng-template>
+    </nz-col>
+    <nz-col nzSpan="20">
+      <nz-row nzGutter="24" nzJustify="end">
+        <nz-col nzSpan="2">
+          <app-button
+            [className]="'w-100 common-btn-close '"
+            [title]="'btn.close'"
+            [buttonType]="'primary'"
+            (btnClick)="close()"
+          ></app-button>
+        </nz-col>
+        <nz-col nzSpan="2" *ngIf="dataInformation.status == 0">
+          <app-button
+            [className]="'w-100 common-btn-drag '"
+            [title]="'btn.drag'"
+            [buttonType]="'primary'"
+            (btnClick)="draft()"
+          ></app-button>
+        </nz-col>
+        <nz-col nzSpan="2" *ngIf="dataInformation.status == 0">
+          <app-button
+            [className]="'w-100 '"
+            [title]="'btn.save'"
+            [buttonType]="'primary'"
+            (btnClick)="save()"
+          ></app-button>
+        </nz-col>
+        <nz-col
+          *ngIf="
+            dataInformation.status == 2 &&
+            (checkIsRole('wms_import-request_create') || checkIsRole('FCIM_ADMIN'))
+          "
+        >
+          <app-button
+            [title]="'menu.manage.po.importRequest'"
+            [buttonType]="'primary'"
+            (btnClick)="newIQC()"
+          ></app-button>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+
+<app-modal-confirm
+  [content]="'Dữ liệu chưa được lưu lại, bạn có muốn đóng không?'"
+  [title]="'Xác nhận đóng'"
+  [isVisible]="modalConfirmClose"
+  (cancel)="onHandleModalCancelClose($event)"
+  (isVisibleChange)="onHandleModalConfirmClose($event)"
+></app-modal-confirm>
+
+<app-modal-confirm
+  [content]="'Bạn có xác nhận tạo yêu cầu nhập kho không'"
+  [title]="'Xác nhận tạo yêu cầu nhập kho'"
+  [isVisible]="modalConfirmCreateIQC"
+  (cancel)="onHandleModalCancelCreateIQC($event)"
+  (isVisibleChange)="onHandleModalConfirmCreateIQC($event)"
+></app-modal-confirm>
+
+<app-modal-confirm
+  [content]="
+    dataInformation.consignmentContractCode == ''
+      ? 'Dữ liệu không có mã hợp đồng ký gửi, nếu bạn ấn lưu nháp sẽ tạo thành bản nháp mới. Bạn có chắc chắn muốn lưu nháp hợp đồng ký gửi không?'
+      : 'Bạn có chắc chắn muốn lưu nháp hợp đồng ký gửi không?'
+  "
+  [title]="'Xác nhận lưu nháp'"
+  [isVisible]="modalConfirmDraft"
+  (cancel)="onHandleModalCancelDraft($event)"
+  (isVisibleChange)="onHandleModalConfirmDraft($event)"
+></app-modal-confirm>
+
+<app-modal-confirm
+  [content]="
+    dataInformation.consignmentContractCode == ''
+      ? 'Dữ liệu không có mã hợp đồng ký gửi, nếu bạn ấn lưu  sẽ tạo thành bản mới. Bạn có chắc chắn muốn lưu hợp đồng ký gửi không?'
+      : 'Bạn có chắc chắn muốn lưu hợp đồng ký gửi không?'
+  "
+  [title]="'Xác nhận lưu'"
+  [isVisible]="modalConfirmSave"
+  (cancel)="onHandleModalCancelSave($event)"
+  (isVisibleChange)="onHandleModalConfirmSave($event)"
+></app-modal-confirm>

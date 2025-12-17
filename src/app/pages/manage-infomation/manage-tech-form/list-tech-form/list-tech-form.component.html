@@ -1,0 +1,635 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    [nzSpan]="23"
+    [listBreadCrumb]="breadcrumbs"
+  ></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row nzJustify="center" class="mb-12">
+    <h2 class="m-0">{{ "listTechForm.title" | translate }}</h2>
+  </nz-row>
+  <!-- Tìm kiếm chung -->
+  <nz-row>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzXXl="24">
+      <h4 class="m-0">{{ "search.general" | translate }}</h4>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="10" nzXl="8" nzXXl="6">
+      <form (ngSubmit)="searchCommonFunc()">
+        <nz-input-group
+          [nzPrefix]="prefixButtonSearch"
+          [nzSuffix]="suffixButtonClear"
+        >
+          <input
+            type="text"
+            nz-input
+            placeholder="{{ 'search.general.placeholder' | translate }}"
+            [(ngModel)]="searchCommon"
+            name="searchCommon"
+          />
+        </nz-input-group>
+        <ng-template #prefixButtonSearch>
+          <span
+            class="search-click"
+            nz-icon
+            nzType="search"
+            (click)="searchCommonFunc()"
+          ></span>
+        </ng-template>
+        <ng-template #suffixButtonClear>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="searchCommon"
+            (click)="searchCommon = ''"
+          ></span>
+        </ng-template>
+      </form>
+    </nz-col>
+  </nz-row>
+  <!-- Toolbar -->
+  <nz-row
+    nzAlign="bottom"
+    nzJustify="space-between"
+    nzGutter="16"
+    class="mb-12"
+  >
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="24"
+      nzLg="24"
+      nzXl="24"
+      nzXXl="24"
+      class="mt-12"
+    >
+      <nz-row nzJustify="end" nzGutter="16">
+        <nz-col>
+          <button
+            nz-button
+            nzType="text"
+            class="p-0"
+            nz-tooltip
+            nz-dropdown
+            [nzDropdownMenu]="configColumns"
+          >
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 38 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8.33325 25.668H18.9999V29.668H29.6666V15.0013H24.3333V9.66797H8.33325V25.668ZM21.6666 25.668H26.9999V27.0013H21.6666V25.668ZM21.6666 21.668H26.9999V23.0013H21.6666V21.668ZM21.6666 17.668H26.9999V19.0013H21.6666V17.668ZM10.9999 12.3346H21.6666V15.0013H18.9999V23.0013H10.9999V12.3346Z"
+                fill="#FF7A00"
+              />
+              <rect
+                x="0.5"
+                y="0.5"
+                width="37"
+                height="37"
+                rx="4.5"
+                stroke="#FF7A00"
+                stroke-opacity="0.6"
+              />
+            </svg>
+            <nz-dropdown-menu #configColumns="nzDropdownMenu">
+              <div
+                style="
+                  background-color: white;
+                  padding: 8px 12px;
+                  border: 1px solid #ccc;
+                "
+              >
+                <ng-container
+                  *ngFor="let column of techFormTableColumns; let i = index"
+                >
+                  <label
+                    [(ngModel)]="column.check"
+                    nz-checkbox
+                    (ngModelChange)="onClickCheckBox(column)"
+                    >{{ column.keyTitle | translate }}</label
+                  >
+                  <br />
+                </ng-container>
+                <nz-divider style="margin: 12px 0"></nz-divider>
+                <div
+                  (click)="onClickAddColumn()"
+                  nz-menu-item
+                  style="color: #ff774e"
+                  class="mb-12"
+                >
+                  <span
+                    style="margin-right: 8px"
+                    nz-icon
+                    nzType="plus"
+                    nzTheme="outline"
+                  ></span
+                  >{{ "add.column" | translate }}
+                </div>
+              </div>
+            </nz-dropdown-menu>
+          </button>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <!-- Table -->
+  <nz-row>
+    <nz-col nzSpan="24">
+      <nz-table
+        nzBordered
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+        [nzScroll]="{ x: 'auto' }"
+        [nzData]="dataTable"
+        #techFormTable
+        nzSize="small"
+        class="w-100"
+        (nzQueryParams)="onQueryParamsChange($event)"
+      >
+        <thead>
+          <tr>
+            <th></th>
+            <ng-container *ngFor="let column of techFormTableColumns">
+              <ng-container
+                *ngIf="column.check && column.keyName !== 'whStatus'"
+              >
+                <th
+                  nz-resizable
+                  nzBounds="window"
+                  nzPreview
+                  [nzColumnKey]="column.keyName"
+                  [nzWidth]="column.width"
+                  [nzMaxWidth]="300"
+                  [nzMinWidth]="100"
+                  (nzResizeEnd)="onResize($event, column)"
+                  nzAlign="center"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'whStatus'"
+              >
+                <th
+                  nz-resizable
+                  nzBounds="window"
+                  nzPreview
+                  [nzColumnKey]="column.keyName"
+                  [nzWidth]="column.width"
+                  [nzMaxWidth]="300"
+                  [nzMinWidth]="100"
+                  (nzResizeEnd)="onResize($event, column)"
+                  nzAlign="center"
+                  [nzFilters]="column.listOfFilter"
+                  [nzFilterFn]="true"
+                  [nzFilterMultiple]="false"
+                  [nzSortFn]="true"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+            </ng-container>
+            <th nzWidth="100px" nzAlign="center" nzRight>
+              {{ "table.action" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody [class]="total == 0 ? '' : 'striped-tr'">
+          <!-- Searching by column -->
+          <tr>
+            <td></td>
+            <ng-container
+              *ngFor="let column of techFormTableColumns; let j = index"
+            >
+              <ng-container
+                *ngIf="
+                  column.check &&
+                  column.keyName != 'startAt' &&
+                  column.keyName != 'endAt' &&
+                  column.keyName != 'createdAt' &&
+                  column.keyName != 'updatedAt' &&
+                  column.keyName != 'whStatus'
+                "
+              >
+                <td>
+                  <nz-input-group
+                    nzSearch
+                    [nzPrefix]="prefixInput"
+                    [nzSuffix]="suffixInput"
+                  >
+                    <input
+                      type="text"
+                      nz-input
+                      [(ngModel)]="filterForTechFormData[column.keyName]"
+                    />
+                  </nz-input-group>
+                  <ng-template #prefixInput>
+                    <span
+                      (click)="filterForTechFormTable()"
+                      class="search-click"
+                      nz-icon
+                      nzType="search"
+                      style="color: #d9d9d9"
+                    ></span>
+                  </ng-template>
+                  <ng-template #suffixInput>
+                    <span
+                      nz-icon
+                      class="ant-input-clear-icon"
+                      nzTheme="fill"
+                      nzType="close-circle"
+                      *ngIf="filterForTechFormData[column.keyName]"
+                      (click)="filterForTechFormData[column.keyName] = ''"
+                    ></span>
+                  </ng-template>
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'whStatus'"
+              >
+                <td>
+                  <nz-select
+                    class="w-100"
+                    [(ngModel)]="filterForTechFormData.whStatus"
+                    (ngModelChange)="filterForTechFormTable()"
+                    nzAllowClear
+                    nzPlaceHolder="{{ 'all_select' | translate }}"
+                  >
+                    <nz-option
+                      *ngFor="let status of listStatus"
+                      [nzValue]="status.value"
+                      [nzLabel]="status.label | translate"
+                    ></nz-option>
+                  </nz-select>
+                </td>
+              </ng-container>
+
+              <ng-container *ngIf="column.check && column.keyName == 'startAt'">
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filterForTechFormData.startAt"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                    (ngModelChange)="filterForTechFormTable()"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="column.check && column.keyName == 'endAt'">
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filterForTechFormData.endAt"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                    (ngModelChange)="filterForTechFormTable()"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'createdAt'"
+              >
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filterForTechFormData.createdAt"
+                    (ngModelChange)="filterForTechFormTable()"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                    (ngModelChange)="filterForTechFormTable()"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'updatedAt'"
+              >
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filterForTechFormData.updatedAt"
+                    (ngModelChange)="filterForTechFormTable()"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                    (ngModelChange)="filterForTechFormTable()"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+            </ng-container>
+            <td nzRight></td>
+          </tr>
+          <!-- Data table -->
+          <ng-container *ngFor="let row of techFormTable.data; let i = index">
+            <tr>
+              <td>
+                <span
+                  class="hover-cursor-pointer"
+                  style="
+                    color: #0000004d;
+                    font-size: 16px;
+                    transition: 0.15s ease-in-out all;
+                  "
+                  [style]="
+                    row.isOpen
+                      ? 'transform: rotate(90deg)'
+                      : 'transform: rotate(0deg)'
+                  "
+                  nz-icon
+                  nzType="caret-right"
+                  nzTheme="outline"
+                  (click)="onOpenProductionRequirementTable(row, i)"
+                ></span>
+              </td>
+              <ng-container
+                *ngFor="let column of techFormTableColumns; let j = index"
+              >
+                <ng-container *ngIf="column.check">
+                  <td
+                    *ngIf="
+                      column.keyName !== 'whStatus' &&
+                      column.keyName !== 'createdAt' &&
+                      column.keyName !== 'updatedAt' &&
+                      column.keyName !== 'startAt' &&
+                      column.keyName !== 'endAt'
+                    "
+                  >
+                    {{ row[column.keyName] }}
+                  </td>
+                  <td *ngIf="column.keyName == 'startAt'" nzAlign="right">
+                    {{ row["startAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName == 'endAt'" nzAlign="right">
+                    {{ row["endAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName == 'createdAt'" nzAlign="right">
+                    {{ row["createdAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName == 'updatedAt'" nzAlign="right">
+                    {{ row["updatedAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td nzAlign="center" *ngIf="column.keyName === 'whStatus'">
+                    <div [ngSwitch]="row[column.keyName]">
+                      <div
+                        class="border-element close-status"
+                        *ngSwitchCase="'0'"
+                      >
+                        {{ "listTechForm.status.close" | translate }}
+                      </div>
+                      <div
+                        class="border-element open-status"
+                        *ngSwitchCase="'1'"
+                      >
+                        {{ "listTechForm.status.open" | translate }}
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-container>
+              <td nzRight style="display: flex; justify-content: center">
+                <app-button
+                  *ngIf="
+                    row.whStatus == 1 &&
+                    checkIsRole('wms_export-request_create')
+                  "
+                  [iconTheme]="'fill'"
+                  [iconType]="'plus-circle'"
+                  (btnClick)="onHandleCreateRequest(row)"
+                  [nz-tooltip]="'button.createExportRequest' | translate"
+                  [buttonType]="'text'"
+                >
+                </app-button>
+                <app-button
+                  [iconTheme]="'fill'"
+                  [iconType]="'info-circle'"
+                  (btnClick)="onHandleView(row)"
+                  [nz-tooltip]="'table.moreDetail' | translate"
+                  [buttonType]="'text'"
+                  [ngStyle]="{ width: '100px' }"
+                >
+                </app-button>
+              </td>
+            </tr>
+            <tr *ngIf="row.isOpen">
+              <td [colSpan]="techFormTableColumns.length + 2">
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    padding: 20px 40px;
+                    gap: 14px;
+                  "
+                >
+                  <nz-row>
+                    <span
+                      style="
+                        font-size: 16px;
+                        font-style: normal;
+                        font-weight: 600;
+                      "
+                    >
+                      {{
+                        "listTechForm.requestProductionTable.title" | translate
+                      }}
+                    </span>
+                  </nz-row>
+                  <nz-row>
+                    <nz-col nzSpan="24">
+                      <nz-table
+                        nzBordered
+                        [nzFrontPagination]="false"
+                        [nzShowPagination]="false"
+                        [nzScroll]="{ x: 'auto', y: 'auto' }"
+                        [nzData]="row.listProductionRequirement"
+                        #productionRequirementTable
+                        nzSize="small"
+                        class="w-100 m-none"
+                      >
+                        <thead>
+                          <tr>
+                            <ng-container
+                              *ngFor="let column of productionTableColumns"
+                            >
+                              <th
+                                *ngIf="column.check"
+                                nz-resizable
+                                nzBounds="window"
+                                nzPreview
+                                [nzColumnKey]="column.keyName"
+                                [nzWidth]="column.width"
+                                [nzMaxWidth]="300"
+                                [nzMinWidth]="100"
+                                (nzResizeEnd)="
+                                  onResizeForListProductionRequirement(
+                                    $event,
+                                    column
+                                  )
+                                "
+                                nzAlign="center"
+                              >
+                                <div class="editable-cell">
+                                  {{ column.keyTitle | translate }}
+                                </div>
+                                <nz-resize-handle nzDirection="right">
+                                  <div class="resize-trigger"></div>
+                                </nz-resize-handle>
+                              </th>
+                            </ng-container>
+                          </tr>
+                        </thead>
+                        <tbody class="striped-tr">
+                          <tr>
+                            <ng-container
+                              *ngFor="let column of productionTableColumns"
+                            >
+                              <td>
+                                <nz-input-group
+                                  style="border: none"
+                                  nzSearch
+                                  [nzPrefix]="prefixInput"
+                                  [nzSuffix]="suffixInput"
+                                >
+                                  <input
+                                    type="text"
+                                    nz-input
+                                    [(ngModel)]="row.filterData[column.keyName]"
+                                  />
+                                </nz-input-group>
+                                <ng-template #prefixInput>
+                                  <span
+                                    (click)="
+                                      filterForProductRequirementTable(row, i)
+                                    "
+                                    class="search-click"
+                                    nz-icon
+                                    nzType="search"
+                                  ></span>
+                                </ng-template>
+                                <ng-template #suffixInput>
+                                  <span
+                                    nz-icon
+                                    class="ant-input-clear-icon"
+                                    nzTheme="fill"
+                                    nzType="close-circle"
+                                    *ngIf="row.filterData[column.keyName]"
+                                    (click)="
+                                      row.filterData[column.keyName] = ''
+                                    "
+                                  ></span>
+                                </ng-template>
+                              </td>
+                            </ng-container>
+                          </tr>
+                          <ng-container
+                            *ngFor="let row of productionRequirementTable.data"
+                          >
+                            <tr>
+                              <td *ngFor="let column of productionTableColumns">
+                                {{ row[column.keyName] }}
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </nz-table>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row
+
+                    nzGutter="24"
+                    nzAlign="middle"
+                    nzJustify="center"
+                    class="mt-12"
+                  >
+                    <div nz-col nzSpan="24">
+                      <app-pagination
+                        [currentPage]="row.pageIndex"
+                        [currentSize]="row.pageSize"
+                        [total]="row.total"
+                        (emitPage)="
+                          paginationForProductionRequirementTable($event, i)
+                        "
+                      ></app-pagination>
+                    </div>
+                  </nz-row>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
+  <nz-row nzAlign="middle" nzJustify="center" class="mt-12" *ngIf="total !== 0">
+    <div nz-col nzSpan="24">
+      <app-pagination
+        [currentPage]="page"
+        [currentSize]="perPage"
+        [total]="total"
+        (emitPage)="paginationForTechFormTable($event)"
+      ></app-pagination>
+    </div>
+  </nz-row>
+</div>
+
+<!-- Popup hủy yêu cầu nhập kho -->
+<nz-modal
+  nzWidth="800px"
+  [(nzVisible)]="isVisibleCancelRequest"
+  [nzFooter]="null"
+  (nzOnCancel)="onHandleWithDrawRequest()"
+  [nzContent]="showCancelRequest"
+  [nzTitle]="showCancelRequestTitle"
+>
+  <ng-template #showCancelRequestTitle>
+    <div class="d-flex">
+      <img src="./assets/image/svg/techForm_modal.svg" alt="" />
+      <h2 class="m-0 ml-24">
+        {{ "ui.receipt.required.cancelRequest" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showCancelRequest> </ng-template>
+</nz-modal>
+
+<app-popup-cancel
+  [isVisible]="isVisibleWithDrawRequest"
+  (cancel)="onHandleCancelPopup($event)"
+  (isVisibleChange)="onHandleConfirmPopup($event)"
+>
+</app-popup-cancel>
+
+<app-popup-withdraw
+  [isVisible]="isVisibleConfirmWithDraw"
+  (cancel)="isVisibleConfirmWithDraw = $event"
+  [importRequestCode]="currentImportRequestCode"
+>
+</app-popup-withdraw>

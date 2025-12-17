@@ -1,0 +1,693 @@
+<div>
+  <nz-row nzAlign="middle" class="mb-12">
+    <app-breadcrumb nz-col [nzSpan]="23" *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"
+      [isHidden]="isHidden"></app-breadcrumb>
+  </nz-row>
+  <div class="common-bg mb-24" *ngIf="messageRefuse">
+    <div class="error-span">
+      <b> Lý do từ chối duyệt </b>
+    </div>
+    <div class="mt-12">
+      {{ messageRefuse }}
+    </div>
+  </div>
+  <div class="common-bg mb-24" *ngIf="messageRevoke">
+    <div style="color: #0047ff">
+      <b> Lý do thu hồi yêu cầu duyệt </b>
+    </div>
+    <div class="mt-12">
+      {{ messageRevoke }}
+    </div>
+  </div>
+
+  <div class="common-bg">
+    <nz-row>
+      <h2 class="m-0">
+        {{ "Thông tin phiếu kiểm kê" | translate }}:
+        <span style="font-weight: normal">{{ params }}</span>
+      </h2>
+    </nz-row>
+
+    <nz-row nzAlign="top" nzJustify="start" [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }">
+      
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">
+            {{
+            "sidebar.inventory.child.inventoryRequest.list.inventoryType"
+            | translate
+            }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <nz-select [(ngModel)]="dataInformation.inventoryType" class="w-100" nzPlaceHolder="-- Chọn --"
+              [disabled]="true">
+              <nz-option *ngFor="let option of listInventoryType" [nzValue]="option.value"
+                [nzLabel]="option.text"></nz-option>
+            </nz-select>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">
+            {{
+            "sidebar.inventory.child.inventoryRequest.list.warehouseName"
+            | translate
+            }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <nz-select [(ngModel)]="dataInformation.warehouseName" class="w-100" nzPlaceHolder="-- Chọn --"
+              [disabled]="true">
+              <nz-option *ngFor="let option of listWarehouse" [nzValue]="option.warehouseName"
+                [nzLabel]="option.warehouseName"></nz-option>
+            </nz-select>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">
+            {{
+            "sidebar.inventory.child.inventoryRequest.list.requestAt"
+            | translate
+            }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <nz-date-picker [disabled]="true" nzPlaceHolder="Chọn ngày yêu cầu (Nếu có)" class="w-100"
+              nzFormat="dd/MM/yyyy" [(ngModel)]="dataInformation.requestAt"></nz-date-picker>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">
+            {{
+            "sidebar.inventory.child.inventoryRequest.list.content" | translate
+            }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <textarea [disabled]="true" placeholder="Nhập nội dung yêu cầu (Nếu có)" rows="1" nz-input
+              [(ngModel)]="dataInformation.content"></textarea>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">
+            {{ "Kết luận" | translate }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <textarea [disabled]="
+              (checkGroupsInTokenKeeper ||
+                checkGroupsInTokenAdmin ||
+                checkGroupsInFcimAdmin) &&
+              dataInformation.status == 0
+                ? false
+                : true
+            " placeholder="Nhập nội dung kết luận (Nếu có)" rows="1" nz-input
+              [(ngModel)]="dataInformation.conclusion"></textarea>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+      
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">{{
+            "sidebar.export.child.goodDeliveryNote.child.createdBy" | translate
+            }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <input [disabled]="true" type="text" nz-input [(ngModel)]="dataInformation.createdBy" />
+          </nz-col>
+        </nz-row>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">{{
+            "sidebar.export.child.goodDeliveryNote.child.createdAt" | translate
+            }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <nz-date-picker [disabled]="true" nzPlaceHolder="-- Chọn --" class="w-100" nzFormat="dd/MM/yyyy"
+              [(ngModel)]="dataInformation.createdAt"></nz-date-picker>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+        <nz-row>
+          <nz-col nzSpan="24">{{
+            "sidebar.export.child.goodDeliveryNote.child.updatedAt" | translate
+            }}
+          </nz-col>
+          <nz-col nzSpan="24">
+            <nz-date-picker [disabled]="true" nzPlaceHolder="-- Chọn --" class="w-100" nzFormat="dd/MM/yyyy"
+              [(ngModel)]="dataInformation.updatedAt"></nz-date-picker>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+    </nz-row>
+  </div>
+  <!-- Danh sách hàng hóa -->
+  <div class="common-bg mt-24">
+    <nz-row nzAlign="middle" nzJustify="space-between" nzGutter="24">
+      <nz-col>
+        <h2 class="m-0">
+          {{ "listProduct.title" | translate }}
+        </h2>
+      </nz-col>
+    </nz-row>
+    <nz-table class="w-100 mt-12" nzBordered nzFrontPagination="false" nzShowPagination="false" nzSize="small"
+      [nzData]="listItems" #tableItemFromClient [nzScroll]="{ y: '300px' }">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <ng-container *ngIf="column.check">
+              <th nz-resizable [nzWidth]="column.width" (nzResize)="onResize($event, i)" [nzMaxWidth]="500"
+                [nzMinWidth]="100">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </div>
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody [class]="listItems.length > 0 ? 'striped-tr' : ''">
+        <tr>
+          <ng-container *ngFor="let column of columns">
+            <ng-container *ngIf="
+              column.check &&
+              column.keyName != 'remainQuantity' &&
+              column.keyName != 'auditQuantity' &&
+              column.keyName != 'diffQuantity' 
+            ">
+              <td>
+                <nz-input-group nzSearch [nzPrefix]="prefixKeyName" [nzSuffix]="suffixKeyName">
+                  <input type="text" nz-input [(ngModel)]="filterInventoryClient[column.keyName]" />
+                </nz-input-group>
+                <ng-template #prefixKeyName>
+                  <span class="search-click" nz-icon nzType="search" style="color: #d9d9d9"></span>
+                </ng-template>
+                <ng-template #suffixKeyName>
+                  <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                    *ngIf="filterInventoryClient[column.keyName]"
+                    (click)="filterInventoryClient[column.keyName] = ''"></span>
+                </ng-template>
+              </td>
+            </ng-container>
+
+            <ng-container *ngIf="column.check && column.keyName == 'remainQuantity'">
+              <td nzAlign="right">
+                <b> {{ totalRemainQuantity | number }} </b>
+              </td>
+            </ng-container>
+
+            <ng-container *ngIf="column.check && column.keyName == 'auditQuantity'">
+              <td nzAlign="right">
+                <b> {{ totalauditQuantity | number }} </b>
+              </td>
+            </ng-container>
+
+            <ng-container *ngIf="column.check && column.keyName == 'diffQuantity'">
+              <td nzAlign="right">
+                <b> {{ totalDiffQuantity | number }} </b>
+              </td>
+            </ng-container>
+
+          </ng-container>
+        </tr>
+        <ng-container *ngFor="
+          let row of tableItemFromClient.data
+            | filterInventoryRequestProduct
+              : filterInventoryClient.productCode
+              : filterInventoryClient.proName
+              : filterInventoryClient.proName
+              : filterInventoryClient.unit
+        ">
+          <tr>
+            <ng-container *ngFor="let column of columns">
+              <td *ngIf="
+                column.check &&
+                column.keyName != 'remainQuantity' &&
+                column.keyName != 'auditQuantity' &&
+                column.keyName != 'diffQuantity'
+              ">
+                {{ row[column.keyName] }}
+              </td>
+              <td nzAlign="right" *ngIf="column.check && column.keyName == 'remainQuantity'">
+                {{ row["remainQuantity"] | number }}
+              </td>
+              <td nzAlign="right" *ngIf="column.check && column.keyName == 'auditQuantity'">
+                <ng-container *ngIf="
+                  (checkGroupsInTokenKeeper ||
+                    checkGroupsInTokenAdmin ||
+                    checkGroupsInFcimAdmin) &&
+                  (dataInformation.status == 0 || dataInformation.status == 1)
+                    ? true
+                    : false;
+                  else isString
+                ">
+                  <input nz-input [(ngModel)]="row['auditQuantity']" (ngModelChange)="changeauditQuantity($event, row)"
+                    class="w-100" type="text" style="text-align: right" />
+                </ng-container>
+                <ng-template #isString>
+                  {{ row[column.keyName] }}
+                </ng-template>
+              </td>
+              <td nzAlign="right" *ngIf="column.check && column.keyName == 'diffQuantity'">
+                {{ row["diffQuantity"] | number }}
+              </td>
+
+            </ng-container>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- Danh sách thành viên tham gia -->
+  <div class="common-bg mt-24">
+    <nz-row nzAlign="middle" nzJustify="space-between" nzGutter="24">
+      <nz-col>
+        <h2 class="m-0">
+          {{ "Danh sách thành viên tham gia" | translate }}
+        </h2>
+      </nz-col>
+    </nz-row>
+    <nz-table class="w-100 mt-12" nzBordered nzFrontPagination="false" nzShowPagination="false" nzSize="small"
+      [nzData]="listParticipants" #tableParticipant [nzScroll]="{ y: '300px' }">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let column of columnParticipants; let i = index">
+            <ng-container *ngIf="column.check">
+              <th nz-resizable [nzWidth]="column.width" (nzResize)="onResizeParticipant($event, i)" [nzMaxWidth]="500"
+                [nzMinWidth]="100">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </div>
+              </th>
+            </ng-container>
+          </ng-container>
+          <th nzWidth="100px" nzAlign="center" nzRight *ngIf="
+            (checkGroupsInTokenKeeper ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            (dataInformation.status == 0 || dataInformation.status == 1)
+              ? true
+              : false
+          ">
+            {{ "table.action" | translate }}
+          </th>
+        </tr>
+      </thead>
+      <tbody [class]="listParticipants.length > 0 ? 'striped-tr' : ''">
+        <tr>
+          <ng-container *ngFor="let column of columnParticipants">
+            <ng-container *ngIf="column.check">
+              <td>
+                <nz-input-group nzSearch [nzPrefix]="prefixKeyName" [nzSuffix]="suffixKeyName">
+                  <input type="text" nz-input [(ngModel)]="filterParticipants[column.keyName]" />
+                </nz-input-group>
+                <ng-template #prefixKeyName>
+                  <span class="search-click" nz-icon nzType="search" style="color: #d9d9d9"></span>
+                </ng-template>
+                <ng-template #suffixKeyName>
+                  <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                    *ngIf="filterParticipants[column.keyName]" (click)="filterParticipants[column.keyName] = ''"></span>
+                </ng-template>
+              </td>
+            </ng-container>
+          </ng-container>
+          
+        </tr>
+        <ng-container *ngFor="let row of tableParticipant.data">
+          <tr>
+            <ng-container *ngFor="let column of columnParticipants">
+                  <td *ngIf="column.check && column.keyName != 'employeePosition'">
+                    {{ row[column.keyName] }}
+                  </td>
+                  <td *ngIf="column.check && column.keyName === 'employeePosition'">
+                    Nhân viên kho
+                  </td>
+                </ng-container>
+            <td nzAlign="center" *ngIf="
+              (checkGroupsInTokenKeeper ||
+                checkGroupsInTokenAdmin ||
+                checkGroupsInFcimAdmin) &&
+              (dataInformation.status == 0 || dataInformation.status == 1)
+                ? true
+                : false
+            ">
+              <button class="p-0" style="width: 32px; height: 32px" nz-button nzType="text"
+                (click)="onHandleDeleteItem(row)">
+                <img src="./assets/image/svg/inventoryRequest_delete.svg" />
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+    <nz-row class="mt-24" nzJustify="space-between">
+      <nz-col nzSpan="4">
+        <button *ngIf="
+          (checkGroupsInTokenKeeper ||
+            checkGroupsInTokenAdmin ||
+            checkGroupsInFcimAdmin) &&
+          (dataInformation.status == 0 || dataInformation.status == 1)
+            ? true
+            : false
+        " nz-button nzType="primary" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate"
+          [nzPopoverPlacement]="'topRight'" [nzPopoverVisible]="showListParticipants" (click)="openListParticipant()"
+          (nzPopoverVisibleChange)="closeListParticipant($event)">
+          <span nz-icon nzType="plus" nzTheme="outline"></span>{{ "Thêm thành viên tham gia" | translate }}
+        </button>
+        <ng-template #contentTemplate>
+          <nz-table #tableItemFromServer [nzData]="listParticipantsFromDB" style="width: 1300px"
+            [nzScroll]="{ y: '300px' }" nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" nzSize="small"
+            (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+            <thead>
+              <tr>
+                <th nzWidth="50px" [(nzChecked)]="checked" [nzIndeterminate]="indeterminate"
+                  (nzCheckedChange)="onAllChecked($event)"></th>
+                <ng-container *ngFor="let column of columnParticipantsFromDB; let i = index">
+                  <ng-container *ngIf="column.check">
+                    <th nz-resizable [nzWidth]="column.width" (nzResize)="onResizeParticipantFromDB($event, i)"
+                      [nzMaxWidth]="300" [nzMinWidth]="100">
+                      <div class="editable-cell">
+                        {{ column.keyTitle | translate }}
+                        <nz-resize-handle nzDirection="right">
+                          <div class="resize-trigger"></div>
+                        </nz-resize-handle>
+                      </div>
+                    </th>
+                  </ng-container>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody [class]="listParticipantsFromDB.length > 0 ? 'striped-tr' : ''">
+              <tr>
+                <td></td>
+                <ng-container *ngFor="let column of columnParticipantsFromDB">
+                  <ng-container *ngIf="column.check">
+                    <td>
+                      <nz-input-group nzSearch [nzPrefix]="prefixKeyName" [nzSuffix]="suffixKeyName">
+                        <input type="text" (keyup)="onHandleEnterSearchItem($event)" nz-input
+                          [(ngModel)]="filterParticipantsFromDB[column.keyName]" />
+                      </nz-input-group>
+                      <ng-template #prefixKeyName>
+                        <span class="search-click" (click)="onHandleSearchItem()" nz-icon nzType="search"
+                          style="color: #d9d9d9"></span>
+                      </ng-template>
+                      <ng-template #suffixKeyName>
+                        <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                          *ngIf="filterParticipantsFromDB[column.keyName]"
+                          (click)="onHandleClearInputServer(column.keyName)"></span>
+                      </ng-template>
+                    </td>
+                  </ng-container>
+                </ng-container>
+              </tr>
+              <ng-container *ngFor="let row of tableItemFromServer.data">
+                <tr>
+                  <td [nzChecked]="setOfCheckedId.has(row.id)" (nzCheckedChange)="onItemChecked(row, $event)"></td>
+                  <ng-container *ngFor="let column of columnParticipantsFromDB">
+                  <td *ngIf="column.check && column.keyName != 'employeePosition'">
+                    {{ row[column.keyName] }}
+                  </td>
+                  <td *ngIf="column.check && column.keyName === 'employeePosition'">
+                    Nhân viên kho
+                  </td>
+                </ng-container>
+                </tr>
+              </ng-container>
+            </tbody>
+          </nz-table>
+          <div *ngIf="totalItem">
+            <app-pagination [currentPage]="pageItem" [currentSize]="perPageItem" [total]="totalItem"
+              (emitPage)="onHandlePagination($event)"></app-pagination>
+          </div>
+        </ng-template>
+      </nz-col>
+      <nz-col nzSpan="20">
+        <nz-row nzGutter="24" nzJustify="end">
+          <nz-col>
+            <app-button [className]="'w-100 common-btn-close '" [title]="'btn.close'" [buttonType]="'primary'"
+              (btnClick)="onHandleClose()"></app-button>
+          </nz-col>
+          <nz-col *ngIf="
+            (checkGroupsInTokenKeeper ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            (dataInformation.status == 1 || dataInformation.status == 0)
+          ">
+            <app-button [className]="'w-100  '" [title]="'Gửi duyệt'" [buttonType]="'primary'"
+              (btnClick)="sendInventory()"></app-button>
+          </nz-col>
+          <nz-col *ngIf="
+            (checkGroupsInTokenKeeper ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            dataInformation.status == 2
+          ">
+            <app-button [className]="'w-100  '" [title]="'Thu hồi duyệt'" [buttonType]="'primary'"
+              (btnClick)="revoke()"></app-button>
+          </nz-col>
+          <nz-col *ngIf="
+            (checkGroupsInTokenChiefAccountant ||
+              checkGroupsInTokenWarehouseManager ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            dataInformation.status == 2
+          ">
+            <app-button [className]="'w-100 common-btn-red '" [title]="'Từ chối duyệt'" [buttonType]="'primary'"
+              (btnClick)="refuse()"></app-button>
+          </nz-col>
+          <nz-col *ngIf="
+            (checkGroupsInTokenChiefAccountant ||
+              checkGroupsInTokenWarehouseManager ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            dataInformation.status == 2
+          ">
+            <app-button [className]="'w-100  '" [title]="'Phê duyệt'" [buttonType]="'primary'"
+              (btnClick)="approval()"></app-button>
+          </nz-col>
+          <nz-col>
+            <app-button [className]="'w-100  '" [title]="'In phiếu'" [buttonType]="'primary'"
+              (btnClick)="show()"></app-button>
+          </nz-col>
+        </nz-row>
+      </nz-col>
+    </nz-row>
+  </div>
+
+  <app-popup-confirm title="xác nhận phê duyệt phiếu kiểm kê" content="xác nhận phê duyệt phiếu kiểm kê"
+    [isVisible]="isOpenConfirmApproval" (cancel)="isOpenConfirmApproval = $event"
+    (isVisibleChange)="onConfirmOrderProcessing()"></app-popup-confirm>
+
+  <nz-modal nzWidth="800px" [(nzVisible)]="visibleRefusal" [nzFooter]="null"
+    (nzOnCancel)="onHandleCancelReasonRefusal()" [nzContent]="showAddNewContentRefusal"
+    [nzTitle]="showAddNewTitleRefusal">
+    <ng-template #showAddNewTitleRefusal>
+      <div class="d-flex">
+        <img src="./assets/image/svg/gdn_modal.svg" alt="" />
+        <h2 class="m-0 ml-24">{{ "Từ chối yêu cầu kiểm kê" | translate }}</h2>
+      </div>
+    </ng-template>
+    <ng-template #showAddNewContentRefusal>
+      <app-refuse-inventory-sheet (childOut)="onHandleCloseModalRefusal($event)" [child]="dataInformation">
+      </app-refuse-inventory-sheet>
+    </ng-template>
+  </nz-modal>
+
+  <nz-modal nzWidth="800px" [(nzVisible)]="visibleRevoke" [nzFooter]="null" (nzOnCancel)="onHandleCancelReason()"
+    [nzContent]="showAddNewContentRevoke" [nzTitle]="showAddNewTitleRevoke">
+    <ng-template #showAddNewTitleRevoke>
+      <div class="d-flex">
+        <img src="./assets/image/svg/gdn_modal.svg" alt="" />
+        <h2 class="m-0 ml-24">{{ "Thu hồi phiếu kiểm kê" | translate }}</h2>
+      </div>
+    </ng-template>
+    <ng-template #showAddNewContentRevoke>
+      <app-revoke-inventory-sheet (childOut)="onHandleCloseModalRevoke($event)" [child]="dataInformation">
+      </app-revoke-inventory-sheet>
+    </ng-template>
+  </nz-modal>
+  <app-popup-cancel [isVisible]="isShowPopupConfirmRevoke" (cancel)="onHandleCancelPopup($event)"
+    (isVisibleChange)="onHandleConfirmPopup($event)">
+  </app-popup-cancel>
+  <app-popup-cancel [isVisible]="isShowPopupConfirmRefusal" (cancel)="onHandleCancelPopupRefusal($event)"
+    (isVisibleChange)="onHandleConfirmPopupRefusal($event)">
+  </app-popup-cancel>
+</div>
+
+<!-- IN PHIẾU -->
+<div id="pdf-content">
+  <div class="common-bg">
+    <div nz-row nzGutter="40" id="print">
+      <div id="content" #content nz-col nzSpan="24" style="border: 1px solid rgba(0, 0, 0, 0.2); padding: 40px 20px">
+        <div nz-row>
+          <div nz-col nzSpan="16">
+            <img style="height: 72px" [src]="'./assets/image/logo_mk_smart.png'" alt="Ảnh xem trước" />
+          </div>
+          <div nz-col nzSpan="8">
+            <div nz-row>
+              <span nz-col nzSpan="24" style="font-weight: bold" class="d-flex j-content-center">Mẫu số/Form No:
+              </span>
+              <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center"></span>
+            </div>
+          </div>
+        </div>
+        <div nz-row class="mt-8">
+          <div nz-col nzSpan="16">
+            <span nz-row>
+              <b style="text-transform: uppercase">CÔNG TY CỔ PHẦN THÔNG MINH MK</b>
+            </span>
+            <span nz-row>
+              Lô 40, KCN Quang Minh, TT. Quang Minh, H. Mê Linh, TP Hà Nội, Việt
+              Nam
+            </span>
+          </div>
+        </div>
+        <div nz-row nzJustify="center" class="mt-24">
+          <h1 style="text-transform: uppercase">PHIẾU KIỂM KÊ</h1>
+        </div>
+        <div>
+          <span>
+            <b>Ngày thực hiện: </b>
+            {{ dataInformation.createdAt | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+
+        <div>
+          <span><b>Mã phiếu kiểm kê: </b>{{ params }} </span>
+        </div>
+        <div>
+          <span>
+            <b>Số chứng từ gốc kèm theo: </b>
+          </span>
+        </div>
+        <div>
+          <span><b>Người lập phiếu: </b>{{ dataInformation.createdBy }} </span>
+        </div>
+        <br>
+
+        <div class="mt-24">
+          <div>
+            <h2>Danh sách người kiểm kê </h2>
+          </div>
+          <nz-table [nzData]="listParticipants" [nzBordered]="true" [nzFrontPagination]="false">
+            <thead>
+              <tr>
+                <th rowspan="2">STT/No</th>
+                <th rowspan="2">Mã nhân viên</th>
+                <th rowspan="2">Tên nhân viên</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let row of listParticipants; let i = index">
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ row.employeeCode }}</td>
+                  <td>{{ row.employeeName }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </nz-table>
+        </div>
+
+        <div>
+          <h2>Kết quả kiểm kê </h2>
+        </div>
+        <nz-table [nzBordered]="true" [nzData]="listItems" [nzBordered]="true" [nzFrontPagination]="false">
+          <thead>
+            <tr>
+              <th rowspan="2">STT</th>
+              <th rowspan="2">Mã hàng hóa</th>
+              <th rowspan="2">Tên hàng hóa</th>
+              <th rowspan="2">Loại hàng hóa</th>
+              <th rowspan="2">Đơn vị tính</th>
+              <th rowspan="2">Số lượng hệ thống</th>
+              <th rowspan="2">Số lượng thực tế</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of listItems; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ row.productCode }}</td>
+              <td>{{ row.itemName }}</td>
+              <td>{{ row.itemType }}</td>
+              <td>{{ row.uom }}</td>
+              <td>{{ row.remainQuantity }}</td>
+              <td>{{ row.auditQuantity }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+
+
+        <div class="mt-12" nz-row nzJustify="end">
+          <span style="padding: 20px 200px">
+            <b>Ngày ..... Tháng ..... Năm ..... </b>
+          </span>
+        </div>
+        <div nz-row nzGutter="24" nzJustify="space-between" class="mt-24">
+          <div nz-col nzSpan="4">
+            <div nz-row>
+              <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+                <b>Người lập phiếu</b>
+              </span>
+
+            </div>
+          </div>
+          <div nz-col nzSpan="4">
+            <div nz-row>
+              <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+                <b>Thủ kho</b>
+              </span>
+
+            </div>
+          </div>
+          <div nz-col nzSpan="8">
+            <div nz-row>
+              <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+                <b>Kế toán trưởng hoặc bộ phận nhận</b>
+              </span>
+
+            </div>
+          </div>
+          <div nz-col nzSpan="4">
+            <div nz-row>
+              <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+                <b>Giám đốc</b>
+              </span>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div nz-row nzGutter="40" class="mt-12">
+    <div nz-col nzSpan="8"></div>
+    <div nz-col nzSpan="16">
+      <div>
+        <app-button [buttonType]="'text'" [title]="'Tải xuống bản xem trước'" [iconType]="'download'"
+          (btnClick)="exportPDF()">
+        </app-button>
+      </div>
+      <div>
+        <div nz-row nzGutter="24" nzJustify="end">
+          <app-button [className]="'common-btn-close w-100'" [title]="'btn.cancel'" [buttonType]="'primary'"
+            [tooltipTitle]="'Click here to cancel '" (btnClick)="hide()"></app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ></div>
+</div>

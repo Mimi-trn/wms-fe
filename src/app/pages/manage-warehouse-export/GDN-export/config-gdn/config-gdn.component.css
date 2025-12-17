@@ -1,0 +1,36 @@
+/* app.component.css */
+.custom-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* Khoảng cách giữa hình ảnh và chữ */
+}
+
+.custom-input img {
+  width: 70px;
+  /* Độ rộng của hình ảnh */
+  height: 40px;
+  /* Chiều cao của hình ảnh */
+  cursor: pointer;
+  /* Biểu tượng con trỏ cho phép click */
+}
+
+.custom-input input[type="file"] {
+  display: none;
+  /* Ẩn trường nhập liệu gốc */
+}
+
+.upload-label {
+  width: 100%;
+  /* Độ rộng của label bằng hình ảnh */
+  height: 100%;
+  /* Chiều cao của label bằng hình ảnh */
+  position: absolute;
+  /* Đặt vị trí tuyệt đối để che phủ hình ảnh */
+  cursor: pointer;
+  /* Biểu tượng con trỏ cho phép click */
+}
+
+#content {
+  width: 595px;
+}

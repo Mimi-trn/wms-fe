@@ -1,0 +1,18 @@
+.click-row:hover {
+  background-color: #bbb;
+}
+
+.click-row:hover td {
+  background-color: #bbb;
+}
+
+.fn-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 30px;
+}
+
+.fn-center {
+  justify-content: center !important;
+}

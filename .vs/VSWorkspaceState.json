@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\pages",
+    "\\src\\app\\pages\\manage-inventory",
+    "\\src\\app\\pages\\manage-inventory\\inventory-request"
+  ],
+  "SelectedNode": "\\src\\app\\pages\\manage-inventory\\inventory-request",
+  "PreviewInSolutionExplorer": false
+}

@@ -1,0 +1,16 @@
+<div class="common-bg">
+
+    <nz-row class="mb-12" nzAlign="middle" nzGutter="12">
+        <nz-col nzXs="24" nzSm="24" nzMd="8" nzLg="6" nzXl="5">
+            <nz-date-picker style="width: 100%" [ngModel]="endDate" (ngModelChange)="endDate = $event"
+                [nzPlaceHolder]="'end_date' | translate">
+            </nz-date-picker>
+        </nz-col>
+
+        <nz-col nzXs="24" nzSm="24" nzMd="4" nzLg="3" nzXl="2">
+            <button nz-button nzType="primary" (click)="searchByDate()">Tìm kiếm</button>
+        </nz-col>
+    </nz-row>
+
+
+</div>

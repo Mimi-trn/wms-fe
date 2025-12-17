@@ -1,0 +1,8 @@
+.row-po-table :hover {
+  cursor: pointer;
+}
+
+.required-star {
+  color: red;
+  margin-left: 2px;
+}

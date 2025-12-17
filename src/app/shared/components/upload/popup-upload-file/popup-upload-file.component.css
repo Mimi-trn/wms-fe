@@ -1,0 +1,14 @@
+.link {
+  color: #ff7a00;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.template {
+  text-align: center;
+  position: relative;
+  bottom: 40px;
+}
+
+.linkdata {
+  bottom: 70px;
+}

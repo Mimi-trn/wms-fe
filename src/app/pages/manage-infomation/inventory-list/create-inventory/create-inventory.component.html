@@ -1,0 +1,51 @@
+<nz-row nzGutter="24">
+  <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12" nzXXl="12">
+    <nz-row>
+      <nz-col nzSpan="24">
+        {{ "manage.warehouse.name" | translate }}
+        <span class="error-span">*</span>
+      </nz-col>
+      <nz-col nzSpan="24">
+        <nz-input-group [nzSuffix]="clearWarehouseName">
+          <input placeholder="Nhập tên kho" type="text" nz-input [(ngModel)]="data.warehouseName" />
+        </nz-input-group>
+        <ng-template #clearWarehouseName>
+          <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="data.warehouseName"
+            (click)="data.warehouseName = ''"></span>
+        </ng-template>
+      </nz-col>
+    </nz-row>
+    <nz-row *ngIf="!data.warehouseName.trim()" class="error-span">Bạn chưa nhâp tên kho</nz-row>
+  </nz-col>
+
+  <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12" nzXXl="12">
+    <nz-row>
+      <nz-col nzSpan="24">
+        {{ "manage.warehouse.desc" | translate }}
+      </nz-col>
+      <nz-col nzSpan="24">
+        <nz-input-group [nzSuffix]="inputClearNote" class="ant-input-affix-wrapper-textarea-with-clear-btn">
+          <textarea rows="3" nz-input [(ngModel)]="data.description" placeholder="Nhập mô tả kho"></textarea>
+        </nz-input-group>
+        <ng-template #inputClearNote>
+          <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="data.description"
+            (click)="data.description = null"></span>
+        </ng-template>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+</nz-row>
+<nz-divider></nz-divider>
+<nz-row nzJustify="end" nzGutter="24">
+  <nz-col>
+    <app-button (btnClick)="onHandleCancel()" [className]="'common-btn-close'" [title]="'btn.cancel'">
+    </app-button>
+  </nz-col>
+  <nz-col>
+    <app-button (btnClick)="onHandleSave()" [title]="'btn.add'"> </app-button>
+  </nz-col>
+</nz-row>
+
+<app-popup-cancel [isVisible]="isVisibleCancel" (cancel)="onHandleCancelPopup($event)"
+  (isVisibleChange)="onHandleConfirmPopup($event)">
+</app-popup-cancel>

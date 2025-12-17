@@ -1,0 +1,11 @@
+::ng-deep .nz-table-hide-scrollbar { 
+    scrollbar-color: unset !important; 
+} 
+
+::ng-deep .ant-table.ant-table-small .nz-table-hide-scrollbar { 
+scrollbar-color: unset !important; 
+} 
+
+::ng-deep .ant-table-header { 
+scrollbar-color: unset !important; 
+}

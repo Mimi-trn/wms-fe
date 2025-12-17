@@ -1,0 +1,370 @@
+<div style="display: block; border: 1px solid #ddd" class="common-bg">
+  <nz-row nzAlign="middle" nzJustify="end" nzGutter="12" class="mb-12">
+    <nz-col>
+      <nz-row nzJustify="end">
+        <app-button
+          [title]="'add.new'"
+          [buttonType]="'text'"
+          [iconType]="'plus-circle'"
+          [iconTheme]="'outline'"
+          [tooltipTitle]="'sidebar.barcodeItem.createQR.name' | translate"
+          (btnClick)="onHandleCreateNew()"
+        ></app-button>
+      </nz-row>
+    </nz-col>
+    <nz-col>
+      <button
+        nz-button
+        nzType="text"
+        class="p-0"
+        nz-tooltip
+        nz-dropdown
+        [nzDropdownMenu]="configColumns"
+      >
+        <img src="./assets/image/addColumn.svg" alt="" />
+        <nz-dropdown-menu #configColumns="nzDropdownMenu">
+          <div
+            style="
+              background-color: white;
+              padding: 8px 12px;
+              border: 1px solid #ccc;
+            "
+          >
+            <ng-container>
+              <label
+                nz-checkbox
+                [(ngModel)]="allChecked"
+                (ngModelChange)="updateAllChecked()"
+                [nzIndeterminate]="indeterminate"
+              >
+                Tất cả
+              </label>
+              <br />
+            </ng-container>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <label
+                [(ngModel)]="column.check"
+                nz-checkbox
+                (ngModelChange)="onClickCheckBox()"
+                style="margin-top: 8px"
+                >{{ column.keyTitle | translate }}</label
+              >
+              <br />
+            </ng-container>
+          </div>
+        </nz-dropdown-menu>
+      </button>
+    </nz-col>
+  </nz-row>
+  <nz-table
+    nzBordered
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+    [nzScroll]="{ x: 'auto', y: '400px' }"
+    [nzData]="datas"
+    #table
+    nzSize="small"
+  >
+    <thead>
+      <tr>
+        <th nzWidth="50px" nzAlign="center">STT</th>
+        <ng-container *ngFor="let column of columns; let i = index">
+          <ng-container *ngIf="column.check">
+            <th
+              nz-resizable
+              [nzWidth]="column.width"
+              (nzResize)="onResize($event, i)"
+              [nzMaxWidth]="500"
+              [nzMinWidth]="100"
+            >
+              <div class="editable-cell">
+                {{ column.keyTitle | translate }}
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </div>
+              <span
+                *ngIf="column.sortOrder == ''"
+                style="
+                  float: right;
+                  position: absolute;
+                  bottom: 12px;
+                  right: 10px;
+                  cursor: pointer;
+                "
+                nz-tooltip="Sắp xếp giảm dần"
+                nz-icon
+                nzType="swap"
+                [nzRotate]="90"
+                nzTheme="outline"
+                (click)="customSortFunction(column)"
+              ></span>
+              <span
+                *ngIf="column.sortOrder == 'descend'"
+                style="
+                  float: right;
+                  position: absolute;
+                  bottom: 12px;
+                  right: 10px;
+                  cursor: pointer;
+                "
+                nz-tooltip="Sắp xếp tăng dần"
+                nz-icon
+                nzType="arrow-down"
+                nzTheme="outline"
+                (click)="customSortFunction(column)"
+              ></span>
+              <span
+                *ngIf="column.sortOrder == 'ascend'"
+                style="
+                  float: right;
+                  position: absolute;
+                  bottom: 12px;
+                  right: 10px;
+                  cursor: pointer;
+                "
+                nz-tooltip="Sắp xếp giảm dần"
+                nz-icon
+                nzType="arrow-up"
+                nzTheme="outline"
+                (click)="customSortFunction(column)"
+              ></span>
+            </th>
+          </ng-container>
+        </ng-container>
+        <th nzWidth="100px" nzAlign="center">QR code</th>
+        <th nzWidth="120px" nzAlign="center">
+          {{ "table.status" | translate }}
+        </th>
+        <th nzWidth="100px" nzAlign="center">
+          {{ "table.action" | translate }}
+        </th>
+      </tr>
+    </thead>
+    <tbody [class]="datas.length > 0 ? 'striped-tr' : ''">
+      <!-- <tr>
+        <td></td>
+        <ng-container *ngFor="let column of columns; let i = index">
+          <ng-container *ngIf="
+              column.check &&
+              column.keyName != 'itemQuantity' &&
+              column.keyName != 'packageQuantity'
+            ">
+            <td>
+              <nz-input-group
+                nzSearch
+                [nzPrefix]="prefixInput"
+                [nzSuffix]="suffixInput"
+              >
+                <input
+                  type="text"
+                  nz-input
+                  [(ngModel)]="dataFilter[column.keyName]"
+                />
+              </nz-input-group>
+              <ng-template #prefixInput>
+                <span
+                  (click)="filterData()"
+                  class="search-click"
+                  nz-icon
+                  nzType="search"
+                  style="color: #d9d9d9"
+                ></span>
+              </ng-template>
+              <ng-template #suffixInput>
+                <span
+                  nz-icon
+                  class="ant-input-clear-icon"
+                  nzTheme="fill"
+                  nzType="close-circle"
+                  *ngIf="dataFilter[column.keyName]"
+                  (click)="dataFilter[column.keyName] = ''"
+                ></span>
+              </ng-template>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'productCode'">
+            <td>
+              <input
+                [disabled]="true"
+                type="text"
+                nz-input
+                [(ngModel)]="productFromParent[column.keyName]"
+              />
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'itemQuantity'">
+            <td nzAlign="right">
+              <b>{{ countItemQuantity | number }}</b>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'packageQuantity'">
+            <td nzAlign="right">
+              <b>{{ countPackageQuantity | number }}</b>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'uom'">
+            <td>
+              <nz-select
+                class="select-search"
+                style="width: 100%"
+                [nzAllowClear]="true"
+                nzShowSearch
+                [(ngModel)]="dataFilter[column.keyName]"
+                (ngModelChange)="filterData()"
+                nzPlaceHolder="{{ 'all_select' | translate }}"
+              >
+              <nz-option
+              *ngFor="let item of listUoM"
+              [nzValue]="item.paramValue"
+              [nzLabel]="item.paramDesc"
+            ></nz-option>
+              </nz-select>
+            </td>
+          </ng-container>
+        </ng-container>
+        <td></td>
+      </tr> -->
+      <ng-container *ngFor="let row of table.data; let i = index">
+        <tr>
+          <td nzAlign="center">{{ i + 1 }}</td>
+          <ng-container *ngFor="let column of columns; let j = index">
+            <ng-container *ngIf="column.check">
+              <td
+                *ngIf="
+                  column.keyName !== 'itemQuantity' &&
+                  column.keyName !== 'packageQuantity'
+                "
+              >
+                {{ row[column.keyName] }}
+              </td>
+              <td *ngIf="column.keyName == 'itemQuantity'" nzAlign="right">
+                {{ row["itemQuantity"] | number }}
+              </td>
+              <td *ngIf="column.keyName == 'packageQuantity'" nzAlign="right">
+                {{ row["packageQuantity"] | number }}
+              </td>
+            </ng-container>
+          </ng-container>
+          <td nzAlign="center">
+            <img
+              style="cursor: pointer"
+              src="./assets/image/qrCode.svg"
+              alt=""
+              (click)="onHandleReadQR(row)"
+              [nz-tooltip]="'sidebar.barcodeItem.readQR.name' | translate"
+            />
+          </td>
+          <td nzAlign="center">
+            <div [ngSwitch]="row.status">
+              <div
+                class="border-element bordered-element__status_9"
+                *ngSwitchCase="'1'"
+              >
+                <span>Chưa có vị trí</span>
+              </div>
+              <div
+                class="border-element bordered-element__status_1"
+                *ngSwitchCase="'2'"
+              >
+                <span>Đã có vị trí</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex a-items-center j-content-center">
+              <app-button
+                [iconTheme]="'fill'"
+                [iconType]="'info-circle'"
+                [buttonType]="'text'"
+                (btnClick)="onHandleRead(row)"
+              >
+              </app-button>
+              <app-button
+                *ngIf="row.status == 1"
+                [iconTheme]="'fill'"
+                [iconType]="'delete'"
+                [buttonType]="'text'"
+                (btnClick)="onHandleDelete(row)"
+              >
+              </app-button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <nz-row
+    *ngIf="total"
+    nzGutter="24"
+    nzAlign="middle"
+    nzJustify="center"
+    class="mt-12"
+  >
+    <div nz-col nzSpan="24">
+      <app-pagination
+        [currentPage]="page"
+        [currentSize]="per_page"
+        [total]="total"
+        (emitPage)="pagination($event)"
+      ></app-pagination>
+    </div>
+  </nz-row>
+</div>
+
+<app-confirm-delete
+  [isVisible]="visibleConfirmDelete"
+  [title]="'Xóa kiện hàng'"
+  [content]="'thông tin kiện hàng sẽ bị xóa khỏi hàng hóa'"
+  [nameData]="'kiện hàng này'"
+  (hidePopup)="hidePopupDelete($event)"
+  (confirmDelete)="confirmDelete($event)"
+></app-confirm-delete>
+
+<nz-modal
+  nzWidth="1000px"
+  [(nzVisible)]="visibleCreate"
+  [nzFooter]="null"
+  (nzOnCancel)="onHandleCancelCreate()"
+  [nzContent]="showContentCreate"
+  [nzTitle]="showTitleCreate"
+>
+  <ng-template #showTitleCreate>
+    <div class="d-flex">
+      <img src="./assets/image/modalInfor.svg" alt="" />
+      <h2 class="m-0 ml-24">
+        {{ "sidebar.barcodeItem.createQR.name" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showContentCreate>
+    <app-create-qr-code
+      [product]="productFromParent"
+      (childOut)="onHandleCloseCreate($event)"
+    ></app-create-qr-code>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  nzWidth="1000px"
+  [(nzVisible)]="visibleRead"
+  [nzFooter]="null"
+  (nzOnCancel)="onHandleCancelRead()"
+  [nzContent]="showContentRead"
+  [nzTitle]="showTitleRead"
+>
+  <ng-template #showTitleRead>
+    <div class="d-flex">
+      <img src="./assets/image/modalInfor.svg" alt="" />
+      <h2 class="m-0 ml-24">
+        {{ "sidebar.barcodeItem.readQR.name" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showContentRead>
+    <app-read-qr-code
+      [product]="dataRead"
+      (childOut)="onHandleClose($event)"
+    ></app-read-qr-code>
+  </ng-template>
+</nz-modal>

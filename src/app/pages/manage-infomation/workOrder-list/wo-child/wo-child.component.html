@@ -1,0 +1,403 @@
+<nz-row nzAlign="middle" nzJustify="space-between" nzGutter="12" class="mb-12">
+  <nz-col>
+    <h2 class="m-0">
+      {{ "sidebar.information.child.listWorkOrder.list.child.lot" | translate }}
+    </h2>
+  </nz-col>
+  <nz-col>
+    <button
+      nz-button
+      nzType="text"
+      class="p-0"
+      nz-tooltip
+      nz-popover
+      [nzPopoverContent]="configColumns"
+      nzPopoverPlacement="left"
+    >
+      <img src="./assets/image/addColumn.svg" alt="" />
+      <ng-template #configColumns>
+        <div>
+          <ng-container>
+            <label
+              class="mb-4"
+              nz-checkbox
+              [(ngModel)]="allChecked"
+              (ngModelChange)="onHandleUpdateAllChecked()"
+              [nzIndeterminate]="indeterminate"
+            >
+              Tất cả
+            </label>
+            <br />
+          </ng-container>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <label
+              class="mb-4"
+              [(ngModel)]="column.check"
+              nz-checkbox
+              (ngModelChange)="onHandleClickCheckBox()"
+              >{{ column.keyTitle | translate }}</label
+            >
+            <br />
+          </ng-container>
+        </div>
+      </ng-template>
+    </button>
+  </nz-col>
+</nz-row>
+
+<nz-table
+  class="w-100"
+  nzBordered
+  nzFrontPagination="false"
+  nzShowPagination="false"
+  nzSize="small"
+  [nzData]="listWo"
+  #dataWo
+  [nzScroll]="{ x: 'auto', y: '300px' }"
+>
+  <thead>
+    <tr>
+      <ng-container *ngFor="let column of columns; let i = index">
+        <ng-container *ngIf="column.check">
+          <th
+            nz-resizable
+            [nzWidth]="column.width"
+            (nzResize)="onResize($event, i)"
+            [nzMaxWidth]="500"
+            [nzMinWidth]="100"
+            style="cursor: pointer"
+            (click)="customSortFunction(column)"
+          >
+            <div class="editable-cell">
+              {{ column.keyTitle | translate }}
+              <nz-resize-handle nzDirection="right">
+                <div class="resize-trigger"></div>
+              </nz-resize-handle>
+            </div>
+            <span
+              *ngIf="column.count == 0"
+              style="
+                float: right;
+                position: absolute;
+                bottom: 12px;
+                right: 10px;
+                cursor: pointer;
+              "
+              nz-tooltip="Sắp xếp giảm dần"
+              nz-icon
+              nzType="swap"
+              [nzRotate]="90"
+              nzTheme="outline"
+            ></span>
+            <span
+              *ngIf="column.count > 0 && column.sortOrder == 'DESC'"
+              style="
+                float: right;
+                position: absolute;
+                bottom: 12px;
+                right: 10px;
+                cursor: pointer;
+              "
+              nz-tooltip="Sắp xếp tăng dần"
+              nz-icon
+              nzType="arrow-down"
+              nzTheme="outline"
+            ></span>
+            <span
+              *ngIf="column.count > 0 && column.sortOrder == 'ASC'"
+              style="
+                float: right;
+                position: absolute;
+                bottom: 12px;
+                right: 10px;
+                cursor: pointer;
+              "
+              nz-tooltip="Sắp xếp giảm dần"
+              nz-icon
+              nzType="arrow-up"
+              nzTheme="outline"
+            ></span>
+          </th>
+        </ng-container>
+      </ng-container>
+      <th nzWidth="100px" nzAlign="center" nzRight>
+        {{ "table.action" | translate }}
+      </th>
+    </tr>
+  </thead>
+  <tbody [class]="listWo.length == 0 ? '' : 'striped-tr'">
+    <tr>
+      <ng-container *ngFor="let column of columns">
+        <ng-container
+          *ngIf="
+            column.check &&
+            column.keyName != 'startDate' &&
+            column.keyName != 'endDate' &&
+            column.keyName != 'lotNumber' &&
+            column.keyName != 'updatedAt' &&
+            column.keyName != 'deliveryDate' &&
+            column.keyName != 'createDate' &&
+            column.keyName != 'totalQuantity' &&
+            column.keyName != 'compensationQuantity' &&
+            column.keyName != 'completedQuantity' &&
+            column.keyName != 'openQuantity' &&
+            column.keyName != 'status'
+          "
+        >
+          <td>
+            <nz-input-group
+              nzSearch
+              [nzPrefix]="prefixKeyName"
+              [nzSuffix]="suffixKeyName"
+            >
+              <input
+                type="text"
+                nz-input
+                [(ngModel)]="filterWo[column.keyName]"
+                (keyup)="onHandleEnterSearch($event)"
+              />
+            </nz-input-group>
+            <ng-template #prefixKeyName>
+              <span
+                (click)="onHandleClickSearch()"
+                class="search-click"
+                nz-icon
+                nzType="search"
+                style="color: #d9d9d9"
+              ></span>
+            </ng-template>
+            <ng-template #suffixKeyName>
+              <span
+                nz-icon
+                class="ant-input-clear-icon"
+                nzTheme="fill"
+                nzType="close-circle"
+                *ngIf="filterWo[column.keyName]"
+                (click)="onHandleClearInput(column.keyName)"
+              ></span>
+            </ng-template>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'lotNumber'">
+          <td nzAlign="right"></td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'totalQuantity'">
+          <td nzAlign="right">
+            <b> {{ totalTotalQuantity | number }} </b>
+          </td>
+        </ng-container>
+        <ng-container
+          *ngIf="column.check && column.keyName == 'compensationQuantity'"
+        >
+          <td nzAlign="right">
+            <b>{{ totalCompensationQuantity | number }}</b>
+          </td>
+        </ng-container>
+        <ng-container
+          *ngIf="column.check && column.keyName == 'completedQuantity'"
+        >
+          <td nzAlign="right">
+            <b> {{ totalCompletedQuantity | number }} </b>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'openQuantity'">
+          <td nzAlign="right">
+            <b> {{ totalOpenQuantity | number }} </b>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'deliveryDate'">
+          <td>
+            <nz-range-picker
+              [(ngModel)]="filterWo[column.keyName]"
+              (ngModelChange)="onHandleClickSearch()"
+              [nzPlaceHolder]="[
+                'start_date' | translate,
+                'end_date' | translate
+              ]"
+            ></nz-range-picker>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'startDate'">
+          <td>
+            <nz-range-picker
+              [(ngModel)]="filterWo[column.keyName]"
+              (ngModelChange)="onHandleClickSearch()"
+              [nzPlaceHolder]="[
+                'start_date' | translate,
+                'end_date' | translate
+              ]"
+            ></nz-range-picker>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'endDate'">
+          <td>
+            <nz-range-picker
+              [(ngModel)]="filterWo[column.keyName]"
+              (ngModelChange)="onHandleClickSearch()"
+              [nzPlaceHolder]="[
+                'start_date' | translate,
+                'end_date' | translate
+              ]"
+            ></nz-range-picker>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'createDate'">
+          <td>
+            <nz-range-picker
+              [(ngModel)]="filterWo[column.keyName]"
+              (ngModelChange)="onHandleClickSearch()"
+              [nzPlaceHolder]="[
+                'start_date' | translate,
+                'end_date' | translate
+              ]"
+            ></nz-range-picker>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'updatedAt'">
+          <td>
+            <nz-range-picker
+              [(ngModel)]="filterWo[column.keyName]"
+              (ngModelChange)="onHandleClickSearch()"
+              [nzPlaceHolder]="[
+                'start_date' | translate,
+                'end_date' | translate
+              ]"
+            ></nz-range-picker>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="column.check && column.keyName == 'status'">
+          <td>
+            <nz-select
+              class="select-search"
+              style="width: 100%"
+              [nzAllowClear]="true"
+              nzPlaceHolder="{{ 'all_select' | translate }}"
+              [(ngModel)]="filterWo[column.keyName]"
+              (ngModelChange)="onHandleClickSearch()"
+            >
+              <nz-option
+                *ngFor="let item of listStatus"
+                [nzValue]="item.value"
+                [nzLabel]="item.text"
+              ></nz-option>
+            </nz-select>
+          </td>
+        </ng-container>
+      </ng-container>
+      <td nzRight></td>
+    </tr>
+    <ng-container *ngFor="let row of dataWo.data">
+      <tr>
+        <ng-container *ngFor="let column of columns">
+          <ng-container
+            *ngIf="
+              column.check &&
+              column.keyName != 'lotNumber' &&
+              column.keyName != 'totalQuantity' &&
+              column.keyName != 'compensationQuantity' &&
+              column.keyName != 'completedQuantity' &&
+              column.keyName != 'openQuantity' &&
+              column.keyName != 'startDate' &&
+              column.keyName != 'endDate' &&
+              column.keyName != 'createDate' &&
+              column.keyName != 'updatedAt' &&
+              column.keyName != 'deliveryDate' &&
+              column.keyName != 'status'
+            "
+          >
+            <td>
+              {{ row[column.keyName] }}
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'lotNumber'">
+            <td nzAlign="right">{{ row["lotNumber"] }}</td>
+          </ng-container>
+          <ng-container
+            *ngIf="column.check && column.keyName == 'totalQuantity'"
+          >
+            <td nzAlign="right">{{ row["totalQuantity"] }}</td>
+          </ng-container>
+          <ng-container
+            *ngIf="column.check && column.keyName == 'compensationQuantity'"
+          >
+            <td nzAlign="right">{{ row["compensationQuantity"] }}</td>
+          </ng-container>
+          <ng-container
+            *ngIf="column.check && column.keyName == 'completedQuantity'"
+          >
+            <td nzAlign="right">{{ row["completedQuantity"] }}</td>
+          </ng-container>
+          <ng-container
+            *ngIf="column.check && column.keyName == 'openQuantity'"
+          >
+            <td nzAlign="right">{{ row["openQuantity"] }}</td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'deliveryDate'">
+            <td nzAlign="right">
+              {{ row["deliveryDate"] | date : "dd/MM/YYYY" }}
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'startDate'">
+            <td nzAlign="right">
+              {{ row["startDate"] | date : "dd/MM/YYYY" }}
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'endDate'">
+            <td nzAlign="right">
+              {{ row["endDate"] | date : "dd/MM/YYYY" }}
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'createDate'">
+            <td nzAlign="right">
+              {{ row["createDate"] | date : "dd/MM/YYYY" }}
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'updatedAt'">
+            <td nzAlign="right">
+              {{ row["updatedAt"] | date : "dd/MM/YYYY" }}
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'status'">
+            <td nzAlign="center">
+              <div [ngSwitch]="row[column.keyName]">
+                <div class="wo_0" *ngSwitchCase="0">
+                  {{ "Chờ lĩnh NVL" | translate }}
+                </div>
+                <div class="wo_1" *ngSwitchCase="1">
+                  {{ "Chờ sản xuất" | translate }}
+                </div>
+                <div class="wo_2" *ngSwitchCase="2">
+                  {{ "Đang sản xuất" | translate }}
+                </div>
+                <div class="wo_3" *ngSwitchCase="3">
+                  {{ "Đã dừng" | translate }}
+                </div>
+                <div class="wo_4" *ngSwitchCase="4">
+                  {{ "Hoàn thành" | translate }}
+                </div>
+                <div class="wo_5" *ngSwitchCase="5">
+                  {{ "Đã đóng" | translate }}
+                </div>
+              </div>
+            </td>
+          </ng-container>
+        </ng-container>
+        <td nzAlign="center" nzRight>
+          <div class="d-flex j-content-evenly">
+            <app-button
+              [iconType]="'plus-circle'"
+              [iconTheme]="'fill'"
+              [buttonType]="'text'"
+              [isDisable]="row.status == 0 || row.status == 5 ? true : false"
+              nz-tooltip="{{
+                'sidebar.information.child.listWorkOrder.list.btn.createIQC'
+                  | translate
+              }}"
+              (btnClick)="onHandleNewRequestIQC(row)"
+            ></app-button>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>

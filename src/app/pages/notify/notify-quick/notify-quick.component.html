@@ -1,0 +1,129 @@
+<div
+  class="p-24"
+  style="
+    background: #838383;
+    color: #fff;
+    width: 500px;
+    height: 600px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  "
+>
+  <nz-row nzJustify="space-between" nzAlign="middle">
+    <nz-col>
+      <h2 class="m-0" style="color: #fff">Thông báo ({{ count }})</h2>
+    </nz-col>
+    <nz-col>
+      <!-- <app-button
+        [iconType]="'setting'"
+        [buttonType]="'text'"
+        [iconTheme]="'outline'"
+        (click)="openReadAll()"
+      >
+      </app-button> -->
+      <button
+        nz-button
+        nzType="text"
+        (click)="openReadAll()"
+        [ngStyle]="{ color: openRead ? '#FF7A00' : '#fff' }"
+      >
+        <span
+          style="font-size: 16px"
+          nz-icon
+          nzType="setting"
+          nzTheme="outline"
+        ></span>
+      </button>
+    </nz-col>
+  </nz-row>
+  <nz-row
+    *ngIf="openRead"
+    class="mt-16"
+    [style]="'color: #fff'"
+    (click)="onHandleMarkAllRead()"
+  >
+    <nz-col class="mr-8 mark__all-read">
+      <span nz-icon nzType="mail" nzTheme="outline"></span>
+    </nz-col>
+    <nz-col class="mark__all-read">
+      <span>Đánh dấu đã đọc tất cả</span>
+    </nz-col>
+  </nz-row>
+
+  <div class="p-12 box">
+    <ng-container *ngFor="let item of listData">
+      <nz-row class="mb-12 mark__see-notify" (click)="onHandleSeeNotify(item)">
+        <div class="pt-12 pb-12 pr-16 pl-16 box-notify">
+          <nz-row nzGutter="8" nzJustify="space-between">
+            <nz-col nzSpan="2" style="margin-top: 2px">
+              <nz-row nzJustify="center">
+                <div
+                  *ngIf="!item.isRead"
+                  style="
+                    background: #9dedff;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                  "
+                ></div>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="16">
+              <nz-row nzGutter="24">
+                <nz-col nzSpan="24">
+                  <b>{{ item.heading }}</b>
+                </nz-col>
+                <nz-col nzSpan="24">
+                  <div
+                    class="m-0 ellipsis-container"
+                    [innerHTML]="item.message"
+                  ></div>
+                </nz-col>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="6">
+              <nz-row>
+                <nz-col nzSpan="24">
+                  <nz-row nzJustify="end">
+                    {{ item.createdAtTime }}
+                  </nz-row>
+                </nz-col>
+                <nz-col nzSpan="24">
+                  <nz-row nzJustify="end">
+                    {{ item.createdAtDate }}
+                  </nz-row>
+                </nz-col>
+              </nz-row>
+            </nz-col>
+          </nz-row>
+        </div>
+      </nz-row>
+    </ng-container>
+  </div>
+  <nz-row nzJustify="end" class="mt-16">
+    <nz-col>
+      <button
+        nz-button
+        (click)="onHandleClickSeeMore()"
+        style="
+          background-color: #fff;
+          color: #ff7a00;
+          border: none;
+          border-radius: 6px;
+        "
+      >
+        <span>Xem thêm</span>
+        <span nz-icon nzType="select" [nzRotate]="180"> </span>
+      </button>
+      <!-- <app-button
+        [buttonType]="'primary'"
+        [title]="'Xem thêm'"
+        [iconType]="'select'"
+        (btnClick)="onHandleClickSeeMore()"
+      >
+      </app-button> -->
+    </nz-col>
+  </nz-row>
+</div>

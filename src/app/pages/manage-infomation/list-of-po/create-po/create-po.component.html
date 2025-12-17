@@ -1,0 +1,793 @@
+<script src="create-po.component.ts"></script>
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb nz-col [nzSpan]="23" *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row>
+    <h2 class="m-0">{{ "menu.manage.po.new" | translate }}</h2>
+  </nz-row>
+  <nz-row nzAlign="top" nzJustify="start" [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }">
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.poCode" | translate
+          }}<span class="ml-4" nz-icon nzType="question-circle" nzTheme="outline"
+            nz-tooltip="Nếu không nhập mã PO, hệ thống tự sinh "></span></nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group [nzSuffix]="inputClearPoCode">
+            <input placeholder="Nhập mã PO" type="text" nz-input [(ngModel)]="dataInformation.poCode" />
+          </nz-input-group>
+          <ng-template #inputClearPoCode>
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+              *ngIf="dataInformation.poCode" (click)="dataInformation.poCode = ''"></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.source" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="-- Chọn --" [(ngModel)]="dataInformation.source"
+            class="w-100">
+            <nz-option *ngFor="let option of listSource" [nzValue]="option.value" [nzLabel]="option.text"></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.source">
+          <span class="error-span">Bạn chưa chọn nguồn</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Nhà cung cấp" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="-- Chọn --" [(ngModel)]="dataInformation.vendorCode"
+            class="w-100">
+            <nz-option *ngFor="let option of listVendor" [nzValue]="option.vendorCode"
+              [nzLabel]="option.vendorName"></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.source">
+          <span class="error-span">Bạn chưa nhà cung</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.deliveryAt" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker nzPlaceHolder="dd/MM/yyyy" class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.deliveryAt"></nz-date-picker>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.deliveryAt">
+          <span class="error-span">Bạn chưa chọn ngày giao hàng</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.currency" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+
+          <nz-select nzShowSearch nzAllowClear [nzDropdownRender]="renderTemplate" class="w-100"
+            nzPlaceHolder="-- Chọn --" [(ngModel)]="dataInformation.currency" (ngModelChange)="changeCurrency($event)">
+            <nz-option *ngFor="let item of listCurrency" [nzLabel]="item.text" [nzValue]="item.value"></nz-option>
+          </nz-select>
+          <ng-template #renderTemplate>
+            <nz-divider></nz-divider>
+            <div class="container">
+              <a class="add-item" (click)="addCurrency()">
+                <span nz-icon nzType="plus"></span>
+                Thêm mới đơn vị tiền tệ
+              </a>
+            </div>
+          </ng-template>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.currency">
+          <span class="error-span">Bạn chưa chọn đơn vị tiền tệ</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.exchangeRate" | translate }}
+          <span class="error-span">*</span>
+          <span class="ml-4" nz-icon nzType="question-circle" nzTheme="outline"
+            nz-tooltip="Tỷ giá chuyển đổi từ đơn vị tiền tệ nhà cung cấp sang đơn vị tiền tệ VNĐ. Ví dụ: 1 USD = 23,000 VNĐ."></span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group [nzSuffix]="inputClearExchangeRate">
+            <input nzPlaceHolder="Nhập tỷ giá chuyển đổi" min="0" type="number" nz-input
+              [(ngModel)]="dataInformation.exchangeRate" />
+          </nz-input-group>
+          <ng-template #inputClearExchangeRate>
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+              *ngIf="dataInformation.exchangeRate" (click)="dataInformation.exchangeRate = 1"></span>
+          </ng-template>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="dataInformation.exchangeRate <= 0">
+          <span class="error-span"> Tỷ giá chuyển đổi phải lớn hơn 0 </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col *ngIf="dataDarft.poCode !== undefined" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8"
+      class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.createBy" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <input [disabled]="true" nzPlaceHolder="Nhập người tạo" type="text" nz-input
+            [(ngModel)]="dataInformation.createdBy" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col *ngIf="dataDarft.poCode !== undefined" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8"
+      class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.createAt" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [disabled]="true" nzPlaceHolder="dd/MM/yyyy" class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.createdAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col *ngIf="dataDarft.poCode !== undefined" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8"
+      class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "menu.manage.po.updateAt" | translate }}
+          <span class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [disabled]="true" nzPlaceHolder="dd/MM/yyyy" class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.updatedAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "table.note" | translate }} </nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group [nzSuffix]="inputClearNote" class="ant-input-affix-wrapper-textarea-with-clear-btn">
+            <textarea rows="3" nz-input [(ngModel)]="dataInformation.note"
+              placeholder="Nhập nội dung ghi chú"></textarea>
+          </nz-input-group>
+          <ng-template #inputClearNote>
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="dataInformation.note"
+              (click)="dataInformation.note = null"></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+
+<div class="common-bg mt-24">
+  <nz-row class="mb-12">
+    <h2 class="m-0">{{ "ui.receipt.GRN.create.list_item" | translate }}</h2>
+  </nz-row>
+  <nz-row class="mb-12">
+    <app-radio-group-button [listOfButton]="listOfRadioButton"
+      (onChange)="changeSelect($event)"></app-radio-group-button>
+  </nz-row>
+  <nz-row>
+    <nz-col nzSpan="24" *ngIf="choose == 0">
+      <nz-table nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{ y: '500px' }"
+        [nzData]="dataItem" #tableProduct nzSize="small" class="w-100">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <ng-container *ngIf="column.check && column.keyName !== 'amount' && column.keyName !== 'tax'">
+                <th nz-resizable [nzWidth]="column.width" (nzResize)="onResize($event, i)" [nzMaxWidth]="500"
+                  [nzMinWidth]="100">
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+              <ng-container *ngIf="column.check && column.keyName == 'amount'">
+                <th nz-resizable nzBounds="window" nzPreview [nzWidth]="column.width" [nzMaxWidth]="300"
+                  [nzMinWidth]="100" (nzResizeEnd)="onResize($event, column)" nzAlign="center">
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }} (VNĐ)
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+              <ng-container *ngIf="column.check && column.keyName == 'tax'">
+                <th nz-resizable nzBounds="window" nzPreview [nzWidth]="column.width" [nzMaxWidth]="300"
+                  [nzMinWidth]="100" (nzResizeEnd)="onResize($event, column)" nzAlign="center">
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }} (%)
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+            </ng-container>
+            <th nzWidth="100px" nzAlign="center" nzRight>
+              {{ "table.action" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody [class]="dataItem.length > 0 ? 'striped-tr' : ''">
+          <tr>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <ng-container *ngIf="column.check">
+                <td *ngIf="
+                    column.keyName !== 'supplierQuantity' &&
+                    column.keyName !== 'openQuantity' &&
+                    column.keyName !== 'amount'
+                  ">
+                  <nz-input-group [nzPrefix]="preSearch" [nzSuffix]="suffixSearch">
+                    <input type="text" nz-input [(ngModel)]="dataFilter[column.keyName]" />
+                  </nz-input-group>
+                  <ng-template #preSearch>
+                    <span nz-icon nzType="search" style="color: #d9d9d9"></span>
+                  </ng-template>
+                  <ng-template #suffixSearch><span *ngIf="dataFilter[column.keyName]"
+                      (click)="dataFilter[column.keyName] = ''" nz-icon nzType="close-circle" nzTheme="fill" style="
+                        font-size: 12px;
+                        cursor: pointer;
+                        color: rgb(172, 170, 170);
+                      "></span></ng-template>
+                </td>
+                <td *ngIf="column.keyName == 'supplierQuantity'" nzAlign="right">
+                  <!--                  {{ countSupplierQuantity | number }}-->
+                  <!--                </td>-->
+                <td *ngIf="column.keyName == 'openQuantity'" nzAlign="right">
+                  <!--                  {{ countOpenQuantity | number }}-->
+                </td>
+                <td *ngIf="column.keyName == 'amount'" nzAlign="right">
+                  {{ countAmount | number }}
+                </td>
+              </ng-container>
+            </ng-container>
+            <td nzRight></td>
+          </tr>
+          <tr *ngFor="
+              let row of tableProduct.data
+                | filterPO
+                  : dataFilter.itemCode
+                  : dataFilter.itemName
+                  : dataFilter.supplier
+                  : dataFilter.supplierUom
+                  : dataFilter.uom
+                  : dataFilter.exchangeRate
+                  : dataFilter.discount
+            ">
+            <ng-container *ngFor="let column of columns">
+              <ng-container *ngIf="column.check">
+                <td *ngIf="column.keyName == 'itemCode'">
+                  {{ row["itemCode"] }}
+                </td>
+                <td *ngIf="column.keyName == 'itemName'">
+                  {{ row["itemName"] }}
+                </td>
+                <td *ngIf="column.keyName == 'supplier'">
+                  <ng-template #suffixIconSearch>
+                    <span style="color: #ccc" nz-icon nzType="down"></span>
+                  </ng-template>
+                  <nz-input-group [nzSuffix]="suffixIconSearch">
+                    <input type="text" nz-input [(ngModel)]="row['supplier']" (click)="showPopoverSupplier(row)" />
+                    <span nz-popover nzPopoverTitle="Danh sách nhà cung cấp" nzPopoverTrigger="click"
+                      [nzPopoverContent]="contentTemplateSupplier" nzPopoverPlacement="bottomLeft"
+                      [nzPopoverVisible]="row.showPopover" (nzPopoverVisibleChange)="
+                        popoverVisibleChangeSupplier($event, row)
+                      ">
+                    </span>
+                  </nz-input-group>
+                  <ng-template #contentTemplateSupplier>
+                    <nz-table #rowSelectionTable [nzData]="listVendor" style="width: 900px" [nzScroll]="{ y: '400px' }"
+                      nzBordered [nzFrontPagination]="true" [nzPaginationType]="'small'" nzSize="small">
+                      <thead>
+                        <tr>
+                          <th>
+                            {{
+                            "menu.manage.po.item.supplier.code" | translate
+                            }}
+                          </th>
+                          <th>
+                            {{
+                            "menu.manage.po.item.supplier.name" | translate
+                            }}
+                          </th>
+                          <th>
+                            {{
+                            "menu.manage.po.item.supplier.nameOther"
+                            | translate
+                            }}
+                          </th>
+                          <th>
+                            {{
+                            "menu.manage.po.item.supplier.mail" | translate
+                            }}
+                          </th>
+                          <th>
+                            {{
+                            "menu.manage.po.item.supplier.address" | translate
+                            }}
+                          </th>
+                          <th>
+                            {{
+                            "menu.manage.po.item.supplierUom" | translate
+                            }}
+                          </th>
+
+                        </tr>
+                      </thead>
+        <tbody>
+          <tr>
+            <td>
+              <nz-input-group [nzSuffix]="vendorCode" [nzPrefix]="vendorCodePre">
+                <input type="text" nz-input [(ngModel)]="dataFilterVendor.vendorCode" />
+              </nz-input-group>
+              <ng-template #vendorCodePre>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+              <ng-template #vendorCode>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="dataFilterVendor.vendorCode" (click)="dataFilterVendor.vendorCode = ''"></span>
+              </ng-template>
+            </td>
+            <td>
+              <nz-input-group [nzSuffix]="vendorName" [nzPrefix]="vendorNamePre">
+                <input type="text" nz-input [(ngModel)]="dataFilterVendor.vendorName" />
+              </nz-input-group>
+              <ng-template #vendorNamePre>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+              <ng-template #vendorName>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="dataFilterVendor.vendorName" (click)="dataFilterVendor.vendorName = ''"></span>
+              </ng-template>
+            </td>
+            <td>
+              <nz-input-group [nzSuffix]="otherName" [nzPrefix]="otherNamePre">
+                <input type="text" nz-input [(ngModel)]="dataFilterVendor.otherName" />
+              </nz-input-group>
+              <ng-template #otherNamePre>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+              <ng-template #otherName>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="dataFilterVendor.otherName" (click)="dataFilterVendor.otherName = ''"></span>
+              </ng-template>
+            </td>
+            <td>
+              <nz-input-group [nzSuffix]="email" [nzPrefix]="emailPre">
+                <input type="text" nz-input [(ngModel)]="dataFilterVendor.email" />
+              </nz-input-group>
+              <ng-template #emailPre>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+              <ng-template #email>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="dataFilterVendor.email" (click)="dataFilterVendor.email = ''"></span>
+              </ng-template>
+            </td>
+            <td>
+              <nz-input-group [nzSuffix]="address" [nzPrefix]="addressPre">
+                <input type="text" nz-input [(ngModel)]="dataFilterVendor.address" />
+              </nz-input-group>
+              <ng-template #addressPre>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+              <ng-template #address>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="dataFilterVendor.address" (click)="dataFilterVendor.address = ''"></span>
+              </ng-template>
+            </td>
+            <td>
+              <nz-input-group [nzSuffix]="vendorUnit" [nzPrefix]="vendorUnit">
+                <input type="text" nz-input [(ngModel)]="dataFilterVendor.vendorUnit" />
+              </nz-input-group>
+              <ng-template #vendorNamePre>
+                <span nz-icon nzType="search"></span>
+              </ng-template>
+              <ng-template #vendorUnit>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="dataFilterVendor.vendorUnit" (click)="dataFilterVendor.vendorUnit = ''"></span>
+              </ng-template>
+            </td>
+          </tr>
+          <tr class="click-row" *ngFor="
+                            let data of rowSelectionTable.data
+                              | filterItems
+                                : dataFilterVendor.vendorCode
+                                : dataFilterVendor.vendorName
+                                : dataFilterVendor.otherName
+                                : dataFilterVendor.email
+                                : dataFilterVendor.address
+                          " (click)="chooseRowSupplier(data)" style="cursor: pointer">
+            <td>{{ data.vendorCode }}</td>
+            <td>{{ data.vendorName }}</td>
+            <td>{{ data.otherName }}</td>
+            <td>{{ data.email }}</td>
+            <td>{{ data.address }}</td>
+            <td>{{ data.vendorUnit }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+      </ng-template>
+      </td>
+      <td *ngIf="column.keyName == 'supplierUom'">
+        
+        <nz-select class="w-100" [(ngModel)]="row['supplierUom']" nzAllowClear nzShowSearch>
+          <nz-option *ngFor="let item of listSupplierUom" [nzLabel]="item.text" [nzValue]="item.value">
+          </nz-option>
+        </nz-select>
+      </td>
+      <td *ngIf="column.keyName == 'uom'">
+        {{ row["uom"] }}
+      </td>
+
+      <td *ngIf="column.keyName == 'exchangeRate'">
+        <input type="number" nz-input [(ngModel)]="row['exchangeRate']" placeholder="Nhập tỷ số quy đổi" min="0"
+          (ngModelChange)="onHandleExchangeRate(row)" [disabled]="row['itemCode'] ? false : true" />
+        <div *ngIf="row['exchangeRate'] <= 0">
+          <span class="error-span">
+            Bạn phải nhập tỉ số quy đổi lớn hơn 0
+          </span>
+        </div>
+      </td>
+      <td *ngIf="column.keyName == 'supplierQuantity'">
+        <input type="number" nz-input [(ngModel)]="row['supplierQuantity']" placeholder="Nhập số lượng NCC" min="0"
+          (ngModelChange)="onHandleSupplierQuantity(row)" [disabled]="row['itemCode'] ? false : true" />
+        <div *ngIf="row['supplierQuantity'] <= 0">
+          <span class="error-span">
+            Bạn phải nhập số lượng NCC lớn hơn 0
+          </span>
+        </div>
+      </td>
+      <td *ngIf="column.keyName == 'openQuantity'" nzAlign="right">
+        {{ row["openQuantity"] | number }}
+      </td>
+      <td *ngIf="column.keyName == 'supplierUnitPrice'">
+        <input type="number" nz-input [(ngModel)]="row['supplierUnitPrice']" placeholder="Nhập đơn giá NCC" min="0"
+          (ngModelChange)="onHandleSupplierUnitPrice(row)" [disabled]="row['itemCode'] ? false : true" />
+        <div *ngIf="row['supplierUnitPrice'] <= 0">
+          <span class="error-span">
+            Bạn phải nhập đơn giá NCC lớn hơn 0
+          </span>
+        </div>
+      </td>
+      <td *ngIf="column.keyName == 'discount'">
+        <input type="number" nz-input [(ngModel)]="row['discount']" placeholder="Nhập giảm giá" min="0" max="100"
+          (ngModelChange)="onHandleDiscount(row)" [disabled]="row['itemCode'] ? false : true" />
+        <div *ngIf="row['discount'] < 0">
+          <span class="error-span">
+            Bạn phải nhập giảm giá lớn hơn hoặc bằng 0
+          </span>
+        </div>
+        <div *ngIf="row['discount'] > 100">
+          <span class="error-span">
+            Bạn phải nhập giảm giá nhỏ hơn hoặc bằng 100
+          </span>
+        </div>
+      </td>
+      <td *ngIf="column.keyName == 'tax'" nzAlign="right">
+        <nz-select class="w-100" [(ngModel)]="row['tax']" (ngModelChange)="onHandleTax(row)" nzAllowClear nzShowSearch>
+          <nz-option *ngFor="let item of listTax" [nzLabel]="item.text" [nzValue]="item.value">
+          </nz-option>
+        </nz-select>
+      </td>
+      <td *ngIf="column.keyName == 'amount'" nzAlign="right">
+        {{ row["amount"] | number }}
+      </td>
+
+      </ng-container>
+      </ng-container>
+      <td nzRight nzAlign="center">
+        <app-button [buttonType]="'text'" [iconType]="'delete'" [iconTheme]="'fill'"
+          [tooltipTitle]="'Click here to delete record'" (btnClick)="deleteRecord(row)"></app-button>
+      </td>
+      </tr>
+      </tbody>
+      </nz-table>
+      <nz-row class="mt-24">
+        <nz-col nzSpan="4">
+          <button nz-button (click)="onHandleVisiblePopup()" nzType="primary" nz-popover
+            [nzPopoverTitle]="'Danh sách hàng hóa'" nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate"
+            nzPopoverPlacement="bottomLeft" [nzPopoverVisible]="visiblePopup"
+            (nzPopoverVisibleChange)="changeVisible($event)">
+            <span nz-icon nzType="plus" nzTheme="outline"></span>Thêm hàng hóa
+          </button>
+          <ng-template #contentTemplate>
+            <nz-table #rowSelectionTable [nzData]="listItem" nzShowSizeChanger
+              (nzCurrentPageDataChange)="onCurrentPageDataChange($event)" style="width: 1000px"
+              [nzScroll]="{ y: '400px' }" nzBordered nzFrontPagination="false" nzShowPagination="false" nzSize="small">
+              <thead>
+                <tr>
+                  <th nzWidth="50px" [(nzChecked)]="checked" [nzIndeterminate]="indeterminate"
+                    (nzCheckedChange)="onAllChecked($event)"></th>
+                  <th>
+                    {{ "menu.manage.po.item.itemCode" | translate }}
+                  </th>
+                  <th>
+                    {{ "menu.manage.po.item.itemName" | translate }}
+                  </th>
+                  <th>{{ "menu.manage.po.item.uom" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td>
+                    <nz-input-group [nzSuffix]="productCode" [nzPrefix]="productCodePre">
+                      <input type="text" nz-input [(ngModel)]="filterChildItems.itemCode" />
+                    </nz-input-group>
+                    <ng-template #productCodePre>
+                      <span nz-icon nzType="search" style="color: #d9d9d9"></span>
+                    </ng-template>
+                    <ng-template #productCode>
+                      <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                        *ngIf="filterChildItems.itemCode" (click)="clearFilter('itemCode')"></span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <nz-input-group [nzSuffix]="itemName" [nzPrefix]="itemNamePre">
+                      <input type="text" nz-input [(ngModel)]="filterChildItems.itemName" />
+                    </nz-input-group>
+                    <ng-template #itemNamePre>
+                      <span nz-icon nzType="search" style="color: #d9d9d9"></span>
+                    </ng-template>
+                    <ng-template #itemName>
+                      <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                        *ngIf="filterChildItems.itemName" (click)="clearFilter('itemName')"></span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <nz-input-group [nzSuffix]="uom" [nzPrefix]="uomPre">
+                      <input type="text" nz-input [(ngModel)]="filterChildItems.uom" />
+                    </nz-input-group>
+                    <ng-template #uomPre>
+                      <span nz-icon nzType="search" style="color: #d9d9d9"></span>
+                    </ng-template>
+                    <ng-template #uom>
+                      <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                        *ngIf="filterChildItems.uom" (click)="clearFilter('uom')"></span>
+                    </ng-template>
+                  </td>
+                </tr>
+                <tr *ngFor="let data of rowSelectionTable.data | filterListItem
+                  : filterChildItems.itemCode
+                  : filterChildItems.itemName
+                  : filterChildItems.description
+                  : filterChildItems.uom" style="cursor: pointer"
+                  (click)="onHandleClickRowProduct(data, data.checked)">
+                  <td [nzChecked]="setOfCheckedId.has(data.itemCode)" (nzCheckedChange)="onItemChecked(data, $event)">
+                  </td>
+                  <td>{{ data.itemCode }}</td>
+                  <td>{{ data.itemName }}</td>
+                  <td>{{ data.unit }}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+            <nz-row *ngIf="totalNVL" nzGutter="24" nzAlign="middle" nzJustify="center">
+              <div nz-col nzSpan="24">
+                <app-pagination [currentPage]="pageNVL" [currentSize]="perPageNVL" [total]="totalNVL"
+                  (emitPage)="paginationNVL($event)"></app-pagination>
+              </div>
+            </nz-row>
+          </ng-template>
+        </nz-col>
+        <nz-col nzSpan="20">
+          <nz-row nzGutter="24" nzJustify="end" nzAlign="bottom">
+            <nz-col nzSpan="20">
+              <nz-row nzJustify="end"> Tổng tiền trước giảm giá </nz-row>
+            </nz-col>
+            <nz-col nzSpan="4">
+              <input type="text" nz-input [ngModel]="countAmount | number" [disabled]="true" />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="4"> </nz-col>
+        <nz-col nzSpan="20">
+          <nz-row nzGutter="24" nzJustify="end" nzAlign="bottom" class="mt-12">
+            <nz-col nzSpan="20">
+              <nz-row nzJustify="end">
+                <div>
+                  <div class="d-flex a-items-center j-content-right">
+                    <span class="mr-8">Giảm giá</span>
+                    <input type="number" nz-input [(ngModel)]="discount" (ngModelChange)="onHandleDiscountInput()"
+                      min="0" max="100" style="width: 100px" />
+                    <span class="ml-8">%</span>
+                  </div>
+                  <div>
+                    <span class="error-span" *ngIf="discount < 0">
+                      Bạn phải nhập giảm giá lớn hơn hoặc bằng 0
+                    </span>
+                    <span class="error-span" *ngIf="discount > 100">
+                      Bạn phải nhập giảm giá nhỏ hơn hoặc bằng 100
+                    </span>
+                  </div>
+                </div>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="4">
+              <input type="text" nz-input [ngModel]="countDiscount | number" [disabled]="true" min="0" />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="4"> </nz-col>
+        <nz-col nzSpan="20">
+          <nz-row nzGutter="24" nzJustify="end" nzAlign="bottom" class="mt-12">
+            <nz-col nzSpan="20">
+              <nz-row nzJustify="end">
+                <div>
+                  <div class="d-flex a-items-center j-content-right">
+                    <span class="mr-8">Thuế</span>
+                    <input type="number" nz-input [(ngModel)]="tax" (ngModelChange)="onHandleTaxInput()" min="0"
+                      max="100" style="width: 100px" />
+                    <span class="ml-8">%</span>
+                  </div>
+                  <div>
+                    <span class="error-span" *ngIf="tax < 0">
+                      Bạn phải nhập thuế lớn hơn hoặc bằng 0
+                    </span>
+                    <span class="error-span" *ngIf="tax > 100">
+                      Bạn phải nhập thuế nhỏ hơn hoặc bằng 100
+                    </span>
+                  </div>
+                </div>
+              </nz-row>
+            </nz-col>
+            <nz-col nzSpan="4">
+              <input type="text" nz-input [ngModel]="countTax | number" [disabled]="true" />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="4"> </nz-col>
+        <nz-col nzSpan="20">
+          <nz-row nzGutter="24" nzJustify="end" class="mt-12">
+            <nz-col nzSpan="20">
+              <nz-row nzJustify="end"> Tổng tiền </nz-row>
+            </nz-col>
+            <nz-col nzSpan="4">
+              <input type="text" nz-input [ngModel]="count | number" [disabled]="true" />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col nzSpan="24" *ngIf="choose == 1">
+      <nz-row nzGutter="24">
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8">
+          <nz-row>
+            <nz-col nzSpan="24">{{ "Phương thức vận chuyển" | translate }}
+            </nz-col>
+            <nz-col nzSpan="24">
+              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="-- Chọn --" [(ngModel)]="dataLogistics.transport"
+                class="w-100">
+                <nz-option *ngFor="let option of listTransportation" [nzValue]="option.value"
+                  [nzLabel]="option.text"></nz-option>
+              </nz-select>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8">
+          <nz-row>
+            <nz-col nzSpan="24">{{ "Địa chỉ nhận hàng" | translate }} </nz-col>
+            <nz-col nzSpan="24">
+              <nz-input-group [nzSuffix]="clearDeliveryAddress" class="ant-input-affix-wrapper-textarea-with-clear-btn">
+                <textarea rows="3" nz-input [(ngModel)]="dataLogistics.deliveryAddress"
+                  placeholder="Nhập địa chỉ giao hàng"></textarea>
+              </nz-input-group>
+              <ng-template #clearDeliveryAddress>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="dataLogistics.deliveryAddress" (click)="dataLogistics.deliveryAddress = null"></span>
+              </ng-template>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8">
+          <nz-col nzSpan="24">{{ "Địa chỉ nhà cung cấp" | translate }}</nz-col>
+          <nz-col nzSpan="24">
+            <textarea rows="3" nz-input [(ngModel)]="dataLogistics.vendorAddress"
+              placeholder="Nhập địa chỉ nhà cung cấp"></textarea>
+          </nz-col>
+        </nz-col>
+
+      </nz-row>
+    </nz-col>
+  </nz-row>
+
+  <nz-row nzAlign="top" nzJustify="end" nzGutter="24" class="mt-24">
+    <nz-col>
+      <app-button [className]="'w-100 common-btn-close '" [title]="'btn.close'" [buttonType]="'primary'"
+        [tooltipTitle]="'Click here to cancel '" (btnClick)="close()"></app-button>
+    </nz-col>
+    
+    <nz-col>
+      <app-button [className]="'w-100 '" [title]="'btn.save'" [buttonType]="'primary'"
+        [tooltipTitle]="'Click here to send data'" (btnClick)="save()"></app-button>
+    </nz-col>
+  </nz-row>
+</div>
+
+<nz-modal nzWidth="800px" [(nzVisible)]="visibleAddCurrency" [nzFooter]="null" (nzOnCancel)="onClickCancel()"
+  [nzContent]="showAddNewCurrency" [nzTitle]="showAddNewTitleCurency">
+  <ng-template #showAddNewTitleCurency>
+    <div class="d-flex">
+      <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_1180_25964)">
+          <path
+            d="M21.6 0.5H2.4C1.08 0.5 0 1.58 0 2.9V24.5L4.8 19.7H21.6C22.92 19.7 24 18.62 24 17.3V2.9C24 1.58 22.92 0.5 21.6 0.5ZM12 11.3C11.34 11.3 10.8 10.76 10.8 10.1V5.3C10.8 4.64 11.34 4.1 12 4.1C12.66 4.1 13.2 4.64 13.2 5.3V10.1C13.2 10.76 12.66 11.3 12 11.3ZM13.2 16.1H10.8V13.7H13.2V16.1Z"
+            fill="#FF7A00" />
+        </g>
+        <defs>
+          <clipPath id="clip0_1180_25964">
+            <rect width="24" height="24" fill="white" transform="translate(0 0.5)" />
+          </clipPath>
+        </defs>
+      </svg>
+      <h2 class="m-0 ml-24">Thêm mới đơn vị tiền tệ</h2>
+    </div>
+  </ng-template>
+  <ng-template #showAddNewCurrency>
+    <div nz-row nzGutter="24">
+      <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzXXl="12" class="mb-12">
+        <nz-row>
+          <div nz-col nzSpan="24">
+            <span>Mã đơn vị tiền tệ </span>
+            <span class="error-span">*</span>
+          </div>
+          <div nz-col nzSpan="24">
+            <input type="text" placeholder="Ví dụ: USD" nz-input [(ngModel)]="objCurrency.paramValue" />
+          </div>
+        </nz-row>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzXXl="12" class="mb-12">
+        <nz-row>
+          <div nz-col nzSpan="24">
+            <span>Tên đơn vị tiền tệ </span>
+            <span class="error-span">*</span>
+          </div>
+          <div nz-col nzSpan="24">
+            <input type="text" placeholder="Ví dụ: Đô la Mỹ" nz-input [(ngModel)]="objCurrency.paramDesc" />
+          </div>
+        </nz-row>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzXXl="12" class="mb-12">
+        <nz-row>
+          <div nz-col nzSpan="24">
+            <span>Tỷ giá chuyển đổi </span>
+            <span class="error-span">*</span>
+            <span class="ml-4" nz-icon nzType="question-circle" nzTheme="outline"
+              nz-tooltip="Tỷ giá chuyển đổi từ đơn vị tiền tệ nhà cung cấp sang đơn vị tiền tệ VNĐ. Ví dụ: 1 USD = 23,000 VNĐ."></span>
+          </div>
+          <div nz-col nzSpan="24">
+            <input type="number" placeholder="Ví dụ: 23000" nz-input [(ngModel)]="objCurrency.exchangeRate" />
+          </div>
+        </nz-row>
+      </div>
+    </div>
+    <div nz-row nzJustify="end" nzGutter="24">
+      <div nz-col nzXl="4" nzXs="12" nzLg="8" nzMd="8">
+        <app-button [className]="'common-btn-close w-100'" (btnClick)="onClickCancel()" [title]="'btn.cancel'">
+        </app-button>
+      </div>
+      <div nz-col nzXl="4" nzXs="12" nzLg="8" nzMd="8">
+        <app-button [className]="'w-100'" [buttonType]="'primary'" (btnClick)="addNewCurrency()" [title]="'btn.add'">
+        </app-button>
+      </div>
+    </div>
+  </ng-template>
+</nz-modal>

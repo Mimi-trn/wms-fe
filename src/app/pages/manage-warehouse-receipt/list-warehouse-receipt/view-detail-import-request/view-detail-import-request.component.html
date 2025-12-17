@@ -1,0 +1,1083 @@
+<!-- Xem chi tiết yêu cầu nhập kho -->
+
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    [nzSpan]="23"
+    [listBreadCrumb]="breadcrumbs"
+  ></app-breadcrumb>
+</nz-row>
+<div class="common-bg mb-24" *ngIf="reason">
+  <div class="error-span">
+    <b> Lý do từ chối duyệt </b>
+  </div>
+  <div class="mt-12">
+    {{ reason }}
+  </div>
+</div>
+<!-- Thông tin yêu cầu nhập kho -->
+<div class="common-bg">
+  <nz-row nzAlign="middle">
+    <h2 class="m-0">
+      {{ "manage.receipt.create.title" | translate }}: {{ params }}
+    </h2>
+  </nz-row>
+  
+  <nz-row
+    nzAlign="top"
+    nzJustify="start"
+    [nzGutter]="{ xs: 0, sm: 0, md: 16, lg: 16, xl: 24, xxl: 24 }"
+  >
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "manage.receipt.create.infor.type" | translate }}
+          <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-select
+            disabled
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="-- Chọn --"
+            [(ngModel)]="dataInformation.importType"
+            class="w-100"
+          >
+            <nz-option
+              *ngFor="let option of listImportType"
+              [nzValue]="option.importTypeId"
+              [nzLabel]="option.importTypeName"
+            ></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.importType">
+          <span class="error-span"> This field is required </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <!-- <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">
+          <nz-row>
+            <nz-col nzSpan="24"
+              >{{ "manage.receipt.create.infor.warehouse" | translate }}
+              <span class="error-span">*</span></nz-col
+            >
+            <nz-col nzSpan="24">
+              <nz-select
+                
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="-- Chọn --"
+                [(ngModel)]="dataInformation.warehouseCode"
+                class="w-100"
+              >
+                <nz-option
+                  *ngFor="let option of listWarehouse"
+                  [nzValue]="option.warehouseCode"
+                  [nzLabel]="option.warehouseName"
+                ></nz-option>
+              </nz-select>
+            </nz-col>
+            <nz-col nzSpan="24" *ngIf="!dataInformation.warehouseCode">
+              <span class="error-span"> This field is required </span>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+    </nz-col> -->
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+      *ngIf="dataInformation.importType == 1"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "ui.receitp.GRN.create.supplier" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            type="text"
+            nz-input
+            disabled
+            [(ngModel)]="dataInformation.vendorName"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "table.status" | translate }}
+          <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-select
+            disabled
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="-- Chọn --"
+            [(ngModel)]="dataInformation.status"
+            class="w-100"
+          >
+            <nz-option
+              *ngFor="let option of listStatus"
+              [nzValue]="option.value"
+              [nzLabel]="option.label | translate"
+            ></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col
+          nzSpan="24"
+          *ngIf="!dataInformation.status && dataInformation.status !== 0"
+        >
+          <span class="error-span"> This field is required </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      *ngIf="dataInformation.importType == 2 || dataInformation.importType == 3"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "createIqc.wo.woCode" | translate }} </nz-col>
+        <nz-col nzSpan="24">
+          <input nz-input disabled [(ngModel)]="dataInformation.woCode" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+   
+    <nz-col
+      *ngIf="dataInformation.importType == 2 || dataInformation.importType == 3"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "createIqc.wo.startDate" | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            disabled
+            nzPlaceHolder="-- Chọn --"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.startDate"
+          ></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      *ngIf="dataInformation.importType == 2 || dataInformation.importType == 3"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "createIqc.wo.endDate" | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            disabled
+            nzPlaceHolder="-- Chọn --"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.endDate"
+          ></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      *ngIf="dataInformation.importType == 1"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "manage.receipt.create.infor.poCode" | translate }}
+          <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-col nzSpan="24">
+            <input nz-input disabled [(ngModel)]="dataInformation.poCode" />
+          </nz-col>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    
+    <nz-col
+      *ngIf="dataInformation.importType == 4"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "createIqc.contract.contactCode" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select
+            disabled
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="-- Chọn --"
+            [(ngModel)]="dataInformation.consignmentContractCode"
+            class="w-100"
+          >
+            <nz-option
+              [nzValue]="dataInformation.consignmentContractCode"
+              [nzLabel]="dataInformation.consignmentContractCode"
+            ></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.consignmentContractCode">
+          <span class="error-span"> This field is required </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    
+    <nz-col
+      *ngIf="dataInformation.importType == 4"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "createIqc.contract.customerCode" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select
+            disabled
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="-- Chọn --"
+            [(ngModel)]="dataInformation.customerCode"
+            class="w-100"
+          >
+            <nz-option
+              [nzValue]="dataInformation.customerCode"
+              [nzLabel]="dataInformation.customerCode"
+            ></nz-option>
+          </nz-select>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      *ngIf="dataInformation.importType == 4"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "createIqc.contract.customerName" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input nz-input disabled [(ngModel)]="dataInformation.customerName" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      *ngIf="dataInformation.importType == 4"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "createIqc.contract.address" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input
+            nz-input
+            disabled
+            [(ngModel)]="dataInformation.customerAddress"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      *ngIf="dataInformation.importType == 4"
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "createIqc.contract.phoneNumber" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input
+            nz-input
+            disabled
+            [(ngModel)]="dataInformation.customerPhone"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    
+    <nz-col
+      *ngIf="
+        dataInformation.importType == 1 ||
+        dataInformation.importType == 4 ||
+        dataInformation.importType == 2 ||
+        dataInformation.importType == 3
+      "
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "manage.receipt.create.infor.person" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            type="text"
+            nz-input
+            disabled
+            [(ngModel)]="dataInformation.createdBy"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      *ngIf="
+        dataInformation.importType == 1 ||
+        dataInformation.importType == 4 ||
+        dataInformation.importType == 2 ||
+        dataInformation.importType == 3
+      "
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "ui.receipt.required.createAt" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            disabled
+            nzPlaceHolder="-- Chọn --"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.createdAt"
+          ></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="24"
+      nzLg="24"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "table.note" | translate }} </nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group
+            [nzSuffix]="inputClearNote"
+            class="ant-input-affix-wrapper-textarea-with-clear-btn"
+          >
+            <textarea
+              disabled
+              rows="1"
+              nz-input
+              [(ngModel)]="dataInformation.note"
+              placeholder="Nhập ghi chú"
+            ></textarea>
+          </nz-input-group>
+          <ng-template #inputClearNote>
+            <span
+              style="display: none"
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="dataInformation.note"
+              (click)="dataInformation.note = null"
+            ></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+      *ngIf="dataInformation.importType == 2"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Mã sản xuất" | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            type="text"
+            nz-input
+            disabled
+            [(ngModel)]="dataInformation.productCode"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+      *ngIf="dataInformation.importType == 2"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Tên sản phẩm" | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            type="text"
+            nz-input
+            disabled
+            [(ngModel)]="dataInformation.productName"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Mô tả" | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group
+            [nzSuffix]="inputClearimportTypeId"
+            class="ant-input-affix-wrapper-textarea-with-clear-btn"
+          >
+            <textarea
+              rows="1"
+              nz-input
+              [(ngModel)]="dataInformation.importTypeId"
+              placeholder="Nhập nội dung mô tả"
+              disabled
+            ></textarea>
+          </nz-input-group>
+          <ng-template #inputClearimportTypeId>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="dataInformation.importTypeId"
+              (click)="dataInformation.importTypeId = null"
+            ></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <nz-row
+    class="mt-12"
+    *ngIf="dataInformation.importType !== 2 && dataInformation.importType !== 3"
+  >
+    <nz-col nzSpan="24">
+      {{ "file.tag" | translate }}<span class="error-span"> * </span>
+    </nz-col>
+    
+    <nz-col
+      class="mt-12"
+      nzSpan="24"
+      *ngIf="dataInformation.importType == 6 && dataInformation.status == 8"
+    >
+      <app-upload-file
+        (onFileChange)="onFileChange($event)"
+        [isDisabled]="false"
+      ></app-upload-file>
+    </nz-col>
+    <nz-col nzSpan="24">
+      <div
+        *ngFor="let file of fileList"
+        class="d-flex j-content-between file-custome mt-8"
+        style="
+          width: 100%;
+          border-radius: 4px;
+          background: #efefef;
+          padding: 0 20px;
+        "
+      >
+        <div
+          style="
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 16px;
+          "
+        >
+          <div style="position: relative">
+            <span class="pl-8">{{ file.fileName }}</span>
+          </div>
+        </div>
+        <div style="display: flex">
+          <div>
+            <span
+              class="mr-12 download"
+              nz-icon
+              nzType="download"
+              (click)="downloadFile(file)"
+            ></span>
+          </div>
+        </div>
+      </div>
+    </nz-col>
+  </nz-row>
+</div>
+<!-- Thông tin hàng hóa và đính kèm -->
+<div class="common-bg mt-24">
+  <nz-row class="mb-24">
+    <h2 class="m-0">{{ "manage.receipt.create.list.items" | translate }}</h2>
+  </nz-row>
+  <nz-row class="mb-12">
+    <app-radio-group-button
+      [listOfButton]="listOfRadioButton"
+      (onChange)="changeSelect($event)"
+    ></app-radio-group-button>
+  </nz-row>
+  <nz-row>
+    <nz-col *ngIf="currentRadioButtonIndex == 0" nzSpan="24">
+      <nz-table
+        nzBordered
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+        [nzScroll]="{ y: '500px' }"
+        [nzData]="listItems"
+        #importRequestData
+        nzSize="small"
+        class="w-100"
+      >
+        <thead>
+          <tr>
+            <ng-container
+              *ngFor="let column of itemColumnsTable; let i = index"
+            >
+              <ng-container *ngIf="column.check && column.keyName !== 'status'">
+                <th
+                  nz-resizable
+                  [nzWidth]="column.width"
+                  (nzResize)="onResize($event, i)"
+                  [nzMaxWidth]="500"
+                  [nzMinWidth]="100"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  column.check &&
+                  column.keyName == 'status' &&
+                  dataInformation.importType == 1
+                "
+              >
+                <th
+                  nz-resizable
+                  [nzWidth]="column.width"
+                  (nzResize)="onResize($event, i)"
+                  [nzMaxWidth]="500"
+                  [nzMinWidth]="100"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody class="striped-tr">
+          <ng-container
+            *ngFor="let row of importRequestData.data; let i = index"
+          >
+            <tr>
+              <ng-container
+                *ngFor="let column of itemColumnsTable; let j = index"
+              >
+                <ng-container
+                  *ngIf="
+                    column.check &&
+                    column.keyName !== 'status' &&
+                    column.keyName !== 'requestQuantity' &&
+                    column.keyName !== 'inventoryQuantity' &&
+                    column.keyName !== 'openQuantity'
+                  "
+                >
+                  <td>
+                    {{ row[column.keyName] }}
+                  </td>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    column.check &&
+                    column.keyName === 'requestQuantity' &&
+                    dataInformation.status !== 0 &&
+                    dataInformation.status !== 8
+                  "
+                  a
+                >
+                  <td nzAlign="right">{{ row[column.keyName] | number }}</td>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    column.keyName == 'requestQuantity' &&
+                    (dataInformation.status == 0 || dataInformation.status == 8)
+                  "
+                >
+                  <td>
+                    <input
+                      nz-input
+                      min="1"
+                      type="number"
+                      [(ngModel)]="row[column.keyName]"
+                    />
+                  </td>
+                </ng-container>
+
+                <ng-container *ngIf="column.keyName == 'inventoryQuantity'">
+                  <td nzAlign="right">
+                    <span> {{ row[column.keyName] }}</span>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="column.keyName == 'openQuantity'">
+                  <td nzAlign="right">
+                    <span> {{ row[column.keyName] }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container
+                  *ngIf="
+                    dataInformation.importType == 1 &&
+                    column.check &&
+                    column.keyName === 'status'
+                  "
+                >
+                  <td nzAlign="center">
+                    <div [ngSwitch]="row[column.keyName]">
+                      <div
+                        class="border-element item-status_0"
+                        *ngSwitchCase="'0'"
+                      >
+                        {{ "item.status.status_0" | translate }}
+                      </div>
+                      <div
+                        class="border-element item-status_1"
+                        *ngSwitchCase="'1'"
+                      >
+                        {{ "item.status.status_1" | translate }}
+                      </div>
+                      <div
+                        class="border-element item-status_3"
+                        *ngSwitchCase="'3'"
+                      >
+                        {{ "item.status.status_3" | translate }}
+                      </div>
+                      <div
+                        class="border-element item-status_2"
+                        *ngSwitchCase="'2'"
+                      >
+                        {{ "item.status.status_2" | translate }}
+                      </div>
+                      <div
+                        class="border-element item-status_4"
+                        *ngSwitchCase="'4'"
+                      >
+                        {{ "item.status.status_4" | translate }}
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-container>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-col>
+    <nz-col nzSpan="24" *ngIf="currentRadioButtonIndex == 1">
+      <nz-row
+        nzJustify="end"
+        *ngIf="
+          (currentStatus == 0 || currentStatus == 8) &&
+          (checkGroupsInTokenQCER ||
+            checkGroupsInTokenAdmin ||
+            checkGroupsInTokenBuyer ||
+            checkGroupsInTokenSaler ||
+            checkIsRole('FCIM_ADMIN'))
+        "
+      >
+        <nz-col>
+          <app-button
+            [title]="'Upload biên bản xác nhận'"
+            [buttonType]="'text'"
+            [iconType]="'upload'"
+            [iconTheme]="'outline'"
+            (btnClick)="onClickAddNew()"
+          ></app-button>
+        </nz-col>
+      </nz-row>
+      <nz-table
+        nzBordered
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+        [nzScroll]="{ x: 'auto', y: '400px' }"
+        [nzData]="listFileReport"
+        #dataFiles
+        nzSize="small"
+        class="w-100"
+      >
+        <thead>
+          <tr>
+            <ng-container *ngFor="let column of columnFile">
+              <ng-container *ngIf="column.check">
+                <th
+                  nz-resizable
+                  nzBounds="window"
+                  nzPreview
+                  [nzWidth]="column.width"
+                  [nzMaxWidth]="300"
+                  [nzMinWidth]="100"
+                  (nzResizeEnd)="onResizeFile($event, column)"
+                  nzAlign="center"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                  </div>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+            </ng-container>
+            <th nzWidth="100px" nzAlign="center">
+              {{ "table.action" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody [class]="listFileReport.length <= 0 ? '' : 'striped-tr'">
+          <ng-container *ngFor="let row of dataFiles.data">
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ row.createdBy }}</td>
+              <td nzAlign="right">{{ row.createdAt | date : "dd/MM/YYYY" }}</td>
+              <td nzAlign="center">
+                <app-button
+                  *ngIf="row.id"
+                  (click)="downloadFile(row)"
+                  [iconType]="'download'"
+                  [iconTheme]="'outline'"
+                  [buttonType]="'text'"
+                >
+                </app-button>
+                <app-button
+                  *ngIf="!row.id"
+                  (click)="deleteFile(row)"
+                  [iconType]="'delete'"
+                  [iconTheme]="'fill'"
+                  [buttonType]="'text'"
+                >
+                </app-button>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
+  <nz-row nzAlign="top" nzJustify="end" class="w-100 mt-24" style="gap: 32px">
+    <app-button
+      [className]="'common-btn-close w-100'"
+      [title]="'btn.close'"
+      [buttonType]="'primary'"
+      [tooltipTitle]="'Nhấp vào đây để đóng'"
+      (btnClick)="close()"
+    ></app-button>
+   
+    <app-button
+      *ngIf="
+        currentStatus == 5 &&
+        (checkIsRole('wms_import-request_approve') || checkIsRole('FCIM_ADMIN'))
+      "
+      [className]="'w-100'"
+      [title]="'button.refusedImport'"
+      [buttonType]="'primary'"
+      [tooltipTitle]="'Từ chối nhập kho'"
+      (btnClick)="cancelRequest()"
+      [isDanger]="true"
+    ></app-button>
+    <app-button
+      *ngIf="
+        (currentStatus == 0 || currentStatus == 8) &&
+        (checkIsRole('wms_import-request_approve') || checkIsRole('FCIM_ADMIN'))
+      "
+      [className]="'w-100'"
+      [title]="'Gửi yêu cầu nhập kho'"
+      [buttonType]="'primary'"
+      [tooltipTitle]="'Gửi yêu cầu nhập kho'"
+      (btnClick)="showSendImportRequest = true"
+    ></app-button>
+    <app-button
+      *ngIf="
+        (currentStatus == 5 || currentStatus == 9) &&
+        (checkIsRole('wms_import-request_approve') || checkIsRole('FCIM_ADMIN'))
+      "
+      [className]="'w-100'"
+      [title]="'Tạo phiếu nhập kho'"
+      [buttonType]="'primary'"
+      [tooltipTitle]="'Nhấp vào đây để tạo phiếu nhập kho'"
+      (btnClick)="isVisibleCreateGrn = true"
+    ></app-button>
+    <!-- <app-button
+      *ngIf="currentStatus == 8 && checkIsRole('wms_import-request_approve')"
+      [className]="'w-100'"
+      [title]="'btn.IQC'"
+      [buttonType]="'primary'"
+      (btnClick)="isVisibleSendConfirm = true"
+    ></app-button> -->
+  </nz-row>
+</div>
+
+<!-- <app-popup-confirm
+  title="Xác nhận gửi yêu cầu nhập kho"
+  content="Gửi yêu cầu nhập kho"
+  [isVisible]="isVisibleSendConfirm"
+  (cancel)="onHandleCancelPopup1($event)"
+  (isVisibleChange)="sendRequestCreateIqc()"
+></app-popup-confirm> -->
+
+<!-- Popup hủy yêu cầu nhập kho -->
+<nz-modal
+  nzWidth="800px"
+  [(nzVisible)]="isVisibleCancelRequest"
+  [nzFooter]="null"
+  (nzOnCancel)="onCancelRequestPopup()"
+  [nzContent]="showCancelRequest"
+  [nzTitle]="showCancelRequestTitle"
+>
+  <ng-template #showCancelRequestTitle>
+    <div class="d-flex">
+      <svg
+        width="24"
+        height="25"
+        viewBox="0 0 24 25"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_1180_25964)">
+          <path
+            d="M21.6 0.5H2.4C1.08 0.5 0 1.58 0 2.9V24.5L4.8 19.7H21.6C22.92 19.7 24 18.62 24 17.3V2.9C24 1.58 22.92 0.5 21.6 0.5ZM12 11.3C11.34 11.3 10.8 10.76 10.8 10.1V5.3C10.8 4.64 11.34 4.1 12 4.1C12.66 4.1 13.2 4.64 13.2 5.3V10.1C13.2 10.76 12.66 11.3 12 11.3ZM13.2 16.1H10.8V13.7H13.2V16.1Z"
+            fill="#FF7A00"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_1180_25964">
+            <rect
+              width="24"
+              height="24"
+              fill="white"
+              transform="translate(0 0.5)"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+      <h2 class="m-0 ml-24">
+        {{ "ui.receipt.required.cancelRequest" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showCancelRequest>
+    <app-cancel-request
+      (childOut)="hideCancelRequest($event)"
+      [importRequestCode]="dataInformation.importRequestCode"
+    ></app-cancel-request>
+  </ng-template>
+</nz-modal>
+
+<app-popup-cancel
+  [isVisible]="isVisibleCancel"
+  (cancel)="onHandleCancelPopup($event)"
+  (isVisibleChange)="onHandleConfirmPopup($event)"
+>
+</app-popup-cancel>
+
+<app-popup-confirm
+  title="Xác nhận gửi yêu cầu nhập kho"
+  content="Gửi yêu cầu nhập kho"
+  [isVisible]="showSendImportRequest"
+  (cancel)="showSendImportRequest = $event"
+  (isVisibleChange)="sendImportRequest()"
+></app-popup-confirm>
+
+<app-popup-confirm
+  title="Xác nhận tạo phiếu nhập kho"
+  content="Tạo phiểu nhập kho"
+  [isVisible]="isVisibleCreateGrn"
+  (cancel)="isVisibleCreateGrn = $event"
+  (isVisibleChange)="createImport()"
+></app-popup-confirm>
+
+<app-popup-withdraw
+  [isVisible]="isVisibleRevoke"
+  [title]="'Thu hồi yêu cầu nhập kho'"
+  (cancel)="onHandleRevokeCancel($event)"
+  (confirm)="onHandleRevokeConfirm($event)"
+  [importRequestCode]="dataInformation.importRequestCode"
+  [isAction]="'IR'"
+>
+</app-popup-withdraw>
+
+<!-- Xử lý upload file -->
+<nz-modal
+  nzWidth="800px"
+  [(nzVisible)]="showUploadFile"
+  [nzFooter]="null"
+  (nzOnCancel)="cancelUploadFile()"
+  [nzContent]="showApploadContent"
+  [nzTitle]="showUpload"
+>
+  <ng-template #showUpload>
+    <div class="d-flex">
+      <svg
+        width="24"
+        height="25"
+        viewBox="0 0 24 25"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_1180_25964)">
+          <path
+            d="M21.6 0.5H2.4C1.08 0.5 0 1.58 0 2.9V24.5L4.8 19.7H21.6C22.92 19.7 24 18.62 24 17.3V2.9C24 1.58 22.92 0.5 21.6 0.5ZM12 11.3C11.34 11.3 10.8 10.76 10.8 10.1V5.3C10.8 4.64 11.34 4.1 12 4.1C12.66 4.1 13.2 4.64 13.2 5.3V10.1C13.2 10.76 12.66 11.3 12 11.3ZM13.2 16.1H10.8V13.7H13.2V16.1Z"
+            fill="#FF7A00"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_1180_25964">
+            <rect
+              width="24"
+              height="24"
+              fill="white"
+              transform="translate(0 0.5)"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+      <h2 class="m-0 ml-24">
+        {{ "Upload biên bản xác nhận nhập kho" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showApploadContent>
+    <!-- <app-upload-file
+      (onFileChange)="onFileChangeShowUpload($event)"
+      [isDisabled]="false"
+    ></app-upload-file> -->
+    <input
+      #fileInput
+      type="file"
+      multiple
+      (change)="onFileChangeShowUpload($event)"
+    />
+  </ng-template>
+</nz-modal>

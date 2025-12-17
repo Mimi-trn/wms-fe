@@ -1,0 +1,802 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    [nzSpan]="23"
+    *ngIf="isBreadcrumb"
+    [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"
+  ></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row>
+    <h2 class="m-0">
+      {{ "Thông tin phiếu chuyển kho " | translate }}
+    </h2>
+  </nz-row>
+  <nz-row
+    nzAlign="top"
+    nzJustify="start"
+    [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }"
+  >
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Mã yêu cầu chuyển kho" | translate }}
+          <span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <ng-template #suffixIconSearch>
+            <span
+              style="color: #ccc; cursor: pointer"
+              nz-icon
+              nzType="down"
+              (click)="showPopoverSupplier()"
+            ></span>
+          </ng-template>
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input
+              type="text"
+              placeholder="-- Chọn --"
+              nz-input
+              [(ngModel)]="transferRequestCode"
+              (click)="showPopoverSupplier()"
+            />
+            <span
+              nz-popover
+              [nzPopoverTitle]="'Danh sách mã yêu cầu chuyển kho'"
+              nzPopoverTrigger="click"
+              [nzPopoverContent]="contentTemplateSupplier"
+              nzPopoverPlacement="bottomLeft"
+              [nzPopoverVisible]="showPopover"
+              (nzPopoverVisibleChange)="popoverVisibleChangeSupplier($event)"
+            >
+            </span>
+          </nz-input-group>
+          <ng-template #contentTemplateSupplier>
+            <nz-table
+              nzBordered
+              #rowSelectionTableTranfer
+              [nzFrontPagination]="false"
+              [nzShowPagination]="false"
+              [nzData]="dataTranferRequestCode"
+              style="width: 1200px"
+              [nzScroll]="{ y: '400px' }"
+              nzSize="small"
+            >
+              <thead>
+                <tr>
+                  <ng-container *ngFor="let col of columnsyc">
+                    <th [nzWidth]="col.width">
+                      {{ col.keyTitle | translate }}
+                    </th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <ng-container *ngFor="let column of columnsyc">
+                    <td *ngIf="column.keyName == 'createdAt'">
+                      <nz-range-picker
+                        [(ngModel)]="dataFilter[column.keyName]"
+                        (ngModelChange)="getDetailWtrRequest()"
+                        [nzPlaceHolder]="[
+                          'start_date' | translate,
+                          'end_date' | translate
+                        ]"
+                      ></nz-range-picker>
+                    </td>
+                    <td
+                      *ngIf="
+                        column.keyName == 'note' ||
+                        column.keyName == 'wtrTypeId' ||
+                        column.keyName == 'transferRequestCode' ||
+                        column.keyName == 'sender' ||
+                        column.keyName == 'receiver'
+                      "
+                    >
+                      <nz-input-group
+                        nzSearch
+                        [nzPrefix]="prefixText"
+                        [nzSuffix]="suffixText"
+                      >
+                        <input
+                          type="text"
+                          nz-input
+                          [(ngModel)]="dataFilter[column.keyName]"
+                          (keyup.enter)="getDetailWtrRequest()"
+                        />
+                      </nz-input-group>
+                      <ng-template #prefixText>
+                        <span
+                          (click)="getDetailWtrRequest()"
+                          class="search-click"
+                          style="color: #d9d9d9"
+                          nz-icon
+                          nzType="search"
+                        ></span>
+                      </ng-template>
+                      <ng-template #suffixText>
+                        <span
+                          nz-icon
+                          class="ant-input-clear-icon"
+                          nzTheme="fill"
+                          nzType="close-circle"
+                          *ngIf="dataFilter[column.keyName]"
+                          (click)="clearTranferRequestCode(column)"
+                        ></span>
+                      </ng-template>
+                    </td>
+                    <td
+                      *ngIf="
+                        column.keyName == 'fromWarehouseCode' ||
+                        column.keyName == 'toWarehouseCode'
+                      "
+                    >
+                      <nz-select
+                        class="select-search"
+                        style="width: 100%"
+                        [nzAllowClear]="true"
+                        nzPlaceHolder="{{ 'all_select' | translate }}"
+                        [(ngModel)]="dataFilter[column.keyName]"
+                        (ngModelChange)="getDetailWtrRequest()"
+                      >
+                        <nz-option
+                          *ngFor="let item of listWarehouse"
+                          [nzValue]="item.value"
+                          [nzLabel]="item.text"
+                        ></nz-option>
+                      </nz-select>
+                    </td>
+                  </ng-container>
+                </tr>
+                <ng-container *ngFor="let row of dataTranferRequestCode">
+                  <tr
+                    class="click-row"
+                    style="cursor: pointer"
+                    (click)="clickRowTranfer(row)"
+                  >
+                    <ng-container *ngFor="let col of columnsyc">
+                      <td *ngIf="col.keyTitle != 'createdAt'">
+                        {{ row[col.keyName] }}
+                      </td>
+                      <td *ngIf="col.keyTitle == 'createdAt'">
+                        {{ row[col.keyName] | date : "dd/MM/YYYY" }}
+                      </td>
+                    </ng-container>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </nz-table>
+            <div>
+              <app-pagination
+                [currentPage]="pageTranferRequest"
+                [currentSize]="perPageTranferRequest"
+                [total]="totalTranferRequest"
+                (emitPage)="paginationTranferRequest($event)"
+              ></app-pagination>
+            </div>
+            <nz-row> </nz-row>
+          </ng-template>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!transferRequestCode">
+          <span class="error-span">Bạn phải chọn mã yêu cầu chuyển kho</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <nz-row
+    nzAlign="top"
+    nzJustify="start"
+    [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }"
+  >
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Kho Nguồn" }}<span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select
+            class="select-search"
+            style="width: 100%"
+            [nzAllowClear]="true"
+            disabled
+            nzShowSearch
+            nzPlaceHolder="{{ 'all_select' | translate }}"
+            [(ngModel)]="dataInformation.fromWarehouseCode"
+          >
+            <nz-option
+              *ngFor="let item of listWarehouse"
+              [nzValue]="item.value"
+              [nzLabel]="item.text"
+            ></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.fromWarehouseCode">
+          <span class="error-span">Bạn phải chọn kho nguồn</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Kho đích" }} <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-select
+            class="select-search"
+            style="width: 100%"
+            [nzAllowClear]="true"
+            disabled
+            nzShowSearch
+            nzPlaceHolder="{{ 'all_select' | translate }}"
+            [(ngModel)]="dataInformation.toWarehouseCode"
+          >
+            <nz-option
+              *ngFor="let item of listWarehouse"
+              [nzValue]="item.value"
+              [nzLabel]="item.text"
+            ></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.toWarehouseCode">
+          <span class="error-span">Bạn phải chọn kho đích</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Ngày tạo yêu cầu" | translate }}
+          <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            disabled
+            nzPlaceHolder="dd/MM/yyyy"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.createdAt"
+          ></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Ngày gửi hàng" | translate }}
+          <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            nzPlaceHolder="dd/MM/yyyy"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.transferDate"
+          ></nz-date-picker>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.transferDate">
+          <span class="error-span">Bạn phải chọn ngày gửi</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Ngày nhận hàng" | translate }}
+          <span class="error-span">*</span></nz-col
+        >
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            nzPlaceHolder="dd/MM/yyyy"
+            class="w-100"
+            nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.receivedDate"
+          ></nz-date-picker>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.receivedDate">
+          <span class="error-span">Bạn phải chọn ngày nhận</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Thông tin người gửi hàng" | translate }}
+          <span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group [nzSuffix]="senderSuffix" (click)="showSenderList()">
+            <input
+              placeholder="-- Chọn -- "
+              type="text"
+              readonly
+              nz-input
+              [(ngModel)]="dataInformation.senderName"
+            />
+            <span
+              nz-popover
+              nzPopoverTrigger="click"
+              [nzPopoverContent]="contentEmployee"
+              nzPopoverPlacement="bottomRight"
+              [nzPopoverVisible]="showSender"
+              (nzPopoverVisibleChange)="popoverVisibleChangeSender($event)"
+            >
+            </span>
+          </nz-input-group>
+          <ng-template #senderSuffix>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="outline"
+              nzType="down"
+            ></span>
+          </ng-template>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.senderName">
+          <span class="error-span">Bạn phải chọn người gửi hàng</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24"
+          >{{ "Thông tin người nhận hàng" | translate }}
+          <span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group
+            [nzSuffix]="receriverSuffix"
+            (click)="showReceiverList()"
+          >
+            <input
+              placeholder="-- Chọn -- "
+              type="text"
+              readonly
+              nz-input
+              [(ngModel)]="dataInformation.receiverName"
+            />
+            <span
+              nz-popover
+              nzPopoverTrigger="click"
+              [nzPopoverContent]="contentEmployee"
+              nzPopoverPlacement="bottomRight"
+              [nzPopoverVisible]="showReceiver"
+              (nzPopoverVisibleChange)="popoverVisibleChangeReceiver($event)"
+            >
+            </span>
+          </nz-input-group>
+          <ng-template #receriverSuffix>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="outline"
+              nzType="down"
+            ></span>
+          </ng-template>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.receiverName">
+          <span class="error-span">Bạn phải chọn người nhận hàng</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listContract.child.note" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group
+            [nzSuffix]="inputClearNote"
+            class="ant-input-affix-wrapper-textarea-with-clear-btn"
+          >
+            <textarea
+              rows="1"
+              nz-input
+              [(ngModel)]="dataInformation.note"
+              placeholder="Nhập nội dung ghi chú"
+            ></textarea>
+          </nz-input-group>
+          <ng-template #inputClearNote>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="dataInformation.note"
+              (click)="dataInformation.note = null"
+            ></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="8"
+      nzXXl="8"
+      class="mt-12"
+    >
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Mô tả" | translate }} </nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group
+            [nzSuffix]="inputClearExportTypeId"
+            class="ant-input-affix-wrapper-textarea-with-clear-btn"
+          >
+            <textarea
+              rows="1"
+              nz-input
+              [(ngModel)]="dataInformation.wtrTypeId"
+              placeholder="Nhập nội dung mô tả"
+            ></textarea>
+          </nz-input-group>
+          <ng-template #inputClearExportTypeId>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="dataInformation.wtrTypeId"
+              (click)="dataInformation.wtrTypeId = null"
+            ></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    
+  </nz-row>
+</div>
+
+<div class="common-bg mt-24">
+  <nz-row class="mb-12">
+    <h2 class="m-0">
+      {{
+        "sidebar.transfer.child.transferRequest.child.listProduct" | translate
+      }}
+    </h2>
+  </nz-row>
+  <nz-row>
+    <nz-table
+      nzBordered
+      [nzFrontPagination]="false"
+      [nzShowPagination]="false"
+      [nzScroll]="{ y: '100vh' }"
+      [nzData]="dataItems"
+      #dataItem
+      nzSize="small"
+      class="w-100"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="50px"></th>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <ng-container *ngIf="column.check">
+              <th
+                nz-resizable
+                [nzWidth]="column.width"
+                (nzResize)="onResize($event, i)"
+                [nzMaxWidth]="500"
+                [nzMinWidth]="100"
+              >
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody [class]="dataItems.length > 0 ? 'striped-tr' : ''">
+        <ng-container *ngFor="let row of dataItem.data">
+          <tr>
+            <td
+              [nzExpand]="expandSet.has(row.id)"
+              (nzExpandChange)="(onClickIcon)"
+              nzShowExpand="false"
+              nzAlign="center"
+              (click)="onClickIcon(row)"
+              style="cursor: pointer"
+            >
+              <button nz-button nzType="text" class="p-0">
+                <span
+                  nz-icon
+                  [nzType]="
+                    expandSet.has(row.id) ? 'caret-down' : 'caret-right'
+                  "
+                  nzTheme="outline"
+                ></span>
+              </button>
+            </td>
+            <ng-container *ngFor="let column of columns">
+              <ng-container *ngIf="column.check">
+                <td *ngIf="column.keyName == 'itemCode'">
+                  {{ row["itemCode"] }}
+                </td>
+                <td *ngIf="column.keyName == 'itemName'">
+                  {{ row["itemName"] }}
+                </td>
+                <td *ngIf="column.keyName == 'fromWarehouseCode'">
+                  {{ row["fromWarehouseCode"] }}
+                </td>
+                <td *ngIf="column.keyName == 'toWarehouseCode'">
+                  {{ dataInformation.toWarehouseCode }}
+                </td>
+                <td *ngIf="column.keyName == 'unit'">
+                  {{ row["unit"] }}
+                </td>
+                <td *ngIf="column.keyName == 'requestQuantity'" nzAlign="right">
+                  {{ row["requestQuantity"] | number }}
+                </td>
+                <td
+                  *ngIf="column.keyName == 'transferedQuantity'"
+                  nzAlign="right"
+                >
+                  {{ row["transferedQuantity"] ?? 0 | number }}
+                </td>
+                <td *ngIf="column.keyName == 'openQuantity'" nzAlign="right">
+                  {{ row["openQuantity"] ?? 0 | number }}
+                </td>
+                <td *ngIf="column.keyName == 'actualQuantity'" nzAlign="right">
+                  <input
+                    readonly
+                    type="number"
+                    nz-input
+                    [(ngModel)]="row['actualQuantity']"
+                    placeholder="Số lượng thực chuyển"
+                    min="0"
+                    (ngModelChange)="onHandleQuantityRequest(row)"
+                  />
+                  <div
+                    *ngIf="!row['actualQuantity'] || row['actualQuantity'] <= 0"
+                  >
+                    <span class="error-span"> SL phải lớn hơn 0 </span>
+                  </div>
+                  <div *ngIf="row['actualQuantity'] > row['openQuantity']">
+                    <span class="error-span">
+                      <span nz-icon nzType="warning" nzTheme="outline"></span>
+                      SL quá sl cần chuyển
+                    </span>
+                  </div>
+                </td>
+              </ng-container>
+            </ng-container>
+          </tr>
+          <tr *ngIf="expandSet.has(row.id)" [nzExpand]="expandSet.has(row.id)">
+            <app-tranfer-package
+              [warehouseCode]="dataInformation.fromWarehouseCode"
+              [product]="row"
+              [isFromWarehouse]="true"
+              [actualQuantity]="row['actualQuantity']"
+              [title]="'Danh sách vị trí kho nguồn'"
+            ></app-tranfer-package>
+          </tr>
+          <tr *ngIf="expandSet.has(row.id)" [nzExpand]="expandSet.has(row.id)">
+            <app-tranfer-package
+              [warehouseCode]="dataInformation.toWarehouseCode"
+              [product]="row"
+              [isFromWarehouse]="false"
+              [actualQuantity]="row['actualQuantity']"
+              [title]="'Danh sách vị trí kho đích'"
+            >
+            </app-tranfer-package>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+  </nz-row>
+  <nz-row class="mt-24" nzGutter="24" nzJustify="end">
+    <nz-col>
+      <app-button
+        [className]="'w-100 common-btn-close '"
+        [title]="'btn.close'"
+        [buttonType]="'primary'"
+        (btnClick)="close()"
+      ></app-button>
+    </nz-col>
+    <nz-col>
+      <app-button
+        [className]="'w-100 '"
+        [title]="'Tạo phiếu chuyển kho'"
+        [buttonType]="'primary'"
+        (btnClick)="save()"
+      ></app-button>
+    </nz-col>
+  </nz-row>
+</div>
+
+<!-- Modal xác nhận -->
+<app-modal-confirm
+  [content]="titleConfirm"
+  [title]="'Xác nhận tạo phiếu chuyển kho'"
+  [isVisible]="modalConfirmSave"
+  (cancel)="modalConfirmSave = false"
+  (isVisibleChange)="onHandleModalConfirmSave()"
+></app-modal-confirm>
+<ng-template #contentEmployee>
+  <nz-table
+    #tableReceiver
+    [nzData]="listReceiver"
+    nzBordered
+    nzFrontPagination="false"
+    nzShowPagination="false"
+    style="width: 600px"
+    [nzScroll]="{ y: '500px' }"
+    nzSize="small"
+  >
+    <thead>
+      <tr>
+        <th>Mã nhân viên</th>
+        <th>Tên nhân viên</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <nz-input-group
+            [nzSuffix]="receiverCode"
+            [nzPrefix]="receiverCodePre"
+            (keyup)="filterSearchReceiver($event)"
+          >
+            <input
+              type="text"
+              nz-input
+              [(ngModel)]="dataFilterReceiverCode.receiverCode"
+            />
+          </nz-input-group>
+          <ng-template #receiverCodePre>
+            <span
+              nz-icon
+              nzType="search"
+              style="cursor: pointer; color: #d9d9d9"
+              (click)="filterSearchReceiver($event)"
+            ></span>
+          </ng-template>
+          <ng-template #receiverCode>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="dataFilterReceiverCode.receiverCode"
+              (click)="clearReceiver('receiverCode')"
+            ></span>
+          </ng-template>
+        </td>
+        <td>
+          <nz-input-group
+            [nzSuffix]="receiverName"
+            [nzPrefix]="receiverNamePre"
+            (keyup)="filterSearchReceiver($event)"
+          >
+            <input
+              type="text"
+              nz-input
+              [(ngModel)]="dataFilterReceiverCode.receiverName"
+            />
+          </nz-input-group>
+          <ng-template #receiverNamePre>
+            <span
+              nz-icon
+              nzType="search"
+              style="cursor: pointer; color: #d9d9d9"
+              (click)="filterSearchReceiver($event)"
+            ></span>
+          </ng-template>
+          <ng-template #receiverName>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="dataFilterReceiverCode.receiverName"
+              (click)="clearReceiver('receiverName')"
+            ></span>
+          </ng-template>
+        </td>
+      </tr>
+      <tr
+        style="cursor: pointer"
+        class="click-row"
+        *ngFor="let row of tableReceiver.data"
+        (click)="chooseReceiver(row)"
+      >
+        <td>{{ row.receiverCode }}</td>
+        <td>{{ row.receiverName }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <nz-row
+    *ngIf="totalReceiver"
+    nzGutter="24"
+    nzAlign="middle"
+    nzJustify="center"
+  >
+    <div nz-col nzSpan="24">
+      <app-pagination
+        [currentPage]="pageReceiver"
+        [currentSize]="perPageReceiver"
+        [total]="totalReceiver"
+        (emitPage)="paginationReceiver($event)"
+      ></app-pagination>
+    </div>
+  </nz-row>
+</ng-template>

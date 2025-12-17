@@ -1,0 +1,54 @@
+<button
+  *ngIf="title"
+  [disabled]="isDisable"
+  nz-button
+  [nzType]="buttonType"
+  (click)="onClick()"
+  [nzDanger]="isDanger"
+  [class]="className"
+  [style]="
+    (buttonType == 'primary')
+      ? 'background-color : #primary;  border-color : #primary;'
+      : 'color: #FF7A00; display: flex; justify-content: center; align-items: center'
+  "
+  style="border-radius: 6px"
+  nz-tooltip
+  [nzTooltipTitle]="tooltipTitle"
+>
+  <span
+    *ngIf="iconType"
+    nz-icon
+    [nzType]="iconType"
+    [nzTheme]="iconTheme"
+    [nzRotate]="rotate"
+    [style]="isDisable ? 'color: #00000040' : ''"
+  ></span>
+  <span *ngIf="title">{{ title | translate }}</span>
+</button>
+
+<button
+  *ngIf="!title"
+  [disabled]="isDisable"
+  nz-button
+  [nzType]="buttonType"
+  (click)="onClick()"
+  [nzDanger]="isDanger"
+  [class]="className"
+  [style]="
+    buttonType == 'primary'
+      ? 'background-color : #primary;  border-color : #primary; padding: 0; width: 32px; height: 32px'
+      : 'color: #FF7A00; padding: 0; width: 32px; height: 32px'
+  "
+  style="border-radius: 6px"
+  nz-tooltip
+  [nzTooltipTitle]="tooltipTitle"
+>
+  <span
+    *ngIf="iconType"
+    nz-icon
+    [nzType]="iconType"
+    [nzTheme]="iconTheme"
+    [nzRotate]="rotate"
+    [style]="isDisable ? 'color: #00000040' : ''"
+  ></span>
+</button>

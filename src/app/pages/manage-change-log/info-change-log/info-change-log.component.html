@@ -1,0 +1,249 @@
+<nz-modal [(nzVisible)]="isvisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancel()" [nzWidth]="1000">
+  <ng-template #modalTitle>
+    <div style="display: flex; align-items: center;background-color: #FFE0C2; padding: 5px 0px 10px 16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+        <g clip-path="url(#clip0_512_6288)">
+          <path
+            d="M21.6 0.5H2.4C1.08 0.5 0 1.58 0 2.9V24.5L4.8 19.7H21.6C22.92 19.7 24 18.62 24 17.3V2.9C24 1.58 22.92 0.5 21.6 0.5ZM12 11.3C11.34 11.3 10.8 10.76 10.8 10.1V5.3C10.8 4.64 11.34 4.1 12 4.1C12.66 4.1 13.2 4.64 13.2 5.3V10.1C13.2 10.76 12.66 11.3 12 11.3ZM13.2 16.1H10.8V13.7H13.2V16.1Z"
+            fill="#FF7A00" />
+        </g>
+        <defs>
+          <clipPath id="clip0_512_6288">
+            <rect width="24" height="24" fill="white" transform="translate(0 0.5)" />
+          </clipPath>
+        </defs>
+      </svg>
+      <p style="line-height: 38px; padding: 0; margin: 0; margin-left: 12px;">
+        {{"Thông tin thay đổi" | translate}}
+      </p>
+    </div>
+  </ng-template>
+  <ng-template #modalContent>
+    <div>
+      <ng-container>
+        <nz-row>
+          <nz-col [nzSpan]="6">
+            <nz-row><strong style="margin-right: 10px;">{{'Người dùng' | translate}}: </strong>
+              <p> {{changeLog.userName}}</p>
+            </nz-row>
+          </nz-col>
+          <nz-col [nzSpan]="5">
+            <nz-row> <strong style="margin-right: 10px;">{{'Loại thao tác' | translate}}: </strong>
+              <p>{{changeLog.actionName}}</p>
+
+            </nz-row>
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <nz-row> <strong style="margin-right: 10px;">{{'Chức năng' | translate}}: </strong>
+              <p>{{changeLog.functionName}}</p>
+
+            </nz-row>
+          </nz-col>
+          <nz-col [nzSpan]="7">
+            <nz-row> <strong style="margin-right: 10px;">{{'Thời gian tác động' | translate}}: </strong>
+              <p>{{formatDate(changeLog.createdAt)}}</p>
+
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </ng-container>
+    </div>
+    <h4>{{'Dữ liệu thay đổi' | translate}}</h4>
+    <nz-table nzBordered nzShowPagination="false" [nzData]="listChangeLog" #vendorTable [nzSize]="'small'">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of header; let i = index">
+            <th nz-resizable [nzMinWidth]="60" [nzWidth]="col.width" (nzResize)="onResize($event, i)"
+              [nzAlign]="'center'" (nzSortOrderChange)="customSortFunction($event,  col.name)">
+              <div class="editable-cell">
+                {{col.name | translate}}
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </div>
+              <span *ngIf="orderSort=='DESC'"
+                style="float: right;position: absolute; bottom: 12px; right: 10px; cursor: pointer;"
+                nz-tooltip="{{'Sắp xếp tăng dần' | translate}}" (click)="customSortFunction($event,  col.name)" nz-icon
+                nzType="sort-ascending" nzTheme="outline"></span>
+              <span *ngIf="orderSort=='ASC'"
+                style="float: right;position: absolute; bottom: 12px; right: 10px; cursor: pointer;"
+                nz-tooltip="{{'Sắp xếp giảm dần' | translate}}" (click)="customSortFunction($event, col.name)" nz-icon
+                nzType="sort-descending" nzTheme="outline"></span>
+            </th>
+
+          </ng-container>
+
+
+        </tr>
+      </thead>
+      <tbody class="striped-tr">
+        <tr class="search-table">
+          <!-- <td>
+                        <nz-input-group [nzPrefix]="machineCodePrefix" [nzSuffix]="keyTitleSuffix">
+                            <ng-template #keyTitleSuffix><span *ngIf="keyTitle" (click)="clearInput('keyTitle')" nz-icon
+                                    nzType="close-circle" nzTheme="fill"
+                                    style="font-size: 12px; cursor: pointer; color: rgb(172, 170, 170);"></span></ng-template>
+                            <ng-template #machineCodePrefix><span nz-icon nzType="search" nzTheme="outline"
+                                    style="color: #BDBDBD"></span></ng-template>
+                            <input [nzAutocomplete]="autoFunction" type="text" nz-input [(ngModel)]="keyTitle"
+                                (input)="searchAutoComplete('keyTitle', 'keyTitle')" (keyup)="search($event)">
+                            <nz-autocomplete #autoFunction [nzDefaultActiveFirstOption]="false">
+                                <nz-auto-option *ngFor="let option of optionsCompleteColumnkeyTitle"
+                                    [nzValue]="option">{{ option |
+                                    translate }}</nz-auto-option>
+                            </nz-autocomplete>
+                        </nz-input-group>
+
+                    </td> -->
+          <td>
+            <nz-input-group [nzPrefix]="machineCodePrefix" [nzSuffix]="keyTitleSuffix">
+              <ng-template #keyTitleSuffix><span *ngIf="keyTitle" (click)="clearInput('keyTitle')" nz-icon
+                  nzType="close-circle" nzTheme="fill"
+                  style="font-size: 12px; cursor: pointer; color: rgb(172, 170, 170);"></span></ng-template>
+              <ng-template #machineCodePrefix><span nz-icon nzType="search" nzTheme="outline"
+                  style="color: #BDBDBD"></span></ng-template>
+              <input [nzAutocomplete]="autoFunction" type="text" nz-input [(ngModel)]="keyTitle"
+                (input)="searchAutoComplete('keyTitle', 'keyTitle')" (keyup)="search($event)">
+              <nz-autocomplete #autoFunction [nzDefaultActiveFirstOption]="false">
+                <nz-auto-option *ngFor="let option of optionsCompleteColumnkeyTitle" [nzValue]="option">{{ option |
+                  translate }}</nz-auto-option>
+              </nz-autocomplete>
+            </nz-input-group>
+
+          </td>
+          <td>
+            <nz-input-group [nzPrefix]="machineCodePrefix" [nzSuffix]="lastValueSuffix">
+              <ng-template #lastValueSuffix><span *ngIf="lastValue" (click)="clearInput('lastValue')" nz-icon
+                  nzType="close-circle" nzTheme="fill"
+                  style="font-size: 12px; cursor: pointer; color: rgb(172, 170, 170);"></span></ng-template>
+              <ng-template #machineCodePrefix><span nz-icon nzType="search" nzTheme="outline"
+                  style="color: #BDBDBD"></span></ng-template>
+              <input [nzAutocomplete]="autolastValue" type="text" nz-input [(ngModel)]="lastValue"
+                (input)="searchAutoComplete('lastValue', 'lastValue')" (keyup)="search($event)">
+              <nz-autocomplete #autolastValue [nzDefaultActiveFirstOption]="false">
+                <nz-auto-option *ngFor="let option of optionsCompleteColumnlastValue" [nzValue]="option">{{ option |
+                  translate }}</nz-auto-option>
+              </nz-autocomplete>
+            </nz-input-group>
+
+          </td>
+          <td>
+            <nz-input-group [nzPrefix]="machineCodePrefix" [nzSuffix]="newValueSuffix">
+              <ng-template #newValueSuffix><span *ngIf="newValue" (click)="clearInput('newValue')" nz-icon
+                  nzType="close-circle" nzTheme="fill"
+                  style="font-size: 12px; cursor: pointer; color: rgb(172, 170, 170);"></span></ng-template>
+              <ng-template #machineCodePrefix><span nz-icon nzType="search" nzTheme="outline"
+                  style="color: #BDBDBD"></span></ng-template>
+              <input [nzAutocomplete]="autonewValue" type="text" nz-input [(ngModel)]="newValue"
+                (input)="searchAutoComplete('newValue', 'newValue')" (keyup)="search($event)">
+              <nz-autocomplete #autonewValue [nzDefaultActiveFirstOption]="false">
+                <nz-auto-option *ngFor="let option of optionsCompleteColumnnewValue" [nzValue]="option">{{ option |
+                  translate }}</nz-auto-option>
+              </nz-autocomplete>
+            </nz-input-group>
+
+          </td>
+
+        </tr>
+        <!-- <ng-container *ngFor="let changeLog of listChangeLog">
+                    <tr>
+                      <td nzAlign="left">
+                        <p>{{ changeLog.keyTitle }}</p>
+                      </td>
+                      <td [style.text-align]="isNumberString(changeLog.lastValue) ? 'left' : 'left'">
+                        <p style="text-align: left;" *ngIf="changeLog.keyTitle === 'Trạng thái'">{{ changeLog.lastValue === '1' ? 'Hoạt động' : (changeLog.lastValue === '0') ? 'Không hoạt động' : '' }}</p>
+                        <p style="text-align: left;" *ngIf="changeLog.keyTitle === 'Ngày nhập máy' || changeLog.keyTitle === 'Ngày nhập dây chuyền'">{{ isNumberString(changeLog.lastValue) ? (changeLog.lastValue | date:'dd-MM-yyyy') : changeLog.lastValue }}</p>
+                        <p *ngIf="changeLog.keyTitle !== 'Trạng thái' && changeLog.keyTitle !== 'Ngày nhập máy' && changeLog.keyTitle !== 'Ngày nhập dây chuyền'">{{ changeLog.lastValue }}</p>
+                      </td>
+                      <td [style.text-align]="isNumberString(changeLog.newValue) ? 'left' : 'left'">
+                        <p style="text-align: left;" *ngIf="changeLog.keyTitle === 'Trạng thái'">{{ changeLog.newValue === '1' ? 'Hoạt động' : (changeLog.newValue === '0') ? 'Không hoạt động' : '' }}</p>
+                        <p style="text-align: left;" *ngIf="changeLog.keyTitle === 'Ngày nhập máy' || changeLog.keyTitle === 'Ngày nhập dây chuyền'">{{ isNumberString(changeLog.newValue) ? (changeLog.newValue | date:'dd-MM-yyyy') : changeLog.newValue }}</p>
+                        <p *ngIf="changeLog.keyTitle !== 'Trạng thái' && changeLog.keyTitle !== 'Ngày nhập máy' && changeLog.keyTitle !== 'Ngày nhập dây chuyền'">{{ changeLog.newValue }}</p>
+                      </td>
+                    </tr>
+                  </ng-container> -->
+
+
+        <ng-container *ngFor="let changeLog of listChangeLog; let lastStatus = last">
+          <tr *ngIf="changeLog.keyTitle !== 'Trạng thái'">
+            <td nzAlign="left">
+              {{ changeLog.keyTitle }}
+            </td>
+            <td nzAlign="left">
+              <p>{{ changeLog.keyTitle === 'Ngày nhập máy' || changeLog.keyTitle === 'Ngày nhập dây chuyền' ?
+                (changeLog.lastValue | date:'dd-MM-yyyy') : changeLog.lastValue }}</p>
+            </td>
+            <td nzAlign="left">
+              <p>{{ changeLog.keyTitle === 'Ngày nhập máy' || changeLog.keyTitle === 'Ngày nhập dây chuyền' ?
+                (changeLog.newValue | date:'dd-MM-yyyy') : changeLog.newValue }}</p>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngFor="let changeLog of listChangeLog; let lastStatus = last">
+          <tr *ngIf="changeLog.keyTitle === 'Trạng thái'">
+            <td nzAlign="left">
+              {{ changeLog.keyTitle }}
+            </td>
+            <td nzAlign="left">
+              <p>{{ changeLog.lastValue === '1' ? 'Hoạt động' : (changeLog.lastValue === '0') ? 'Không hoạt động' : ''
+                }}</p>
+            </td>
+            <td nzAlign="left">
+              <p>{{ changeLog.newValue === '1' ? 'Hoạt động' : (changeLog.newValue === '0') ? 'Không hoạt động' : '' }}
+              </p>
+            </td>
+          </tr>
+        </ng-container>
+
+
+        <!-- <ng-container *ngFor="let changeLog of listChangeLog; let last = last">
+                    <ng-container *ngIf="changeLog.keyTitle !== 'Trạng thái'">
+                      <tr>
+                        <td nzAlign="left">
+                          <p>{{ changeLog.keyTitle }}</p>
+                        </td>
+                        <td nzAlign="left">
+                          <p>{{ changeLog.keyTitle === 'Ngày nhập máy' || changeLog.keyTitle === 'Ngày nhập dây chuyền' ? (changeLog.lastValue | date:'dd-MM-yyyy') : changeLog.lastValue }}</p>
+                        </td>
+                        <td nzAlign="left">
+                          <p>{{ changeLog.keyTitle === 'Ngày nhập máy' || changeLog.keyTitle === 'Ngày nhập dây chuyền' ? (changeLog.newValue | date:'dd-MM-yyyy') : changeLog.newValue }}</p>
+                        </td>
+                      </tr>
+                    </ng-container>
+                    <ng-container *ngIf="changeLog.keyTitle === 'Trạng thái'">
+                      <ng-container *ngIf="last">
+                        <ng-container *ngFor="let statusChangeLog of listChangeLog">
+                          <ng-container *ngIf="statusChangeLog.keyTitle === 'Trạng thái'">
+                            <tr>
+                              <td nzAlign="left">
+                                <p>{{ statusChangeLog.keyTitle }}</p>
+                              </td>
+                              <td nzAlign="left">
+                                <p>{{ statusChangeLog.lastValue === '1' ? 'Hoạt động' : (statusChangeLog.newValue === '0') ? 'Không hoạt động' : '' }}</p>
+                              </td>
+                              <td nzAlign="left">
+                                <p>{{ statusChangeLog.newValue === '1' ? 'Hoạt động' : (statusChangeLog.lastValue === '0') ? 'Không hoạt động' : '' }}</p>
+
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container> -->
+
+        <!--  -->
+      </tbody>
+    </nz-table>
+    <app-pagination *ngIf="total" [currentPage]="pageNumber" [currentSize]="pageSize" [total]="total"
+      (emitPage)="getData($event)">
+    </app-pagination>
+  </ng-template>
+  <ng-template #modalFooter>
+    <app-button (click)="handleCancel()"
+      style="margin-right: 10px; background-color: #E5E5E5;display: inline-block; border-radius: 4px;"
+      [buttonType]="'text'" title="{{'Đóng' | translate}}"></app-button>
+  </ng-template>
+
+</nz-modal>

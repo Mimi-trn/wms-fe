@@ -1,0 +1,282 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb nz-col [nzSpan]="23" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+</nz-row>
+
+<div class="common-bg">
+  <nz-row>
+    <h2 class="m-0">{{ "listTechForm.techFormInfo" | translate }}</h2>
+  </nz-row>
+  <nz-row class="mt-24" nzAlign="top" nzJustify="start" [nzGutter]="{ xs: 0, sm: 0, md: 16, lg: 16, xl: 24, xxl: 24 }">
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.techFormCode" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input disabled type="text" nz-input [(ngModel)]="dataInformation.techFormCode" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.status" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select class="w-100" disabled [(ngModel)]="dataInformation.whStatus">
+            <nz-option *ngFor="let option of listStatus" [nzValue]="option.value"
+              [nzLabel]="option.label | translate"></nz-option>
+          </nz-select>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.techFormName" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input disabled type="text" nz-input [(ngModel)]="dataInformation.techFormName" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.startDate" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker disabled class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.startAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.endDate" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker disabled class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.endAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.checkedBy" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input disabled type="text" nz-input [(ngModel)]="dataInformation.checkedBy" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.approvedBy" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input disabled type="text" nz-input [(ngModel)]="dataInformation.approvedBy" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.createdBy" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input disabled type="text" nz-input [(ngModel)]="dataInformation.createdBy" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.createdAt" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker disabled class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.createdAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.updatedAt" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker disabled class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.updatedAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">
+          {{ "listTechForm.techFormTable.note" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <textarea disabled rows="3" nz-input [(ngModel)]="dataInformation.note"></textarea>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+<div class="common-bg mt-24">
+  <nz-row class="mb-24">
+    <h2 class="m-0">
+      {{
+      currentRadioButtonIndex == 0
+      ? ("listTechForm.materialTable.title" | translate)
+      : currentRadioButtonIndex == 1
+      ? ("listTechForm.requestProductionTable.title" | translate)
+      : ""
+      }}
+    </h2>
+  </nz-row>
+  <nz-row class="mb-12">
+    <app-radio-group-button [listOfButton]="listOfRadioButton"
+      (onChange)="changeSelect($event)"></app-radio-group-button>
+  </nz-row>
+  <nz-row>
+    <nz-col *ngIf="currentRadioButtonIndex == 0" nzSpan="24">
+      <nz-table nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{ x: 'auto' }"
+        [nzData]="materialData" #materialTable nzSize="small" class="w-100">
+        <thead>
+          <tr>
+            <th nzWidth="42px" nzAlign="center">
+              <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="updateAllChecked()"
+                [nzIndeterminate]="indeterminate">
+              </label>
+            </th>
+            <ng-container *ngFor="let column of materialTableColumns">
+              <th nz-resizable nzBounds="window" nzPreview [nzWidth]="column.width" [nzMaxWidth]="300"
+                [nzMinWidth]="100" (nzResizeEnd)="onResizeForMaterialTable($event, column)" nzAlign="center"
+                [nzSortFn]="column.compare" [nzFilters]="column.listOfFilter" [nzFilterFn]="column.filterFn"
+                [nzFilterMultiple]="false">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody class="striped-tr">
+          <tr>
+            <td></td>
+            <ng-container *ngFor="let column of materialTableColumns">
+              <td *ngIf="
+                  column.keyName !== 'quantity' &&
+                  column.keyName !== 'quantityHold'
+                ">
+                <nz-input-group style="border: none" nzSearch [nzPrefix]="prefixInput" [nzSuffix]="suffixInput">
+                  <input type="text" nz-input [(ngModel)]="materialPageFilter.filter[column.keyName]" />
+                </nz-input-group>
+                <ng-template #prefixInput>
+                  <span (click)="filterForMaterialTable()" class="search-click" nz-icon nzType="search"></span>
+                </ng-template>
+                <ng-template #suffixInput>
+                  <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                    *ngIf="materialPageFilter.filter[column.keyName]"
+                    (click)="materialPageFilter.filter[column.keyName] = ''"></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.keyName == 'quantity'"></td>
+              <td *ngIf="column.keyName == 'quantityHold'"></td>
+            </ng-container>
+          </tr>
+          <tr *ngFor="let row of materialTable.data">
+            <td nzAlign="center">
+              <label nz-checkbox [(ngModel)]="row.checked" (ngModelChange)="updateSingleChecked()"></label>
+            </td>
+            <td *ngFor="let column of materialTableColumns">
+              {{ row[column.keyName] }}
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-col>
+    <nz-col *ngIf="currentRadioButtonIndex == 1" nzSpan="24">
+      <nz-row>
+        <nz-col nzSpan="24">
+          <nz-table nzBordered [nzFrontPagination]="false" [nzShowPagination]="false"
+            [nzScroll]="{ x: 'auto', y: 'auto' }" [nzData]="productionData" #productionRequirementTable nzSize="small"
+            class="w-100 m-none">
+            <thead>
+              <tr>
+                <ng-container *ngFor="let column of productionTableColumns">
+                  <th nz-resizable nzBounds="window" nzPreview [nzColumnKey]="column.keyName" [nzWidth]="column.width"
+                    [nzMaxWidth]="300" [nzMinWidth]="100" (nzResizeEnd)="
+                      onResizeForListProductionRequirement($event, column)
+                    " nzAlign="center">
+                    <div class="editable-cell">
+                      {{ column.keyTitle | translate }}
+                    </div>
+                    <nz-resize-handle nzDirection="right">
+                      <div class="resize-trigger"></div>
+                    </nz-resize-handle>
+                  </th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody class="striped-tr">
+              <tr>
+                <ng-container *ngFor="let column of productionTableColumns">
+                  <td>
+                    <nz-input-group style="border: none" nzSearch [nzPrefix]="prefixInput" [nzSuffix]="suffixInput">
+                      <input type="text" nz-input [(ngModel)]="
+                          requestProductionPageFilter.filter[column.keyName]
+                        " />
+                    </nz-input-group>
+                    <ng-template #prefixInput>
+                      <span (click)="filterForProductionRequirementTable()" class="search-click" nz-icon
+                        nzType="search"></span>
+                    </ng-template>
+                    <ng-template #suffixInput>
+                      <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="
+                          requestProductionPageFilter.filter[column.keyName]
+                        " (click)="
+                          requestProductionPageFilter.filter[column.keyName] =
+                            ''
+                        "></span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+              </tr>
+              <ng-container *ngFor="let row of productionRequirementTable.data">
+                <tr>
+                  <td *ngFor="let column of productionTableColumns">
+                    {{ row[column.keyName] }}
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </nz-table>
+        </nz-col>
+      </nz-row>
+      <nz-row nzGutter="24" nzAlign="middle" nzJustify="center" class="mt-12">
+        <div nz-col nzSpan="24">
+          <app-pagination [currentPage]="prTalePageIndex" [currentSize]="prTalePageSize" [total]="prTaleTotal"
+            (emitPage)="paginationForProductionRequirementTable($event)"></app-pagination>
+        </div>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <nz-row nzAlign="top" nzJustify="end" class="w-100 mt-24" style="gap: 32px">
+    <app-button [className]="'common-btn-close w-100'" [title]="'button.cancel'" [buttonType]="'primary'"
+      [tooltipTitle]="'Click here to close add'" (btnClick)="close()">
+    </app-button>
+    <app-button *ngIf="dataInformation.whStatus == 1" [className]="'w-100'" [title]="'button.createExportRequest'"
+      [buttonType]="'primary'" [tooltipTitle]="'Click here to create export request'"
+      (btnClick)="createExportRequest()"></app-button>
+  </nz-row>
+</div>

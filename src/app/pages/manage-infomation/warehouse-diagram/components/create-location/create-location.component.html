@@ -1,0 +1,108 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancel()"
+  [nzWidth]="600"
+>
+  <ng-template #modalTitle>
+    <h2 style="text-align: center; color: #ff7a00" class="m-0">
+      {{ "popup.createLocation.title" | translate }}
+    </h2>
+  </ng-template>
+  <ng-template #modalContent>
+    <nz-row class="mb-12">
+      <nz-col nzSpan="24">
+        {{ "popup.createLocation.listWarehouse" | translate }}
+        <span class="error-span">*</span>
+      </nz-col>
+      <nz-col nzSpan="24">
+        <nz-select
+          class="w-100"
+          [(ngModel)]="locationData.warehouseCode"
+          [nzShowSearch]="true"
+          nzPlaceHolder="Hãy chọn kho"
+        >
+          <nz-option
+            *ngFor="let warehouse of warehouseList"
+            [nzLabel]="warehouse.warehouseName"
+            [nzValue]="warehouse.warehouseCode"
+          ></nz-option>
+        </nz-select>
+      </nz-col>
+      <nz-col
+        *ngIf="
+          !locationData.warehouseCode || locationData.warehouseCode.length == 0
+        "
+        class="error-span"
+        nzSpan="24"
+      >
+        {{ "popup.createLocation.warningValidate.listWarehouse" | translate }}
+      </nz-col>
+    </nz-row>
+    <nz-row class="mb-12">
+      <nz-col nzSpan="24">
+        {{ "popup.createLocation.locationName" | translate }}
+        <span class="error-span">*</span>
+      </nz-col>
+      <nz-col nzSpan="24">
+        <nz-input-group [nzSuffix]="inputClearNote">
+          <input
+            nz-input
+            [(ngModel)]="locationData.locationName"
+            placeholder="Nhập tên kho"
+          />
+        </nz-input-group>
+        <ng-template #inputClearNote>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="locationData.locationName"
+            (click)="locationData.locationName = null"
+          ></span>
+        </ng-template>
+      </nz-col>
+      <nz-col *ngIf="!locationData.locationName" class="error-span" nzSpan="24">
+        {{ "popup.createLocation.warningValidate.warehouseName" | translate }}
+      </nz-col>
+    </nz-row>
+    <nz-row nzJustify="end">
+      <nz-col>
+        <button
+          nz-button
+          (click)="handleCancel()"
+          style="
+            background-color: #e5e5e5;
+            color: #000;
+            border: 1px solid #e5e5e5;
+            width: 100%;
+          "
+          nzType="primary"
+        >
+          {{ "btn.cancel" | translate }}
+        </button>
+      </nz-col>
+      <nz-col style="margin-left: 30px">
+        <button
+          nz-button
+          (click)="isVisiblePopup = true"
+          style="width: 100%"
+          nzType="primary"
+        >
+          {{ "btn.confirm" | translate }}
+        </button>
+      </nz-col>
+    </nz-row>
+  </ng-template>
+</nz-modal>
+
+<app-popup-confirm
+  title="Xác nhận tạo vị trí kho"
+  content="Tạo vị trí kho mới"
+  [isVisible]="isVisiblePopup"
+  (cancel)="isVisiblePopup = $event"
+  (isVisibleChange)="createLocation()"
+></app-popup-confirm>

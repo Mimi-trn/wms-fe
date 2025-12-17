@@ -1,0 +1,356 @@
+<nz-spin [nzTip]="'Loading...'" [nzSpinning]="isSpinning">
+  <nz-row nzAlign="middle" class="mb-12">
+    <app-breadcrumb [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+  </nz-row>
+  <div class="common-bg">
+    <nz-row nzJustify="center" class="mb-12">
+      <h2 class="m-0">
+        {{ "sidebar.warning.child.listOfWarning" | translate }}
+      </h2>
+    </nz-row>
+    <nz-row class="mb-12">
+      <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzXXl="24">
+        <h4 class="m-0">{{ "search.general" | translate }}</h4>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="14" nzLg="12" nzXl="10" nzXXl="6">
+        <form (ngSubmit)="onHandleSearchCommon()">
+          <nz-input-group
+            [nzPrefix]="prefixButtonSearch"
+            [nzSuffix]="suffixButtonClear"
+          >
+            <input
+              type="text"
+              nz-input
+              placeholder="{{ 'search.general.placeholder' | translate }}"
+              [(ngModel)]="searchGeneral"
+              name="searchGeneral"
+            />
+          </nz-input-group>
+          <ng-template #prefixButtonSearch>
+            <span
+              class="search-click"
+              style="color: #d9d9d9"
+              nz-icon
+              nzType="search"
+              (click)="onHandleSearchCommon()"
+            ></span>
+          </ng-template>
+          <ng-template #suffixButtonClear>
+            <span
+              nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              *ngIf="searchGeneral"
+              (click)="searchGeneral = ''"
+            ></span>
+          </ng-template>
+        </form>
+      </nz-col>
+    </nz-row>
+    <nz-row nzAlign="middle" nzJustify="end" nzGutter="12" class="mb-12">
+      <nz-col>
+        <button
+          nz-button
+          nzType="text"
+          class="p-0"
+          nz-tooltip
+          nz-popover
+          [nzPopoverContent]="configColumns"
+          nzPopoverPlacement="left"
+        >
+          <img src="./../../../../assets/image/addColumn.svg" alt="" />
+          <ng-template #configColumns>
+            <div>
+              <ng-container>
+                <label
+                  class="mb-4"
+                  nz-checkbox
+                  [(ngModel)]="allChecked"
+                  (ngModelChange)="onHandleUpdateAllChecked()"
+                  [nzIndeterminate]="indeterminate"
+                >
+                  Tất cả
+                </label>
+                <br />
+              </ng-container>
+              <ng-container *ngFor="let column of columns; let i = index">
+                <label
+                  class="mb-4"
+                  [(ngModel)]="column.check"
+                  nz-checkbox
+                  (ngModelChange)="onHandleClickCheckBox()"
+                  >{{ column.keyTitle | translate }}</label
+                >
+                <br />
+              </ng-container>
+            </div>
+          </ng-template>
+        </button>
+      </nz-col>
+    </nz-row>
+    <nz-row>
+      <nz-col nzSpan="24">
+        <nz-table
+          class="w-100"
+          nzBordered
+          nzFrontPagination="false"
+          nzShowPagination="false"
+          nzSize="small"
+          [nzData]="listWarning"
+          #dataWo
+          [nzScroll]="{ x: 'auto' }"
+        >
+          <thead>
+            <tr>
+              <ng-container *ngFor="let column of columns; let i = index">
+                <ng-container *ngIf="column.check">
+                  <th
+                    nz-resizable
+                    [nzWidth]="column.width"
+                    (nzResize)="onResize($event, i)"
+                    [nzMaxWidth]="500"
+                    [nzMinWidth]="100"
+                    style="cursor: pointer"
+                    (click)="customSortFunction(column)"
+                  >
+                    <div class="editable-cell">
+                      {{ column.keyTitle | translate }}
+                      <nz-resize-handle nzDirection="right">
+                        <div class="resize-trigger"></div>
+                      </nz-resize-handle>
+                    </div>
+                    <span
+                      *ngIf="column.count == 0"
+                      style="
+                        float: right;
+                        position: absolute;
+                        bottom: 12px;
+                        right: 10px;
+                        cursor: pointer;
+                      "
+                      nz-tooltip="Sắp xếp giảm dần"
+                      nz-icon
+                      nzType="swap"
+                      [nzRotate]="90"
+                      nzTheme="outline"
+                    ></span>
+                    <span
+                      *ngIf="column.count > 0 && column.sortOrder == 'DESC'"
+                      style="
+                        float: right;
+                        position: absolute;
+                        bottom: 12px;
+                        right: 10px;
+                        cursor: pointer;
+                      "
+                      nz-tooltip="Sắp xếp tăng dần"
+                      nz-icon
+                      nzType="arrow-down"
+                      nzTheme="outline"
+                    ></span>
+                    <span
+                      *ngIf="column.count > 0 && column.sortOrder == 'ASC'"
+                      style="
+                        float: right;
+                        position: absolute;
+                        bottom: 12px;
+                        right: 10px;
+                        cursor: pointer;
+                      "
+                      nz-tooltip="Sắp xếp giảm dần"
+                      nz-icon
+                      nzType="arrow-up"
+                      nzTheme="outline"
+                    ></span>
+                  </th>
+                </ng-container>
+              </ng-container>
+              <th nzWidth="100px" nzAlign="center" nzRight>
+                {{ "table.action" | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody [class]="listWarning.length > 0 ? 'striped-tr' : ''">
+            <tr>
+              <ng-container *ngFor="let column of columns">
+                <ng-container
+                  *ngIf="
+                    column.check &&
+                    column.keyName != 'warningType' &&
+                    column.keyName != 'createdAt' &&
+                    column.keyName != 'isRead'
+                  "
+                >
+                  <td>
+                    <nz-input-group
+                      nzSearch
+                      [nzPrefix]="prefixKeyName"
+                      [nzSuffix]="suffixKeyName"
+                    >
+                      <input
+                        type="text"
+                        nz-input
+                        [(ngModel)]="filterWarning[column.keyName]"
+                        (keyup)="onHandleEnterSearch($event)"
+                      />
+                    </nz-input-group>
+                    <ng-template #prefixKeyName>
+                      <span
+                        (click)="onHandleClickSearch()"
+                        class="search-click"
+                        nz-icon
+                        nzType="search"
+                        style="color: #d9d9d9"
+                      ></span>
+                    </ng-template>
+                    <ng-template #suffixKeyName>
+                      <span
+                        nz-icon
+                        class="ant-input-clear-icon"
+                        nzTheme="fill"
+                        nzType="close-circle"
+                        *ngIf="filterWarning[column.keyName]"
+                        (click)="onHandleClearInput(column.keyName)"
+                      ></span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+                <ng-container
+                  *ngIf="column.check && column.keyName == 'warningType'"
+                >
+                  <td>
+                    <nz-select
+                      class="select-search"
+                      style="width: 100%"
+                      [nzAllowClear]="true"
+                      nzPlaceHolder="{{ 'all_select' | translate }}"
+                      [(ngModel)]="filterWarning[column.keyName]"
+                      (ngModelChange)="onHandleClickSearch()"
+                    >
+                      <nz-option
+                        *ngFor="let item of listWarningType"
+                        [nzValue]="item.value"
+                        [nzLabel]="item.text"
+                      ></nz-option>
+                    </nz-select>
+                  </td>
+                </ng-container>
+                <ng-container
+                  *ngIf="column.check && column.keyName == 'createdAt'"
+                >
+                  <td>
+                    <nz-range-picker
+                      [(ngModel)]="filterWarning[column.keyName]"
+                      (ngModelChange)="onHandleClickSearch()"
+                      [nzPlaceHolder]="[
+                        'start_date' | translate,
+                        'end_date' | translate
+                      ]"
+                    ></nz-range-picker>
+                  </td>
+                </ng-container>
+                <ng-container
+                  *ngIf="column.check && column.keyName == 'isRead'"
+                >
+                  <td>
+                    <nz-select
+                      class="select-search"
+                      style="width: 100%"
+                      [nzAllowClear]="true"
+                      nzPlaceHolder="{{ 'all_select' | translate }}"
+                      [(ngModel)]="filterWarning[column.keyName]"
+                      (ngModelChange)="onHandleClickSearch()"
+                    >
+                      <nz-option
+                        *ngFor="let item of listStatus"
+                        [nzValue]="item.value"
+                        [nzLabel]="item.text"
+                      ></nz-option>
+                    </nz-select>
+                  </td>
+                </ng-container>
+              </ng-container>
+              <td nzRight></td>
+            </tr>
+            <ng-container *ngFor="let row of dataWo.data">
+              <tr>
+                <ng-container *ngFor="let column of columns">
+                  <ng-container
+                    *ngIf="
+                      column.check &&
+                      column.keyName != 'warningType' &&
+                      column.keyName != 'createdAt' &&
+                      column.keyName != 'isRead'
+                    "
+                  >
+                    <td>
+                      {{ row[column.keyName] }}
+                    </td>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="column.check && column.keyName == 'createdAt'"
+                  >
+                    <td nzAlign="right">
+                      {{ row["createdAt"] | date : "dd/MM/YYYY" }}
+                    </td>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="column.check && column.keyName == 'warningType'"
+                  >
+                    <ng-container
+                      *ngIf="row['warningType']; else notWarningType"
+                    >
+                      <ng-container *ngFor="let item of listWarningType">
+                        <td *ngIf="item.value == row['warningType']">
+                          {{ item.text }}
+                        </td>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                  <ng-template #notWarningType>
+                    <td></td>
+                  </ng-template>
+                  <ng-container
+                    *ngIf="column.check && column.keyName == 'isRead'"
+                  >
+                    <td nzAlign="center">
+                      <div [ngSwitch]="row[column.keyName]">
+                        <div class="wo_2" *ngSwitchCase="false">
+                          {{ "Chưa đọc" | translate }}
+                        </div>
+                        <div class="wo_4" *ngSwitchCase="true">
+                          {{ "Đã đọc" | translate }}
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+                </ng-container>
+                <td nzAlign="center" nzRight>
+                  <div class="d-flex j-content-evenly">
+                    <app-button
+                      [iconType]="'right-circle'"
+                      [iconTheme]="'fill'"
+                      [buttonType]="'text'"
+                      (btnClick)="sendMessage(row)"
+                    ></app-button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+      </nz-col>
+    </nz-row>
+    <nz-row *ngIf="total" nzGutter="24" nzAlign="middle" nzJustify="center">
+      <div nz-col nzSpan="24">
+        <app-pagination
+          [currentPage]="page"
+          [currentSize]="perPage"
+          [total]="total"
+          (emitPage)="pagination($event)"
+        ></app-pagination>
+      </div>
+    </nz-row>
+  </div>
+</nz-spin>

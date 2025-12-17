@@ -1,0 +1,459 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+</nz-row>
+
+<div class="common-bg mb-24" *ngIf="hasRefusal && dataInformation.status == 2">
+  <div class="error-span">
+    <b> Lý do từ chối duyệt </b>
+  </div>
+  <div class="mt-12">
+    {{ dataInformation.refusalReason }}
+  </div>
+</div>
+<div class="common-bg mb-24" *ngIf="hasRecall && dataInformation.status == 0">
+  <div style="color: #0047ff">
+    <b> Lý do thu hồi yêu cầu duyệt </b>
+  </div>
+  <div class="mt-12">
+    {{ dataInformation.recallReason }}
+  </div>
+</div>
+
+<div class="common-bg mt-24">
+  <nz-row nzAlign="middle">
+    <h2 class="m-0">
+      {{
+      "sidebar.inventory.child.inventoryRequest.list.information" | translate
+      }}:
+    </h2>
+    <span class="ml-4">{{ dataInformation.inventoryRequestCode }}</span>
+  </nz-row>
+  <nz-row nzAlign="top" nzJustify="start" [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }">
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.inventoryType"
+          | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select [nzDisabled]="true" [(ngModel)]="dataInformation.inventoryType" class="w-100"
+            nzPlaceHolder="-- Chọn --">
+            <nz-option *ngFor="let option of listInventoryType" [nzValue]="option.value"
+              [nzLabel]="option.text"></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="dataInformation.inventoryType == null">
+          <span class="error-span"> Bạn phải chọn một loại kiểm kê </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.warehouseName"
+          | translate
+          }}
+          <span class="error-span" *ngIf="
+              (dataInformation.status == 0 || dataInformation.status == 2) &&
+              (checkGroupsInTokenChiefAccountant ||
+                checkGroupsInTokenAdmin ||
+                checkGroupsInFcimAdmin)
+            ">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select [disabled]="
+              dataInformation.status == 0 &&
+              (checkGroupsInTokenChiefAccountant ||
+                checkGroupsInTokenAdmin ||
+                checkGroupsInFcimAdmin)
+                ? false
+                : true
+            " [(ngModel)]="dataInformation.warehouseId" class="w-100" nzPlaceHolder="-- Chọn --"
+            (ngModelChange)="onHandleChangeSelectWarehouse($event)">
+            <nz-option *ngFor="let option of listWarehouse" [nzValue]="option.warehouseId"
+              [nzLabel]="option.warehouseName"></nz-option>
+          </nz-select>
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.warehouseId">
+          <span class="error-span"> Bạn phải chọn một loại kho </span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.status" | translate
+          }}
+          <span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select [nzDisabled]="true" [(ngModel)]="dataInformation.status" class="w-100" nzPlaceHolder="-- Chọn --">
+            <nz-option *ngFor="let option of listStatus" [nzValue]="option.value" [nzLabel]="option.text"></nz-option>
+          </nz-select>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.requestAt"
+          | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [disabled]="
+              (dataInformation.status == 0 || dataInformation.status == 2) &&
+              (checkGroupsInTokenChiefAccountant ||
+                checkGroupsInTokenAdmin ||
+                checkGroupsInFcimAdmin)
+                ? false
+                : true
+            " [nzPlaceHolder]="
+              (dataInformation.status == 0 || dataInformation.status == 2) &&
+              !dataInformation.requestAt
+                ? 'Chọn ngày yêu cầu (Nếu có)'
+                : 'Không có ngày yêu cầu'
+            " class="w-100" nzFormat="dd/MM/yyyy" [(ngModel)]="dataInformation.requestAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.requesterName"
+          | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input nz-input [(ngModel)]="dataInformation.requesterName" [disabled]="true" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.createdAt"
+          | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [disabled]="true" class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.createdAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.updatedAt"
+          | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [disabled]="true" class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.updatedAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.inventory.child.inventoryRequest.list.content" | translate
+          }}</nz-col>
+        <nz-col nzSpan="24">
+          <textarea placeholder="Nhập nội dung yêu cầu (Nếu có)" rows="2" nz-input [disabled]="
+              (dataInformation.status == 0 || dataInformation.status == 2) &&
+              (checkGroupsInTokenChiefAccountant ||
+                checkGroupsInTokenAdmin ||
+                checkGroupsInFcimAdmin)
+                ? false
+                : true
+            " [(ngModel)]="dataInformation.content"></textarea>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+<div class="common-bg mt-24">
+  <nz-row nzAlign="middle" nzJustify="space-between" nzGutter="24">
+    <nz-col>
+      <h2 class="m-0">
+        {{ "listProduct.title" | translate }}
+      </h2>
+    </nz-col>
+    <!-- <nz-col>
+      <h2 class="m-0">
+        <app-button
+          [title]="'btn.exportExcel'"
+          [buttonType]="'text'"
+          [iconType]="'file-excel'"
+          [iconTheme]="'outline'"
+          (btnClick)="onHandleExportExcel()"
+        ></app-button>
+      </h2>
+    </nz-col> -->
+  </nz-row>
+  <nz-table class="w-100 mt-12" nzBordered nzFrontPagination="false" nzShowPagination="false" nzSize="small"
+    [nzData]="listItemFromClient" #tableItemFromClient [nzScroll]="{ y: '300px' }">
+    <thead>
+      <tr>
+        <ng-container *ngFor="let column of columns; let i = index">
+          <ng-container *ngIf="column.check">
+            <th [nzWidth]="column.width">
+              <div class="editable-cell">
+                {{ column.keyTitle | translate }}
+              </div>
+            </th>
+          </ng-container>
+        </ng-container>
+        <th nzWidth="100px" nzAlign="center" nzRight *ngIf="
+            (dataInformation.status == 0 || dataInformation.status == 2) &&
+            (checkGroupsInTokenChiefAccountant ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin)
+          ">
+          {{ "table.action" | translate }}
+        </th>
+      </tr>
+    </thead>
+    <tbody [class]="listItemFromClient.length > 0 ? 'striped-tr' : ''">
+      <tr>
+        <ng-container *ngFor="let column of columns">
+          <ng-container *ngIf="column.check && column.keyName != 'remainQuantity'">
+            <td>
+              <nz-input-group nzSearch [nzPrefix]="prefixKeyName" [nzSuffix]="suffixKeyName">
+                <input type="text" nz-input [(ngModel)]="filterInventoryClient[column.keyName]" />
+              </nz-input-group>
+              <ng-template #prefixKeyName>
+                <span class="search-click" nz-icon nzType="search" style="color: #d9d9d9"></span>
+              </ng-template>
+              <ng-template #suffixKeyName>
+                <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                  *ngIf="filterInventoryClient[column.keyName]" (click)="onHandleClearInput(column.keyName)"></span>
+              </ng-template>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'remainQuantity'">
+            <td nzAlign="right">
+              <b> {{ totalRemainQuantity | number }} </b>
+            </td>
+          </ng-container>
+        </ng-container>
+        <td nzRight *ngIf="
+            (dataInformation.status == 0 || dataInformation.status == 2) &&
+            (checkGroupsInTokenChiefAccountant ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin)
+          "></td>
+      </tr>
+      <ng-container *ngFor="
+          let row of tableItemFromClient.data
+            | filterInventoryRequestProduct
+              : filterInventoryClient.productCode
+              : filterInventoryClient.itemName
+              : filterInventoryClient.description
+              : filterInventoryClient.uom
+        ">
+        <tr>
+          <ng-container *ngFor="let column of columns">
+            <td *ngIf="column.check && column.keyName != 'remainQuantity'">
+              {{ row[column.keyName] }}
+            </td>
+            <td nzAlign="right" *ngIf="column.check && column.keyName == 'remainQuantity'">
+              {{ row["remainQuantity"] | number }}
+            </td>
+          </ng-container>
+          <td nzAlign="center" nzRight *ngIf="
+              (dataInformation.status == 0 || dataInformation.status == 2) &&
+              (checkGroupsInTokenChiefAccountant ||
+                checkGroupsInTokenAdmin ||
+                checkGroupsInFcimAdmin)
+            ">
+            <button class="p-0" style="width: 32px; height: 32px" nz-button nzType="text"
+              (click)="onHandleDeleteItem(row)">
+              <img src="./assets/image/svg/inventoryRequest_delete.svg" />
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <nz-row class="mt-24" nzJustify="space-between">
+    <nz-col nzSpan="4">
+      <button *ngIf="
+          (dataInformation.status == 0 || dataInformation.status == 2) &&
+          (checkGroupsInTokenChiefAccountant ||
+            checkGroupsInTokenAdmin ||
+            checkGroupsInFcimAdmin)
+        " nz-button nzType="primary" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate"
+        [nzPopoverPlacement]="'topRight'" [nzPopoverVisible]="visiblePopOver" (click)="onHandleVisiblePopOver()"
+        (nzPopoverVisibleChange)="onHandleChangeVisiblePopOver($event)">
+        <span nz-icon nzType="plus" nzTheme="outline"></span>{{ "listProduct.btn.addProduct" | translate }}
+      </button>
+      <ng-template #contentTemplate>
+        <nz-table #tableItemFromServer [nzData]="listItemFromServer" style="width: 1001px" [nzScroll]="{ y: '400px' }"
+          nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" [nzPaginationType]="'small'" nzSize="small"
+          (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+          <thead>
+            <tr>
+              <th nzWidth="50px" [(nzChecked)]="checked" [nzIndeterminate]="indeterminate"
+                (nzCheckedChange)="onAllChecked($event)"></th>
+              <ng-container *ngFor="let column of columnItemFromServer; let i = index">
+                <ng-container *ngIf="column.check">
+                  <th nz-resizable [nzWidth]="column.width" (nzResize)="onResizeItemFromServer($event, i)"
+                    [nzMaxWidth]="300" [nzMinWidth]="100">
+                    <div class="editable-cell">
+                      {{ column.keyTitle | translate }}
+                      <nz-resize-handle nzDirection="right">
+                        <div class="resize-trigger"></div>
+                      </nz-resize-handle>
+                    </div>
+                  </th>
+                </ng-container>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody [class]="listItemFromServer.length > 0 ? 'striped-tr' : ''">
+            <tr>
+              <td></td>
+              <ng-container *ngFor="let column of columnItemFromServer">
+                <ng-container *ngIf="column.check">
+                  <td>
+                    <nz-input-group nzSearch [nzPrefix]="prefixKeyName" [nzSuffix]="suffixKeyName">
+                      <input type="text" (keyup)="onHandleEnterSearchItem($event)" nz-input
+                        [(ngModel)]="filterInventoryServer[column.keyName]" />
+                    </nz-input-group>
+                    <ng-template #prefixKeyName>
+                      <span class="search-click" (click)="onHandleSearchItem()" nz-icon nzType="search"
+                        style="color: #d9d9d9"></span>
+                    </ng-template>
+                    <ng-template #suffixKeyName>
+                      <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                        *ngIf="filterInventoryServer[column.keyName]"
+                        (click)="onHandleClearInputServer(column.keyName)"></span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+              </ng-container>
+            </tr>
+            <ng-container *ngFor="let row of tableItemFromServer.data">
+              <tr>
+                <td [nzChecked]="setOfCheckedId.has(row.productCode)" (nzCheckedChange)="onItemChecked(row, $event)">
+                </td>
+                <ng-container *ngFor="let column of columnItemFromServer">
+                  <td *ngIf="column.check">
+                    {{ row[column.keyName] }}
+                  </td>
+                </ng-container>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+        <div *ngIf="totalItem">
+          <app-pagination [currentPage]="pageItem" [currentSize]="perPageItem" [total]="totalItem"
+            (emitPage)="onHandlePagination($event)"></app-pagination>
+        </div>
+      </ng-template>
+    </nz-col>
+    <nz-col nzSpan="20">
+      <nz-row nzGutter="24" nzJustify="end">
+        <nz-col>
+          <app-button [className]="'w-100 common-btn-close '" [title]="'btn.close'" [buttonType]="'primary'"
+            (btnClick)="onHandleClose()"></app-button>
+        </nz-col>
+        <nz-col *ngIf="
+            (dataInformation.status == 0 || dataInformation.status == 2) &&
+            (checkGroupsInTokenChiefAccountant ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            (checkIsRole('wms_inventory-audit-request_draft') ||
+              checkIsRole('FCIM_ADMIN'))
+          ">
+          <app-button [className]="'w-100 common-btn-drag '" [title]="'btn.drag'" [buttonType]="'primary'"
+            (btnClick)="onHandleDraft()"></app-button>
+        </nz-col>
+        <nz-col *ngIf="
+            (dataInformation.status == 0 || dataInformation.status == 2) &&
+            (checkGroupsInTokenChiefAccountant ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            (checkIsRole('wms_inventory-audit-request_create') ||
+              checkIsRole('FCIM_ADMIN'))
+          ">
+          <app-button [className]="'w-100 '" [title]="'btn.send'" [buttonType]="'primary'"
+            (btnClick)="onHandleSave()"></app-button>
+        </nz-col>
+        <nz-col *ngIf="
+            dataInformation.status == 1 &&
+            (checkGroupsInTokenChiefAccountant ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            (checkIsRole('wms_inventory-audit-request_update') ||
+              checkIsRole('FCIM_ADMIN'))
+          ">
+          <app-button [className]="'w-100 '" [title]="'btn.revoke'" [buttonType]="'primary'"
+            (btnClick)="onHandleRevoke()"></app-button>
+        </nz-col>
+        <nz-col *ngIf="
+            dataInformation.status == 1 &&
+            (checkGroupsInTokenKeeper ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            (checkIsRole('wms_inventory-audit-request_approve') ||
+              checkIsRole('FCIM_ADMIN'))
+          ">
+          <app-button [className]="'w-100 common-btn-red'" [title]="'btn.refuseInventory'" [buttonType]="'primary'"
+            (btnClick)="onHandleRefusal()"></app-button>
+        </nz-col>
+        <nz-col *ngIf="
+            dataInformation.status == 1 &&
+            (checkGroupsInTokenKeeper ||
+              checkGroupsInTokenAdmin ||
+              checkGroupsInFcimAdmin) &&
+            (checkIsRole('wms_inventory-audit-sheet_create') ||
+              checkIsRole('FCIM_ADMIN'))
+          ">
+          <app-button [className]="'w-100 '" [title]="'btn.createInventory'" [buttonType]="'primary'"
+            (btnClick)="onHandleSendInventory()"></app-button>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+
+<nz-modal nzWidth="800px" [(nzVisible)]="visibleRevoke" [nzFooter]="null" (nzOnCancel)="onHandleCancelReason()"
+  [nzContent]="showAddNewContentRevoke" [nzTitle]="showAddNewTitleRevoke">
+  <ng-template #showAddNewTitleRevoke>
+    <div class="d-flex">
+      <img src="./assets/image/svg/gdn_modal.svg" alt="" />
+      <h2 class="m-0 ml-24">{{ "Thu hồi yêu cầu kiểm kê" | translate }}</h2>
+    </div>
+  </ng-template>
+  <ng-template #showAddNewContentRevoke>
+    <app-revoke-inventory-request (childOut)="onHandleCloseModalRevoke($event)" [child]="dataInformation">
+    </app-revoke-inventory-request>
+  </ng-template>
+</nz-modal>
+
+<app-popup-cancel [isVisible]="isShowPopupConfirmRevoke" (cancel)="onHandleCancelPopup($event)"
+  (isVisibleChange)="onHandleConfirmPopup($event)">
+</app-popup-cancel>
+
+<nz-modal nzWidth="800px" [(nzVisible)]="visibleRefusal" [nzFooter]="null" (nzOnCancel)="onHandleCancelReasonRefusal()"
+  [nzContent]="showAddNewContentRefusal" [nzTitle]="showAddNewTitleRefusal">
+  <ng-template #showAddNewTitleRefusal>
+    <div class="d-flex">
+      <img src="./assets/image/svg/gdn_modal.svg" alt="" />
+      <h2 class="m-0 ml-24">{{ "Từ chối yêu cầu kiểm kê" | translate }}</h2>
+    </div>
+  </ng-template>
+  <ng-template #showAddNewContentRefusal>
+    <app-refusal-inventory-request (childOut)="onHandleCloseModalRefusal($event)" [child]="dataInformation">
+    </app-refusal-inventory-request>
+  </ng-template>
+</nz-modal>
+
+<app-popup-cancel [isVisible]="isShowPopupConfirmRefusal" (cancel)="onHandleCancelPopupRefusal($event)"
+  (isVisibleChange)="onHandleConfirmPopupRefusal($event)">
+</app-popup-cancel>

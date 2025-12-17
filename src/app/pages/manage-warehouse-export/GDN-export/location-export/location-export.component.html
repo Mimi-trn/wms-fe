@@ -1,0 +1,317 @@
+<!-- Danh sách kiện hanngf -->
+<div style="display: block; border: 1px solid #ddd" class="common-bg">
+  <nz-row nzAlign="middle" nzJustify="end" nzGutter="12" class="mb-12">
+    <nz-col class="d-flex">
+      <button
+        nz-button
+        nzType="text"
+        class="p-0"
+        nz-tooltip
+        nz-dropdown
+        [nzDropdownMenu]="configColumns"
+      >
+        <img src="./assets/image/addColumn.svg" alt="" />
+        <nz-dropdown-menu #configColumns="nzDropdownMenu">
+          <div
+            style="
+              background-color: white;
+              padding: 8px 12px;
+              border: 1px solid #ccc;
+            "
+          >
+            <ng-container>
+              <label
+                nz-checkbox
+                [(ngModel)]="allChecked"
+                (ngModelChange)="updateAllChecked()"
+                [nzIndeterminate]="indeterminate"
+              >
+                Tất cả
+              </label>
+              <br />
+            </ng-container>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <label
+                [(ngModel)]="column.check"
+                nz-checkbox
+                (ngModelChange)="onClickCheckBox()"
+                style="margin-top: 8px"
+                >{{ column.keyTitle | translate }}</label
+              >
+              <br />
+            </ng-container>
+          </div>
+        </nz-dropdown-menu>
+      </button>
+    </nz-col>
+  </nz-row>
+  <nz-table
+    nzBordered
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+    [nzScroll]="{ x: 'auto', y: '400px' }"
+    [nzData]="dataLocations"
+    #table
+    nzSize="small"
+  >
+    <thead>
+      <tr>
+        <ng-container *ngFor="let column of columns; let i = index">
+          <ng-container *ngIf="column.check">
+            <th
+              nz-resizable
+              [nzWidth]="column.width"
+              (nzResize)="onResize($event, i)"
+              [nzMaxWidth]="500"
+              [nzMinWidth]="100"
+            >
+              <div class="editable-cell">
+                {{ column.keyTitle | translate }}
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </div>
+            </th>
+          </ng-container>
+        </ng-container>
+        <th nzWidth="100px" nzAlign="center" nzRight>
+          {{ "table.action" | translate }}
+        </th>
+      </tr>
+    </thead>
+    <tbody [class]="dataLocations.length > 0 ? 'striped-tr' : ''">
+      <ng-container *ngFor="let row of table.data; let i = index">
+        <tr>
+          <ng-container *ngFor="let column of columns; let j = index">
+            <ng-container
+              *ngIf="
+                column.check &&
+                column.keyName !== 'locationWarehouseName' &&
+                column.keyName !== 'locationCode' &&
+                column.keyName !== 'exportPackageQuantity' &&
+                column.keyName !== 'grnCode' &&
+                column.keyName !== 'itemQuantity'
+              "
+            >
+              <td>
+                {{ row[column.keyName] }}
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="column.check && column.keyName == 'locationWarehouseName'"
+            >
+              <td>
+                <nz-select
+                  class="w-100"
+                  nzShowSearch
+                  nzAllowClear
+                  [nzDropdownMatchSelectWidth]="false"
+                  [nzPlacement]="'bottomLeft'"
+                  [(ngModel)]="row[column.keyName]"
+                  (ngModelChange)="changeLocationWarehouse($event, row)"
+                >
+                  <nz-option
+                    *ngFor="let item of listLocationWarehouseName"
+                    [nzLabel]="item.locationName"
+                    [nzValue]="item.id"
+                  ></nz-option>
+                </nz-select>
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="column.check && column.keyName == 'locationCode'"
+            >
+              <td>
+                <nz-select
+                  class="w-100"
+                  nzShowSearch
+                  nzAllowClear
+                  [nzDisabled]="row['locationWarehouseName'] ? false : true"
+                  [nzDropdownMatchSelectWidth]="false"
+                  [nzPlacement]="'bottomLeft'"
+                  [(ngModel)]="row[column.keyName]"
+                  (ngModelChange)="changeLocationCode($event, row)"
+                >
+                  <nz-option
+                    *ngFor="let item of listLocationCode"
+                    [nzLabel]="item.locationCode"
+                    [nzValue]="item.id"
+                  ></nz-option>
+                </nz-select>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column.check && column.keyName == 'grnCode'">
+              <td>
+                <nz-select
+                  class="w-100"
+                  nzShowSearch
+                  nzAllowClear
+                  [nzDisabled]="row['locationCode'] ? false : true"
+                  [nzDropdownMatchSelectWidth]="false"
+                  [nzPlacement]="'bottomLeft'"
+                  [(ngModel)]="row[column.keyName]"
+                  (ngModelChange)="changeGrnCode($event, row)"
+                >
+                  <nz-option
+                    *ngFor="let item of listGrnCode"
+                    [nzLabel]="item.grnCode"
+                    [nzValue]="item.grnCode"
+                  ></nz-option>
+                </nz-select>
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="column.check && column.keyName == 'itemQuantity'"
+            >
+              <td>
+                <nz-select
+                  class="w-100"
+                  nzShowSearch
+                  nzAllowClear
+                  [nzDisabled]="row['grnCode'] ? false : true"
+                  [nzDropdownMatchSelectWidth]="false"
+                  [nzPlacement]="'bottomLeft'"
+                  [(ngModel)]="row[column.keyName]"
+                  (ngModelChange)="changeItemQuantity($event, row)"
+                >
+                  <nz-option
+                    *ngFor="let item of listItemQuantity"
+                    [nzLabel]="item.itemQuantity"
+                    [nzValue]="item.id"
+                  ></nz-option>
+                </nz-select>
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="column.check && column.keyName == 'exportPackageQuantity'"
+            >
+              <td>
+                <nz-input-group [nzSuffix]="inputClearTpl">
+                  <input
+                    [disabled]="row['grnCode'] ? false : true"
+                    type="number"
+                    nz-input
+                    [(ngModel)]="row[column.keyName]"
+                    (ngModelChange)="onHandleExportPackageQuantity($event, row)"
+                  />
+                </nz-input-group>
+                <ng-template #inputClearTpl>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="row[column.keyName]"
+                    (click)="row[column.keyName] = null"
+                  ></span>
+                </ng-template>
+              </td>
+            </ng-container>
+          </ng-container>
+          <td nzRight>
+            <div class="d-flex a-items-center j-content-center">
+              <app-button
+                [iconTheme]="'fill'"
+                [iconType]="'delete'"
+                [buttonType]="'text'"
+                (btnClick)="onHandleDelete(row)"
+              >
+              </app-button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <div nz-row nzJustify="space-between">
+    <nz-col>
+      <button style="color: #ff7a00" nz-button (click)="addRow()" nzType="text">
+        <span nz-icon nzType="plus" nzTheme="outline"></span>
+        Thêm mới
+      </button>
+    </nz-col>
+    <nz-col>
+      <button
+        style="color: #ff7a00"
+        nz-button
+        (click)="saveLocation()"
+        nzType="text"
+      >
+        Lưu vị trí
+      </button>
+    </nz-col>
+  </div>
+  <!-- <nz-row
+    *ngIf="total"
+    nzGutter="24"
+    nzAlign="middle"
+    nzJustify="center"
+    class="mt-12"
+  >
+    <div nz-col nzSpan="24">
+      <app-pagination
+        [currentPage]="page"
+        [currentSize]="per_page"
+        [total]="total"
+        (emitPage)="pagination($event)"
+      ></app-pagination>
+    </div>
+  </nz-row> -->
+</div>
+<!--
+<app-confirm-delete
+  [isVisible]="visibleConfirmDelete"
+  [title]="'Xóa kiện hàng'"
+  [content]="'thông tin kiện hàng sẽ bị xóa khỏi hàng hóa'"
+  [nameData]="'kiện hàng này'"
+  (hidePopup)="hidePopupDelete($event)"
+  (confirmDelete)="confirmDelete($event)"
+></app-confirm-delete>
+
+<nz-modal
+  nzWidth="1000px"
+  [(nzVisible)]="visibleCreate"
+  [nzFooter]="null"
+  (nzOnCancel)="onHandleCancelCreate()"
+  [nzContent]="showContentCreate"
+  [nzTitle]="showTitleCreate"
+>
+  <ng-template #showTitleCreate>
+    <div class="d-flex">
+      <img src="./assets/image/modalInfor.svg" alt="" />
+      <h2 class="m-0 ml-24">
+        {{ "sidebar.barcodeItem.createQR.name" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showContentCreate>
+    <app-create-package
+      [product]="productFromParent"
+      (childOut)="hide($event)"
+    ></app-create-package>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  nzWidth="1000px"
+  [(nzVisible)]="visibleRead"
+  [nzFooter]="null"
+  (nzOnCancel)="onHandleCancelRead()"
+  [nzContent]="showContentRead"
+  [nzTitle]="showTitleRead"
+>
+  <ng-template #showTitleRead>
+    <div class="d-flex">
+      <img src="./assets/image/modalInfor.svg" alt="" />
+      <h2 class="m-0 ml-24">
+        {{ "sidebar.receipt.child.package.child.read" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showContentRead>
+    <app-read-package
+      [product]="dataRead"
+      (childOut)="onHandleReturnRead($event)"
+    ></app-read-package>
+  </ng-template>
+</nz-modal> -->

@@ -1,0 +1,477 @@
+<div>
+  <nz-row nzGutter="24" nzJustify="space-between" nzAlign="top">
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.barcodeItem.listQR.productCode" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            class="mb-12"
+            type="text"
+            [disabled]="true"
+            nz-input
+            [(ngModel)]="dataInformation.productCode"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.barcodeItem.listQR.grnCode" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            class="mb-12"
+            [disabled]="true"
+            type="text"
+            nz-input
+            [(ngModel)]="dataInformation.grnCode"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.barcodeItem.listQR.itemName" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <textarea
+            class="mb-12"
+            [disabled]="true"
+            nz-input
+            [(ngModel)]="dataInformation.itemName"
+          ></textarea>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.barcodeItem.listQR.description" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <textarea
+            class="mb-12"
+            [disabled]="true"
+            nz-input
+            [(ngModel)]="dataInformation.description"
+          ></textarea>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.barcodeItem.listQR.expiredDate" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker
+            [nzDisabled]="true"
+            nzFormat="dd/MM/YYYY"
+            class="w-100"
+            [(ngModel)]="dataInformation.expiredDate"
+          ></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.barcodeItem.listQR.uom" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <input
+            type="text"
+            [disabled]="true"
+            nz-input
+            [(ngModel)]="dataInformation.uom"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col class="mt-12" nzSpan="24"
+          >{{ "ui.receitp.GRN.create.unsorted_quantity" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input
+            [disabled]="true"
+            type="number"
+            nz-input
+            [(ngModel)]="dataInformation.unsortedQuantity"
+          />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <nz-row class="mt-24">
+    <nz-table
+      class="w-100"
+      nzBordered
+      [nzFrontPagination]="false"
+      [nzShowPagination]="false"
+      [nzScroll]="{ x: 'auto' }"
+      [nzData]="datas"
+      #table
+      nzSize="small"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="50px" nzAlign="center">STT</th>
+          <th nzWidth="160px">
+            {{ "sidebar.location.warehouse" | translate }}
+          </th>
+          <th nzWidth="150px">{{ "sidebar.location.code" | translate }}</th>
+          <th nzWidth="150px">{{ "sidebar.location.name" | translate }}</th>
+          <th nzWidth="180px">
+            {{ "sidebar.location.itemQuantity" | translate }}
+          </th>
+          <th nzWidth="160px">
+            {{ "sidebar.location.packageQuantity" | translate }}
+          </th>
+          <th nzWidth="120px">
+            {{ "sidebar.location.totalQuantity" | translate }}
+          </th>
+          <th nzWidth="100px">{{ "table.action" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <nz-select
+              style="width: 100%"
+              [nzAllowClear]="true"
+              [(ngModel)]="dataFilter.warehouse"
+              (ngModelChange)="onHandleChangeWarehouse()"
+              nzPlaceHolder="{{ 'all_select' | translate }}"
+            >
+              <nz-option
+                *ngFor="let item of listWarehouse"
+                [nzValue]="item.locationName"
+                [nzLabel]="item.locationName"
+              ></nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <nz-input-group
+              nzSearch
+              [nzPrefix]="prefixlocationCode"
+              [nzSuffix]="suffixlocationCode"
+            >
+              <input
+                type="text"
+                nz-input
+                [(ngModel)]="dataFilter.locationCode"
+              />
+            </nz-input-group>
+            <ng-template #prefixlocationCode>
+              <span
+                class="search-click"
+                style="color: #d9d9d9"
+                nz-icon
+                nzType="search"
+              ></span>
+            </ng-template>
+            <ng-template #suffixlocationCode>
+              <span
+                nz-icon
+                class="ant-input-clear-icon"
+                nzTheme="fill"
+                nzType="close-circle"
+                *ngIf="dataFilter.locationCode"
+                (click)="dataFilter.locationCode = ''"
+              ></span>
+            </ng-template>
+          </td>
+          <td>
+            <nz-input-group
+              nzSearch
+              [nzPrefix]="prefixlocationName"
+              [nzSuffix]="suffixlocationName"
+            >
+              <input
+                type="text"
+                nz-input
+                [(ngModel)]="dataFilter.locationName"
+              />
+            </nz-input-group>
+            <ng-template #prefixlocationName>
+              <span
+                class="search-click"
+                style="color: #d9d9d9"
+                nz-icon
+                nzType="search"
+              ></span>
+            </ng-template>
+            <ng-template #suffixlocationName>
+              <span
+                nz-icon
+                class="ant-input-clear-icon"
+                nzTheme="fill"
+                nzType="close-circle"
+                *ngIf="dataFilter.locationName"
+                (click)="dataFilter.locationName = ''"
+              ></span>
+            </ng-template>
+          </td>
+          <td></td>
+          <td></td>
+          <td nzAlign="right">
+            <b>{{ countTotalQuantity | number }}</b>
+          </td>
+          <td></td>
+        </tr>
+        <ng-container *ngFor="let row of table.data; let i = index">
+          <tr>
+            <td nzAlign="center">{{ i + 1 }}</td>
+            <td>
+              <nz-select
+                style="width: 100%"
+                [nzAllowClear]="true"
+                [(ngModel)]="row.locationWarehouseId"
+                (ngModelChange)="onHandleChangeWarehouseInRow($event, row)"
+                nzPlaceHolder="{{ 'all_select' | translate }}"
+              >
+                <nz-option
+                  *ngFor="let item of listWarehouse"
+                  [nzValue]="item.id"
+                  [nzLabel]="item.locationName"
+                ></nz-option>
+              </nz-select>
+              <ng-container *ngIf="!row.locationWarehouseId">
+                <span class="error-span">Bạn phải chọn kho</span>
+              </ng-container>
+            </td>
+            <td>
+              <nz-input-group [nzSuffix]="arrowDown">
+                <input
+                  nz-input
+                  [(ngModel)]="row.locationCode"
+                  nz-popover
+                  [(nzPopoverVisible)]="row.visible"
+                  (nzPopoverVisibleChange)="changeLocation($event, row)"
+                  nzPopoverTrigger="click"
+                  [nzPopoverContent]="contentTemplateLocation"
+                  (click)="onHandleOpenLocation(row)"
+                />
+              </nz-input-group>
+              <ng-container *ngIf="!row.locationCode">
+                <span class="error-span">Bạn phải chọn mã vị trí</span>
+              </ng-container>
+              <ng-template #arrowDown>
+                <span
+                  style="color: #d9d9d9; font-size: 12px"
+                  nz-icon
+                  nzType="down"
+                ></span>
+              </ng-template>
+              <ng-template #contentTemplateLocation>
+                <nz-table
+                  style="width: 600px"
+                  nzBordered
+                  [nzFrontPagination]="false"
+                  [nzShowPagination]="false"
+                  [nzScroll]="{ x: 'auto' }"
+                  [nzData]="listLocation"
+                  #tableLocation
+                  [nzNoResult]="customNoResult"
+                  nzSize="small"
+                >
+                  <thead>
+                    <tr>
+                      <th nzAlign="center">
+                        {{ "sidebar.location.code" | translate }}
+                      </th>
+                      <th nzAlign="center">
+                        {{ "sidebar.location.name" | translate }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <nz-input-group
+                          nzSearch
+                          [nzPrefix]="prefixlocationCode"
+                          [nzSuffix]="suffixlocationCode"
+                          (keyup)="enterSearchLocation($event, row)"
+                        >
+                          <input
+                            type="text"
+                            nz-input
+                            [(ngModel)]="dataFilterLocation.locationCode"
+                          />
+                        </nz-input-group>
+                        <ng-template #prefixlocationCode>
+                          <span
+                            (click)="searchLocation(row)"
+                            class="search-click"
+                            style="color: #d9d9d9"
+                            nz-icon
+                            nzType="search"
+                          ></span>
+                        </ng-template>
+                        <ng-template #suffixlocationCode>
+                          <span
+                            nz-icon
+                            class="ant-input-clear-icon"
+                            nzTheme="fill"
+                            nzType="close-circle"
+                            *ngIf="dataFilterLocation.locationCode"
+                            (click)="dataFilterLocation.locationCode = ''"
+                          ></span>
+                        </ng-template>
+                      </td>
+                      <td>
+                        <nz-input-group
+                          nzSearch
+                          [nzPrefix]="prefixdescription"
+                          [nzSuffix]="suffixdescription"
+                          (keyup)="enterSearchLocation($event, row)"
+                        >
+                          <input
+                            type="text"
+                            nz-input
+                            [(ngModel)]="dataFilterLocation.description"
+                          />
+                        </nz-input-group>
+                        <ng-template #prefixdescription>
+                          <span
+                            (click)="searchLocation(row)"
+                            class="search-click"
+                            style="color: #d9d9d9"
+                            nz-icon
+                            nzType="search"
+                          ></span>
+                        </ng-template>
+                        <ng-template #suffixdescription>
+                          <span
+                            nz-icon
+                            class="ant-input-clear-icon"
+                            nzTheme="fill"
+                            nzType="close-circle"
+                            *ngIf="dataFilterLocation.description"
+                            (click)="dataFilterLocation.description = ''"
+                          ></span>
+                        </ng-template>
+                      </td>
+                    </tr>
+                    <ng-container *ngIf="locationWarehouseId">
+                      <ng-container
+                        *ngFor="let rowLocation of tableLocation.data"
+                      >
+                        <tr
+                          (click)="onHandleChooseLocation(row, rowLocation)"
+                          style="cursor: pointer"
+                        >
+                          <td>{{ rowLocation["locationCode"] }}</td>
+                          <td>{{ rowLocation["locationName"] }}</td>
+                        </tr>
+                      </ng-container>
+                    </ng-container>
+                  </tbody>
+                </nz-table>
+                <ng-template #customNoResult>
+                  <span
+                    *ngIf="!locationWarehouseId"
+                    class="error-span"
+                    style="display: flex; justify-content: center"
+                  >
+                    Bạn phải chọn kho trước khi chọn mã vị trí
+                  </span>
+                </ng-template>
+
+                <nz-row
+                  *ngIf="totalLocation"
+                  nzGutter="24"
+                  nzAlign="middle"
+                  nzJustify="center"
+                  class="mt-12"
+                >
+                  <div nz-col nzSpan="24">
+                    <app-pagination
+                      [currentPage]="pageLocation"
+                      [currentSize]="perPageLocation"
+                      [total]="totalLocation"
+                      (emitPage)="paginationLocation($event)"
+                    ></app-pagination>
+                  </div>
+                </nz-row>
+              </ng-template>
+            </td>
+            <td>{{ row.locationName }}</td>
+            <td>
+              <nz-select
+                style="width: 100%"
+                [nzAllowClear]="true"
+                [(ngModel)]="row.packageId"
+                (ngModelChange)="onHandleChangeItemQuantity(row)"
+                nzPlaceHolder="{{ 'all_select' | translate }}"
+              >
+                <nz-option
+                  *ngFor="let item of listItemQuantity"
+                  [nzValue]="item.id"
+                  [nzLabel]="item.itemQuantity"
+                ></nz-option>
+              </nz-select>
+              <ng-container *ngIf="!row.packageId">
+                <span class="error-span"
+                  >Bạn phải chọn số lượng hàng mỗi kiện</span
+                >
+              </ng-container>
+            </td>
+            <td>
+              <input
+                type="number"
+                nz-input
+                [(ngModel)]="row.packageQuantity"
+                (ngModelChange)="onHandleChangePackageQuantity($event, row)"
+              />
+              <ng-container *ngIf="!row.packageQuantity">
+                <span class="error-span">Bạn phải nhập số lượng kiện hàng</span>
+              </ng-container>
+            </td>
+            <td>{{ row.totalQuantity }}</td>
+            <td nzAlign="center">
+              <app-button
+                [buttonType]="'text'"
+                [iconType]="'delete'"
+                [iconTheme]="'fill'"
+                (btnClick)="deleteRecord(row)"
+              ></app-button>
+            </td>
+          </tr>
+        </ng-container>
+        <tr>
+          <app-button
+            [title]="'add.newLocation'"
+            [buttonType]="'text'"
+            [iconType]="'plus-circle'"
+            [iconTheme]="'outline'"
+            (btnClick)="onHandleCreateNewLocation()"
+          ></app-button>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+  <nz-row nzGutter="24" nzJustify="end" nzAlign="top">
+    <nz-col>
+      <app-button
+        [className]="'common-btn-close'"
+        [title]="'btn.cancel'"
+        (btnClick)="onHandleCancel()"
+      ></app-button>
+    </nz-col>
+    <nz-col>
+      <app-button
+        [title]="'add.new'"
+        (btnClick)="onHandleAddNew()"
+      ></app-button>
+    </nz-col>
+  </nz-row>
+</div>

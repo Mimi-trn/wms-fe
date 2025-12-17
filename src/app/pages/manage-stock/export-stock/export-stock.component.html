@@ -1,0 +1,178 @@
+<section class="input-grid">
+  <div>
+    <h3>Lọc theo ngày</h3>
+    <nz-range-picker style="min-width: 10rem" [(ngModel)]="date"></nz-range-picker>
+  </div>
+  <div>
+    <h3>Kho</h3>
+    <nz-select style="min-width: 10rem" [(ngModel)]="warehouse" nzShowSearch nzPlaceHolder="Chọn kho">
+      <ng-container *ngFor="let warehouse of listWarehouse">
+        <nz-option [nzValue]="warehouse.value" [nzLabel]="warehouse.text"></nz-option>
+      </ng-container>
+    </nz-select>
+  </div>
+  <div>
+    <h3>Loại báo cáo</h3>
+    <nz-select style="min-width: 10rem" [(ngModel)]="exportOption">
+      <nz-option [nzValue]="1" nzLabel="Báo cáo tồn kho"></nz-option>
+      <!-- <nz-option [nzValue]="2" nzLabel="Báo cáo xuất nhập kho"></nz-option> -->
+    </nz-select>
+  </div>
+</section>
+
+<!-- <h3>Danh sách kho</h3>
+<nz-table
+  #warehouseTable
+  nzSize="small"
+  nzNoResult="Không có dữ liệu"
+  [nzData]="warehouseList"
+  nzFrontPagination
+  nzShowPagination
+>
+  <thead>
+    <tr>
+      <th
+        nzShowCheckbox
+        (nzCheckedChange)="onWarehouseCheckedChange($event)"
+      ></th>
+      <th>Mã kho</th>
+      <th>Tên kho</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>
+        <nz-input-group
+          nzSearch
+          [nzPrefix]="prefixLocationCode"
+          [nzSuffix]="suffixLocationCode"
+        >
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="dataLocationFilter.locationCode"
+            (keyup.enter)="getLocationWarehouseList()"
+          />
+        </nz-input-group>
+        <ng-template #prefixLocationCode>
+          <span
+            (click)="getLocationWarehouseList()"
+            class="search-click"
+            style="color: #d9d9d9"
+            nz-icon
+            nzType="search"
+          ></span>
+        </ng-template>
+        <ng-template #suffixLocationCode>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="dataLocationFilter.locationCode"
+            (click)="
+              dataLocationFilter['locationCode'] = '';
+              getLocationWarehouseList()
+            "
+          ></span>
+        </ng-template>
+      </td>
+      <td>
+        <nz-input-group
+          nzSearch
+          [nzPrefix]="prefixLocationName"
+          [nzSuffix]="suffixLocationName"
+        >
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="dataLocationFilter.locationName"
+            (keyup.enter)="getLocationWarehouseList()"
+          />
+        </nz-input-group>
+        <ng-template #prefixLocationName>
+          <span
+            (click)="getLocationWarehouseList()"
+            class="search-click"
+            style="color: #d9d9d9"
+            nz-icon
+            nzType="search"
+          ></span>
+        </ng-template>
+        <ng-template #suffixLocationName>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="dataLocationFilter.locationName"
+            (click)="
+              dataLocationFilter['locationName'] = '';
+              getLocationWarehouseList()
+            "
+          ></span>
+        </ng-template>
+      </td>
+    </tr>
+    <tr *ngFor="let item of warehouseTable.data; let i = index">
+      <td nzShowCheckbox [(nzChecked)]="item.isChecked"></td>
+      <td>{{ item.locationCode }}</td>
+      <td>{{ item.locationName }}</td>
+    </tr>
+  </tbody>
+</nz-table> -->
+
+<h3>Danh sách nhóm hàng hóa</h3>
+<nz-table #productTable nzSize="small" [nzData]="productList" [nzFrontPagination]="false" [nzShowPagination]="false"
+  nzBordered [nzScroll]="{ x: 'auto' }">
+  <thead>
+    <tr>
+      <th nzShowCheckbox (nzCheckedChange)="onProductCheckedChange($event)"></th>
+      <th>Mã nhóm hàng hóa</th>
+      <th>Tên nhóm hàng hóa</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>
+        <nz-input-group nzSearch [nzPrefix]="prefixproductCode" [nzSuffix]="suffixproductCode">
+          <input type="text" nz-input [(ngModel)]="dataProductFilter.itemGroupId" (keyup.enter)="getProductList()" />
+        </nz-input-group>
+        <ng-template #prefixproductCode>
+          <span (click)="getProductList()" class="search-click" style="color: #d9d9d9" nz-icon nzType="search"></span>
+        </ng-template>
+        <ng-template #suffixproductCode>
+          <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+            *ngIf="dataProductFilter.itemGroupId"
+            (click)="dataProductFilter['itemGroupId'] = ''; getProductList()"></span>
+        </ng-template>
+      </td>
+      <td>
+        <nz-input-group nzSearch [nzPrefix]="prefixitemName" [nzSuffix]="suffixitemName">
+          <input type="text" nz-input [(ngModel)]="dataProductFilter.itemGroupName" (keyup.enter)="getProductList()" />
+        </nz-input-group>
+        <ng-template #prefixitemName>
+          <span (click)="getProductList()" class="search-click" style="color: #d9d9d9" nz-icon nzType="search"></span>
+        </ng-template>
+        <ng-template #suffixitemName>
+          <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+            *ngIf="dataProductFilter.itemGroupName"
+            (click)="dataProductFilter['itemGroupName'] = ''; getProductList()"></span>
+        </ng-template>
+      </td>
+    </tr>
+    <tr *ngFor="let item of productTable.data; let i = index">
+      <td nzShowCheckbox [(nzChecked)]="item.isChecked"></td>
+      <td>{{ item.itemGroupId }}</td>
+      <td>{{ item.itemGroupName }}</td>
+    </tr>
+  </tbody>
+</nz-table>
+<div *ngIf="totalProduct" nzGutter="24" nzAlign="middle" nzJustify="center" class="mt-12">
+  <div nz-col nzSpan="24">
+    <app-pagination [currentPage]="pageProduct" [currentSize]="pageSizeProduct" [total]="totalProduct"
+      (emitPage)="paginationProduct($event)"></app-pagination>
+  </div>
+</div>

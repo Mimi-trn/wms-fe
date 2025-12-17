@@ -1,0 +1,331 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    [nzSpan]="23"
+    [listBreadCrumb]="breadcrumbs"
+  ></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row nzJustify="center" class="mb-12">
+    <h2 class="m-0">
+      {{ "sidebar.information.child.listLocation.name" | translate }}
+    </h2>
+  </nz-row>
+  <nz-row class="mb-12">
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzXXl="24">
+      <h4 class="m-0">{{ "search.general" | translate }}</h4>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="14" nzLg="12" nzXl="10" nzXXl="6">
+      <form (ngSubmit)="onHandleSearchCommon()">
+        <nz-input-group
+          [nzPrefix]="prefixButtonSearch"
+          [nzSuffix]="suffixButtonClear"
+        >
+          <input
+            type="text"
+            nz-input
+            placeholder="{{ 'search.general.placeholder' | translate }}"
+            [(ngModel)]="searchGeneral"
+            name="searchGeneral"
+          />
+        </nz-input-group>
+        <ng-template #prefixButtonSearch>
+          <span
+            class="search-click"
+            style="color: #d9d9d9"
+            nz-icon
+            nzType="search"
+            (click)="onHandleSearchCommon()"
+          ></span>
+        </ng-template>
+        <ng-template #suffixButtonClear>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="searchGeneral"
+            (click)="searchGeneral = ''"
+          ></span>
+        </ng-template>
+      </form>
+    </nz-col>
+  </nz-row>
+  <nz-row nzAlign="middle" nzJustify="end" nzGutter="12" class="mb-12">
+    <nz-col *ngIf="checkIsRole('wms_inventory-audit-sheet_create') || checkIsRole('FCIM_ADMIN')">
+      <nz-row nzJustify="end">
+        <app-button
+          *ngIf="checkIsRole('wms_location-package_create') || checkIsRole('FCIM_ADMIN')"
+          [title]="'add.new'"
+          [buttonType]="'text'"
+          [iconType]="'plus-circle'"
+          [iconTheme]="'outline'"
+          (btnClick)="onHandleCreateNewLocationPackage()"
+        ></app-button>
+      </nz-row>
+    </nz-col>
+    <nz-col>
+      <button
+        nz-button
+        nzType="text"
+        class="p-0"
+        nz-tooltip
+        nz-popover
+        [nzPopoverContent]="configColumns"
+        nzPopoverPlacement="bottomLeft"
+      >
+        <img src="./../../../../assets/image/addColumn.svg" alt="" />
+        <ng-template #configColumns>
+          <div style="width: 240px">
+            <ng-container>
+              <label
+                class="mb-4"
+                nz-checkbox
+                [(ngModel)]="allChecked"
+                (ngModelChange)="onHandleUpdateAllChecked()"
+                [nzIndeterminate]="indeterminate"
+              >
+                Tất cả
+              </label>
+              <br />
+            </ng-container>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <label
+                class="mb-4"
+                [(ngModel)]="column.check"
+                nz-checkbox
+                (ngModelChange)="onHandleClickCheckBox()"
+                >{{ column.keyTitle | translate }}</label
+              >
+              <br />
+            </ng-container>
+          </div>
+        </ng-template>
+      </button>
+    </nz-col>
+  </nz-row>
+  <nz-row>
+    <nz-col nzSpan="24">
+      <nz-table
+        class="w-100"
+        nzBordered
+        nzFrontPagination="false"
+        nzShowPagination="false"
+        nzSize="small"
+        [nzData]="listLocationPackage"
+        #tableLocationPackage
+        [nzScroll]="{ x: 'auto' }"
+      >
+        <thead>
+          <tr>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <ng-container *ngIf="column.check">
+                <th
+                  nz-resizable
+                  [nzWidth]="column.width"
+                  (nzResize)="onResize($event, i)"
+                  [nzMaxWidth]="500"
+                  [nzMinWidth]="100"
+                  style="cursor: pointer"
+                  (click)="customSortFunction(column)"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                    <nz-resize-handle nzDirection="right">
+                      <div class="resize-trigger"></div>
+                    </nz-resize-handle>
+                  </div>
+                  <span
+                    *ngIf="column.count == 0"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                    "
+                    nz-tooltip="Sắp xếp giảm dần"
+                    nz-icon
+                    nzType="swap"
+                    [nzRotate]="90"
+                    nzTheme="outline"
+                  ></span>
+                  <span
+                    *ngIf="column.count > 0 && column.sortOrder == 'DESC'"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                    "
+                    nz-tooltip="Sắp xếp tăng dần"
+                    nz-icon
+                    nzType="arrow-down"
+                    nzTheme="outline"
+                  ></span>
+                  <span
+                    *ngIf="column.count > 0 && column.sortOrder == 'ASC'"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                    "
+                    nz-tooltip="Sắp xếp giảm dần"
+                    nz-icon
+                    nzType="arrow-up"
+                    nzTheme="outline"
+                  ></span>
+                </th>
+              </ng-container>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody [class]="total > 0 ? 'striped-tr' : ''">
+          <tr>
+            <ng-container *ngFor="let column of columns">
+              <td
+                *ngIf="
+                  column.check &&
+                  column.keyName != 'importDate' &&
+                  column.keyName != 'expiredDate' &&
+                  column.keyName != 'itemQuantity' &&
+                  column.keyName != 'packageQuantity' &&
+                  column.keyName != 'quantity'
+                "
+              >
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixKeyName"
+                  [nzSuffix]="suffixKeyName"
+                >
+                  <input
+                    type="text"
+                    nz-input
+                    [(ngModel)]="filterLocationPackage[column.keyName]"
+                    (keyup)="onHandleEnterSearch($event)"
+                  />
+                </nz-input-group>
+                <ng-template #prefixKeyName>
+                  <span
+                    (click)="onHandleClickSearch()"
+                    class="search-click"
+                    nz-icon
+                    nzType="search"
+                    style="color: #d9d9d9"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixKeyName>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="filterLocationPackage[column.keyName]"
+                    (click)="onHandleClearInput(column.keyName)"
+                  ></span>
+                </ng-template>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'importDate'">
+                <nz-range-picker
+                  [(ngModel)]="filterLocationPackage[column.keyName]"
+                  (ngModelChange)="onHandleClickSearch()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'expiredDate'">
+                <nz-range-picker
+                  [(ngModel)]="filterLocationPackage[column.keyName]"
+                  (ngModelChange)="onHandleClickSearch()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'itemQuantity'"></td>
+              <td
+                *ngIf="column.check && column.keyName == 'packageQuantity'"
+              ></td>
+              <td *ngIf="column.check && column.keyName == 'quantity'"></td>
+            </ng-container>
+          </tr>
+          <ng-container *ngFor="let row of tableLocationPackage.data">
+            <tr>
+              <ng-container *ngFor="let column of columns">
+                <td
+                  *ngIf="
+                    column.check &&
+                    column.keyName != 'importDate' &&
+                    column.keyName != 'expiredDate' &&
+                    column.keyName != 'itemQuantity' &&
+                    column.keyName != 'packageQuantity' &&
+                    column.keyName != 'quantity'
+                  "
+                >
+                  {{ row[column.keyName] }}
+                </td>
+
+                <td
+                  nzAlign="right"
+                  *ngIf="
+                    column.check &&
+                    (column.keyName == 'importDate' ||
+                      column.keyName == 'expiredDate')
+                  "
+                >
+                  {{ row[column.keyName] | date : "dd/MM/YYYY" }}
+                </td>
+                <!-- <td
+                  nzAlign="right"
+                  *ngIf="column.check && column.keyName == 'expiredDate'"
+                >
+                  {{ row[column.keyName] | date : "dd/MM/YYYY" }}
+                </td> -->
+                <td
+                  nzAlign="right"
+                  *ngIf="
+                    column.check &&
+                    (column.keyName == 'itemQuantity' ||
+                      column.keyName == 'packageQuantity' ||
+                      column.keyName == 'quantity')
+                  "
+                >
+                  {{ row[column.keyName] | number}}
+                </td>
+                <!-- <td
+                  nzAlign="right"
+                  *ngIf="column.check && column.keyName == 'packageQuantity'"
+                >
+                  {{ row[column.keyName] }}
+                </td>
+                <td
+                  nzAlign="right"
+                  *ngIf="column.check && column.keyName == 'quantity'"
+                >
+                  {{ row[column.keyName] }}
+                </td> -->
+              </ng-container>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
+  <nz-row *ngIf="total" nzGutter="24" nzAlign="middle" nzJustify="center">
+    <div nz-col nzSpan="24">
+      <app-pagination
+        [currentPage]="page"
+        [currentSize]="perPage"
+        [total]="total"
+        (emitPage)="onHandlePagination($event)"
+      ></app-pagination>
+    </div>
+  </nz-row>
+</div>

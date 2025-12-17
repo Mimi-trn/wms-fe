@@ -1,0 +1,211 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb nz-col [nzSpan]="23" *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs" [isHidden]="isHidden">
+  </app-breadcrumb>
+</nz-row>
+
+<div class="common-bg">
+  <!-- Tiêu đề -->
+  <nz-row nzJustify="center" class="mb-12">
+    <h2 class="m-0">Danh sách nhân viên</h2>
+  </nz-row>
+
+  <!-- Tìm kiếm tổng quát -->
+  <nz-row class="mb-12">
+    <nz-col nzSpan="24">
+      <h4 class="m-0">{{ 'search.general' | translate }}</h4>
+    </nz-col>
+    <nz-col nzSpan="10">
+      <form (ngSubmit)="searchGeneralFunc()">
+        <nz-input-group [nzPrefix]="prefixSearch" [nzSuffix]="suffixClear">
+          <input type="text" nz-input placeholder="{{ 'search.general.placeholder' | translate }}"
+            [(ngModel)]="searchGeneral" name="searchGeneral" />
+        </nz-input-group>
+        <ng-template #prefixSearch>
+          <span class="search-click" nz-icon nzType="search" style="color: #d9d9d9" (click)="searchGeneralFunc()">
+          </span>
+        </ng-template>
+        <ng-template #suffixClear>
+          <span nz-icon nzTheme="fill" nzType="close-circle" class="ant-input-clear-icon" *ngIf="searchGeneral"
+            (click)="searchGeneral = ''; searchGeneralFunc()">
+          </span>
+        </ng-template>
+      </form>
+    </nz-col>
+  </nz-row>
+
+  <!-- Thanh công cụ -->
+  <nz-row nzAlign="middle" nzJustify="end" nzGutter="12" class="mb-12">
+    <nz-col>
+      <app-button title="add.new" buttonType="text" iconType="plus-circle" iconTheme="outline"
+        tooltipTitle="Thêm nhân viên mới" (btnClick)="onClickAddNew()">
+      </app-button>
+    </nz-col>
+    <nz-col>
+      <app-button [title]="'Xuất excel'" [buttonType]="'text'" [iconType]="'file-excel'" [iconTheme]="'outline'"
+        [tooltipTitle]="'Xuất excel danh sách nhà cung cấp'" (btnClick)="showExport()">
+      </app-button>
+    </nz-col>
+
+    <nz-col>
+      <button nz-button nzType="text" class="p-0" nz-tooltip nz-dropdown [nzDropdownMenu]="configColumns">
+        <svg width="32" height="32" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.33325 25.668H18.9999V29.668H29.6666V15.0013H24.3333V9.66797H8.33325V25.668Z" fill="#FF7A00" />
+          <rect x="0.5" y="0.5" width="37" height="37" rx="4.5" stroke="#FF7A00" stroke-opacity="0.6" />
+        </svg>
+        <nz-dropdown-menu #configColumns="nzDropdownMenu">
+          <div style="background-color: white; padding: 8px 12px; border: 1px solid #ccc;">
+            <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="updateAllChecked()"
+              [nzIndeterminate]="indeterminate">
+              Tất cả
+            </label>
+            <br />
+            <ng-container *ngFor="let column of columns">
+              <label nz-checkbox [(ngModel)]="column.check" (ngModelChange)="onClickCheckBox(column)">
+                {{ column.keyTitle | translate }}
+              </label>
+              <br />
+            </ng-container>
+          </div>
+        </nz-dropdown-menu>
+      </button>
+    </nz-col>
+  </nz-row>
+
+  <!-- Bảng danh sách nhân viên -->
+  <nz-row>
+    <nz-col nzSpan="24">
+      <nz-table class="w-100" nzBordered nzSize="small" [nzData]="datas" [nzScroll]="{ x: 'auto' }"
+        [nzFrontPagination]="false" [nzShowPagination]="false" [nzPageSize]="page" [nzPageIndex]="per_page"
+        (nzQueryParams)="onQueryParamsChange($event)" #employeeTable>
+
+        <thead>
+          <tr>
+            <ng-container *ngFor="let column of columns">
+              <th *ngIf="column.check" nz-resizable [nzWidth]="column.width" [nzMaxWidth]="500" [nzMinWidth]="100"
+                (nzResize)="onResize($event, column)" (click)="customSortFunction(column)" style="cursor: pointer;">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </div>
+              </th>
+            </ng-container>
+            <th nzWidth="100px" nzAlign="center" nzRight>
+              {{ 'table.action' | translate }}
+            </th>
+          </tr>
+        </thead>
+
+        <!-- Hàng filter -->
+        <tbody [class]="total == 0 ? '' : 'striped-tr'">
+          <tr>
+            <ng-container *ngFor="let column of columns">
+              <td *ngIf="column.check">
+                <ng-container [ngSwitch]="column.keyName">
+
+                  <!-- Filter Text -->
+                  <nz-input-group *ngSwitchCase="'employeeCode'" nzSearch>
+                    <input type="text" nz-input [(ngModel)]="dataFilter.employeeCode" (keyup)="enterSearch($event)" />
+                  </nz-input-group>
+
+                  <nz-input-group *ngSwitchCase="'employeeName'" nzSearch>
+                    <input type="text" nz-input [(ngModel)]="dataFilter.employeeName" (keyup)="enterSearch($event)" />
+                  </nz-input-group>
+
+                  <nz-input-group *ngSwitchCase="'employeePhone'" nzSearch>
+                    <input type="text" nz-input [(ngModel)]="dataFilter.employeePhone" (keyup)="enterSearch($event)" />
+                  </nz-input-group>
+
+                  <nz-input-group *ngSwitchCase="'employeeAddress'" nzSearch>
+                    <input type="text" nz-input [(ngModel)]="dataFilter.employeeAddress"
+                      (keyup)="enterSearch($event)" />
+                  </nz-input-group>
+
+                  <nz-input-group *ngSwitchCase="'employeeEmail'" nzSearch>
+                    <input type="text" nz-input [(ngModel)]="dataFilter.employeeEmail" (keyup)="enterSearch($event)" />
+                  </nz-input-group>
+
+                  <!-- Select filter -->
+                  <nz-select *ngSwitchCase="'employeePosition'" class="select-search" style="width: 100%"
+                    [nzAllowClear]="true" [nzBorderless]="true" [(ngModel)]="dataFilter.employeePosition"
+                    (ngModelChange)="search()" nzPlaceHolder="{{ 'all_select' | translate }}">
+                    <nz-option [nzValue]="1" nzLabel="Quản lý"></nz-option>
+                    <nz-option [nzValue]="2" nzLabel="Nhân viên kho"></nz-option>
+                    <nz-option [nzValue]="3" nzLabel="Nhân viên QC"></nz-option>
+                  </nz-select>
+                </ng-container>
+              </td>
+            </ng-container>
+            <td nzRight></td>
+          </tr>
+
+          <!-- Dữ liệu -->
+          <ng-container *ngFor="let row of employeeTable.data">
+            <tr>
+              <ng-container *ngFor="let column of columns">
+                <td *ngIf="column.check && column.keyName !== 'employeePosition'">
+                  {{ row[column.keyName] }}
+                </td>
+
+                <!-- Cột chức vụ -->
+                <td *ngIf="column.check && column.keyName === 'employeePosition'">
+                  <div [ngSwitch]="row.employeePosition">
+                    <div *ngSwitchCase="1">Quản lý</div>
+                    <div *ngSwitchCase="2">Nhân viên kho</div>
+                    <div *ngSwitchCase="3">Nhân viên QC</div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Action -->
+              <td nzRight>
+                <div class="d-flex j-content-center a-items-center">
+                  <nz-col style="width: 32px">
+                    <app-button iconTheme="fill" iconType="delete" buttonType="text"
+                      tooltipTitle="Xóa nhân viên nhân viên" (btnClick)="onHandleView(row)">
+                    </app-button>
+                  </nz-col>
+                  <nz-col style="width: 32px">
+                    <app-button iconTheme="fill" iconType="edit" buttonType="text" tooltipTitle="Chỉnh sửa thông tin"
+                      (btnClick)="onClickEdit(row)">
+                    </app-button>
+                  </nz-col>
+
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
+
+  <!-- Phân trang -->
+  <nz-row *ngIf="total" nzGutter="24" nzAlign="middle" nzJustify="center" class="mt-12">
+    <nz-col nzSpan="24">
+      <app-pagination [currentPage]="page" [currentSize]="per_page" [total]="total" (emitPage)="pagination($event)">
+      </app-pagination>
+    </nz-col>
+  </nz-row>
+
+  <ng-template #modalContent>
+    <form [formGroup]="formEmployee" class="p-4" style="display:flex; flex-direction:column; gap:12px;">
+
+      <input nz-input placeholder="Tên nhân viên" formControlName="employeeName">
+      <input nz-input placeholder="Số điện thoại" formControlName="employeePhone" />
+      <input nz-input placeholder="Địa chỉ" formControlName="employeeAddress" />
+      <nz-select formControlName="employeePosition" nzShowSearch nzPlaceHolder="Chọn chức vụ">
+        <nz-option [nzValue]="1" nzLabel="Quản lý"></nz-option>
+        <nz-option [nzValue]="2" nzLabel="Nhân viên kho"></nz-option>
+        <nz-option [nzValue]="3" nzLabel="Nhân viên QC"></nz-option>
+      </nz-select>
+
+
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button nz-button nzType="primary" (click)="createEmployee()">Lưu</button>
+      </div>
+    </form>
+  </ng-template>
+
+</div>

@@ -1,0 +1,13 @@
+<div class="radio-group-container">
+  <div
+    *ngFor="let button of listOfButton; index as i"
+    (click)="onChangeSelect(i)"
+    [className]="
+      currentButtonIndex === i ? 'radio-btn active-radio-btn' : 'radio-btn'
+    "
+  >
+    <div style="padding: 6px 16px">
+      {{ button | translate }}
+    </div>
+  </div>
+</div>

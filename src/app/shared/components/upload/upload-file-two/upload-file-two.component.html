@@ -1,0 +1,101 @@
+NEW
+
+<nz-row
+  style="
+    padding: 16px 24px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  "
+  [style]="isDisabled ? 'background-color: rgba(0, 0, 0, 0.08);' : ''"
+>
+  <nz-col nzSpan="24" style="margin-bottom: 10px">
+    <button
+      [className]="isDisabled ? 'disabled-hover' : 'hover-cursor-pointer'"
+      style="
+        border-radius: 4px;
+        border: 0.5px solid #ff7a00;
+        background: transparent;
+        padding: 0;
+      "
+    >
+      <label for="upload-file">
+        <div style="padding: 0 12px">
+          <span style="color: #ff7a00; font-size: 16px; font-weight: 400">
+            {{ "btn.uploadFile" | translate }}
+          </span>
+        </div>
+      </label>
+      <input
+        style="display: none"
+        id="upload-file"
+        type="file"
+        (change)="onUploadFile($event)"
+        multiple
+        accept="image/*,.pdf,.xlsx,.xls,.doc,.docx"
+        [disabled]="isDisabled"
+      />
+    </button>
+  </nz-col>
+  <nz-col nzSpan="24" style="font-size: 12px; font-weight: 400; color: #6b7280">
+    {{ "file.hint" | translate }}
+  </nz-col>
+</nz-row>
+<nz-row>
+  <nz-col nzSpan="24">
+    <div
+      *ngFor="let file of fileList; index as index"
+      class="d-flex j-content-between file-custome mt-8"
+      style="
+        width: 100%;
+        border-radius: 4px;
+        background: #efefef;
+        padding: 0 20px;
+      "
+    >
+      <div
+        style="
+          color: rgba(0, 0, 0, 0.7);
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 16px;
+        "
+      >
+        <div style="position: relative">
+          <span class="pl-8">{{ file.name }}</span>
+          <div
+            style="
+              position: absolute;
+              color: rgba(0, 0, 0, 0.4);
+              font-size: 8px;
+              font-weight: 400;
+              line-height: 16px;
+              top: -2px;
+              right: -24px;
+            "
+          >
+            {{ convertToKb(file.size) }}
+          </div>
+        </div>
+      </div>
+      <div style="display: flex">
+        <div class="hover-cursor-pointer">
+          <span
+            class="mr-12"
+            nz-icon
+            nzType="download"
+            (click)="downloadFile()"
+          ></span>
+        </div>
+        <div class="hover-cursor-pointer">
+          <span
+            class="mr-12"
+            nz-icon
+            nzType="delete"
+            nzTheme="outline"
+            (click)="deleteFile(index)"
+          ></span>
+        </div>
+      </div>
+    </div>
+  </nz-col>
+</nz-row>

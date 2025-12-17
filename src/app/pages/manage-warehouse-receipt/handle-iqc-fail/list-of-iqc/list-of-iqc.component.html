@@ -1,0 +1,605 @@
+<!-- Danh sách yêu cầu IQC -->
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    [nzSpan]="23"
+    *ngIf="isBreadcrumb"
+    [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"
+  ></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row nzJustify="center" class="mb-12">
+    <h2 class="m-0">{{ "manageWarehouse.listOfIqc.listOfIqc" | translate }}</h2>
+  </nz-row>
+  <!-- Searching common -->
+  <nz-row>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzXXl="24">
+      <h4 class="m-0">{{ "search.general" | translate }}</h4>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="10" nzXl="8" nzXXl="6">
+      <form (ngSubmit)="searchGeneralFunc()">
+        <nz-input-group
+          [nzPrefix]="prefixButtonSearch"
+          [nzSuffix]="suffixButtonClear"
+        >
+          <input
+            type="text"
+            nz-input
+            placeholder="{{ 'search.general.placeholder' | translate }}"
+            [(ngModel)]="searchGeneral"
+            name="searchGeneral"
+          />
+        </nz-input-group>
+        <ng-template #prefixButtonSearch>
+          <span
+            style="color: #d9d9d9"
+            class="search-click"
+            nz-icon
+            nzType="search"
+            (click)="searchGeneralFunc()"
+          ></span>
+        </ng-template>
+        <ng-template #suffixButtonClear>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="searchGeneral"
+            (click)="searchGeneral = ''; searchGeneralFunc()"
+          ></span>
+        </ng-template>
+      </form>
+    </nz-col>
+  </nz-row>
+  <!-- Toolbar -->
+  <nz-row
+    nzAlign="bottom"
+    nzJustify="space-between"
+    nzGutter="16"
+    class="mb-12"
+  >
+    <nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="24"
+      nzLg="24"
+      nzXl="24"
+      nzXXl="24"
+      class="mt-12"
+    >
+      <nz-row nzJustify="end" nzGutter="16">
+        <nz-col
+          *ngIf="checkIsRole('wms_iqc_create') || checkIsRole('FCIM_ADMIN')"
+        >
+          <app-button
+            [title]="'add.new'"
+            [buttonType]="'text'"
+            [iconType]="'plus-circle'"
+            [iconTheme]="'outline'"
+            [tooltipTitle]="'Thêm mới yêu cầu IQC'"
+            (btnClick)="onClickAddNew()"
+          ></app-button>
+        </nz-col>
+        <nz-col>
+          <button
+            nz-button
+            nzType="text"
+            class="p-0"
+            nz-tooltip
+            nz-dropdown
+            [nzDropdownMenu]="configColumns"
+          >
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 38 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8.33325 25.668H18.9999V29.668H29.6666V15.0013H24.3333V9.66797H8.33325V25.668ZM21.6666 25.668H26.9999V27.0013H21.6666V25.668ZM21.6666 21.668H26.9999V23.0013H21.6666V21.668ZM21.6666 17.668H26.9999V19.0013H21.6666V17.668ZM10.9999 12.3346H21.6666V15.0013H18.9999V23.0013H10.9999V12.3346Z"
+                fill="#FF7A00"
+              />
+              <rect
+                x="0.5"
+                y="0.5"
+                width="37"
+                height="37"
+                rx="4.5"
+                stroke="#FF7A00"
+                stroke-opacity="0.6"
+              />
+            </svg>
+            <nz-dropdown-menu #configColumns="nzDropdownMenu">
+              <div
+                style="
+                  background-color: white;
+                  padding: 8px 12px;
+                  border: 1px solid #ccc;
+                "
+              >
+                <ng-container *ngFor="let column of columns; let i = index">
+                  <label
+                    [(ngModel)]="column.check"
+                    nz-checkbox
+                    (ngModelChange)="onClickCheckBox(column)"
+                    >{{ column.keyTitle | translate }}</label
+                  >
+                  <br />
+                </ng-container>
+              </div>
+            </nz-dropdown-menu>
+          </button>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <!-- Table -->
+  <nz-row>
+    <nz-col nzSpan="24">
+      <nz-table
+        nzBordered
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+        [nzScroll]="{ x: 'auto' }"
+        [nzData]="data"
+        #importRequestTable
+        nzSize="small"
+        class="w-100"
+        (nzQueryParams)="onQueryParamsChange($event)"
+      >
+        <thead>
+          <tr>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <ng-container *ngIf="column.check">
+                <th
+                  class="hover-cursor-pointer"
+                  nz-resizable
+                  nzBounds="window"
+                  nzPreview
+                  [nzWidth]="column.width"
+                  (nzResizeEnd)="onResize($event, column)"
+                  [nzMaxWidth]="500"
+                  [nzMinWidth]="100"
+                  nzAlign="center"
+                  (click)="onSort(column.keyName, i)"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                  </div>
+                  <span
+                    *ngIf="!column.isSort"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                    "
+                    nz-tooltip="Sắp xếp giảm dần"
+                    nz-icon
+                    nzType="swap"
+                    [nzRotate]="90"
+                    nzTheme="outline"
+                  ></span>
+                  <span
+                    *ngIf="column.isSort"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                      transition: 0.3s ease-in-out all;
+                    "
+                    [style]="
+                      sortOrder == 'ascend' ? 'transform: rotate(-180deg)' : ''
+                    "
+                    [nz-tooltip]="
+                      sortOrder == 'ascend'
+                        ? 'Sắp xếp giảm dần'
+                        : 'Sắp xếp tăng dần'
+                    "
+                    nz-icon
+                    nzType="arrow-down"
+                    nzTheme="outline"
+                  ></span>
+                  <nz-resize-handle nzDirection="right">
+                    <div class="resize-trigger"></div>
+                  </nz-resize-handle>
+                </th>
+              </ng-container>
+            </ng-container>
+            <th nzWidth="100px" nzAlign="center" nzRight>
+              {{ "table.action" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody [class]="total == 0 ? '' : 'striped-tr'">
+          <!-- Searching by column -->
+          <tr>
+            <ng-container *ngFor="let column of columns; let j = index">
+              <ng-container
+                *ngIf="
+                  column.check &&
+                  (column.keyName === 'importRequestCode' ||
+                    column.keyName === 'woCode' ||
+                    column.keyName === 'poCode' ||
+                    column.keyName === 'soCode' ||
+                    column.keyName === 'returnReportCode' ||
+                    column.keyName === 'informationDelivery' ||
+                    column.keyName === 'customerCode' ||
+                    column.keyName === 'customerName' ||
+                    column.keyName === 'address' ||
+                    column.keyName === 'phoneNumber' ||
+                    column.keyName === 'createdBy' ||
+                    column.keyName === 'note' ||
+                    column.keyName === 'qcCount')
+                "
+              >
+                <td>
+                  <nz-input-group
+                    style="border: none"
+                    nzSearch
+                    [nzPrefix]="prefixInput"
+                    [nzSuffix]="suffixInput"
+                  >
+                    <input
+                      type="text"
+                      nz-input
+                      [(ngModel)]="filter[column.keyName]"
+                      (keydown)="enterSearch($event)"
+                    />
+                  </nz-input-group>
+                  <ng-template #prefixInput>
+                    <span
+                      style="color: #d9d9d9"
+                      (click)="search()"
+                      class="search-click"
+                      nz-icon
+                      nzType="search"
+                    ></span>
+                  </ng-template>
+                  <ng-template #suffixInput>
+                    <span
+                      nz-icon
+                      class="ant-input-clear-icon"
+                      nzTheme="fill"
+                      nzType="close-circle"
+                      *ngIf="filter[column.keyName]"
+                      (click)="filter[column.keyName] = ''; search()"
+                    ></span>
+                  </ng-template>
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'importType'"
+              >
+                <td>
+                  <!-- <nz-select
+                    class="w-100"
+                    [(ngModel)]="filter.importType"
+                    (ngModelChange)="search()"
+                    nzAllowClear
+                    nzPlaceHolder="{{ 'all_select' | translate }}"
+                  >
+                    <nz-option
+                      *ngFor="let importType of listImportType"
+                      [nzValue]="importType.importTypeId"
+                      [nzLabel]="importType.importTypeName"
+                    ></nz-option>
+                  </nz-select> -->
+                </td>
+              </ng-container>
+              <ng-container *ngIf="column.check && column.keyName == 'status'">
+                <td>
+                  <nz-select
+                    class="w-100"
+                    [(ngModel)]="filter.importType"
+                    (ngModelChange)="search()"
+                    nzAllowClear
+                    nzPlaceHolder="{{ 'all_select' | translate }}"
+                  >
+                    <nz-option
+                      *ngFor="let status of listStatus"
+                      [nzValue]="status.value"
+                      [nzLabel]="status.label | translate"
+                    ></nz-option>
+                  </nz-select>
+                </td>
+              </ng-container>
+              <!-- <ng-container
+                *ngIf="column.check && column.keyName == 'warehouseName'"
+              >
+                <td>
+                  <nz-select
+                    class="w-100"
+                    [(ngModel)]="filter.warehouseCode"
+                    (ngModelChange)="search()"
+                    nzAllowClear
+                    nzPlaceHolder="(Tất cả)"
+                    [style]="'width:' + column.with"
+                  >
+                    <nz-option
+                      *ngFor="let warehouse of listWarehouse"
+                      [nzValue]="warehouse.warehouseCode"
+                      [nzLabel]="warehouse.warehouseName"
+                    ></nz-option>
+                  </nz-select>
+                </td>
+              </ng-container> -->
+              <ng-container
+                *ngIf="column.check && column.keyName == 'deliveryAt'"
+              >
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filter.deliveryAt"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'createdAt'"
+              >
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filter.createdAt"
+                    (ngModelChange)="search()"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'updatedAt'"
+              >
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filter.updatedAt"
+                    (ngModelChange)="search()"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.check && column.keyName == 'createContractAt'"
+              >
+                <td>
+                  <nz-range-picker
+                    nzFormat="dd/MM/yyyy"
+                    [(ngModel)]="filter.createContractAt"
+                    (ngModelChange)="search()"
+                    [nzBorderless]="true"
+                    [nzPlaceHolder]="[
+                      'start_date' | translate,
+                      'end_date' | translate
+                    ]"
+                  >
+                  </nz-range-picker>
+                </td>
+              </ng-container>
+            </ng-container>
+            <td nzRight></td>
+          </tr>
+          <!-- Data table -->
+          <ng-container
+            *ngFor="let row of importRequestTable.data; let i = index"
+          >
+            <tr>
+              <ng-container *ngFor="let column of columns; let j = index">
+                <ng-container *ngIf="column.check">
+                  <td
+                    *ngIf="
+                      column.keyName !== 'status' &&
+                      column.keyName !== 'deliveryAt' &&
+                      column.keyName !== 'createdAt' &&
+                      column.keyName !== 'updatedAt' &&
+                      column.keyName !== 'numberOfWarehouse'
+                    "
+                  >
+                    {{ row[column.keyName] }}
+                  </td>
+                  <td *ngIf="column.keyName == 'deliveryAt'" nzAlign="right">
+                    {{ row["deliveryAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName == 'createdAt'" nzAlign="right">
+                    {{ row["createdAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName == 'updatedAt'" nzAlign="right">
+                    {{ row["updatedAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td
+                    *ngIf="column.keyName == 'numberOfWarehouse'"
+                    nzAlign="right"
+                  >
+                    {{ row["numberOfWarehouse"] }}
+                  </td>
+                  <td nzAlign="center" *ngIf="column.keyName === 'status'">
+                    <div
+                      class="border-element iqc-status_5and6"
+                      *ngIf="row[column.keyName] > 5; else elseStatus"
+                    >
+                      {{ "importRequest.status.status_5and6" | translate }}
+                    </div>
+                    <ng-template #elseStatus>
+                      <div [ngSwitch]="row[column.keyName]">
+                        <div
+                          class="border-element iqc-status_0"
+                          *ngSwitchCase="'0'"
+                        >
+                          {{ "importRequest.status.status_0" | translate }}
+                        </div>
+                        <div
+                          class="border-element iqc-status_1"
+                          *ngSwitchCase="'1'"
+                        >
+                          {{ "importRequest.status.status_1" | translate }}
+                        </div>
+                        <div
+                          class="border-element iqc-status_2"
+                          *ngSwitchCase="'2'"
+                        >
+                          {{ "importRequest.status.status_2" | translate }}
+                        </div>
+                        <div
+                          class="border-element iqc-status_3"
+                          *ngSwitchCase="'3'"
+                        >
+                          {{ "importRequest.status.status_3" | translate }}
+                        </div>
+                        <div
+                          class="border-element iqc-status_5and6"
+                          *ngSwitchCase="'5'"
+                        >
+                          {{ "importRequest.status.status_5and6" | translate }}
+                        </div>
+                        <div
+                          class="border-element iqc-status_5and6"
+                          *ngSwitchCase="'6'"
+                        >
+                          {{ "importRequest.status.status_5and6" | translate }}
+                        </div>
+                      </div>
+                    </ng-template>
+                  </td>
+                </ng-container>
+              </ng-container>
+              <td nzRight style="display: flex; justify-content: center">
+                <!-- <div class="w-32px">
+                  <div
+                    *ngIf="
+                      row.status == 1 &&
+                      (checkIsRole('wms_iqc_update') ||
+                        checkIsRole('FCIM_ADMIN'))
+                    "
+                    class="btn"
+                    style="
+                      width: 32px;
+                      height: 32px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      cursor: pointer;
+                    "
+                    (click)="onHandleRevoke(row)"
+                    [nz-tooltip]="'button.withDrawIqc' | translate"
+                  >
+                    <img src="./assets/image/svg/grn_revoke.svg" />
+                  </div>
+                </div> -->
+                <div class="w-32px">
+                  <app-button
+                    [className]="'action-button'"
+                    [iconTheme]="'fill'"
+                    [iconType]="'info-circle'"
+                    (btnClick)="onHandleView(row)"
+                    [nz-tooltip]="'table.moreDetail' | translate"
+                    [buttonType]="'text'"
+                  >
+                  </app-button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
+  <nz-row
+    nzGutter="24"
+    nzAlign="middle"
+    nzJustify="center"
+    class="mt-12"
+    *ngIf="total"
+  >
+    <div nz-col nzSpan="24">
+      <app-pagination
+        [currentPage]="page"
+        [currentSize]="per_page"
+        [total]="total"
+        (emitPage)="pagination($event)"
+      ></app-pagination>
+    </div>
+  </nz-row>
+</div>
+
+<!-- Popup hủy yêu cầu nhập kho -->
+<nz-modal
+  nzWidth="800px"
+  [(nzVisible)]="isVisibleCancelRequest"
+  [nzFooter]="null"
+  (nzOnCancel)="onHandleWithDrawRequest()"
+  [nzContent]="showCancelRequest"
+  [nzTitle]="showCancelRequestTitle"
+>
+  <ng-template #showCancelRequestTitle>
+    <div class="d-flex">
+      <svg
+        width="24"
+        height="25"
+        viewBox="0 0 24 25"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_1180_25964)">
+          <path
+            d="M21.6 0.5H2.4C1.08 0.5 0 1.58 0 2.9V24.5L4.8 19.7H21.6C22.92 19.7 24 18.62 24 17.3V2.9C24 1.58 22.92 0.5 21.6 0.5ZM12 11.3C11.34 11.3 10.8 10.76 10.8 10.1V5.3C10.8 4.64 11.34 4.1 12 4.1C12.66 4.1 13.2 4.64 13.2 5.3V10.1C13.2 10.76 12.66 11.3 12 11.3ZM13.2 16.1H10.8V13.7H13.2V16.1Z"
+            fill="#FF7A00"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_1180_25964">
+            <rect
+              width="24"
+              height="24"
+              fill="white"
+              transform="translate(0 0.5)"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+      <h2 class="m-0 ml-24">
+        {{ "ui.receipt.required.cancelRequest" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showCancelRequest>
+    <app-cancel-request
+      (childOut)="hideCancelRequest($event)"
+      [importRequestCode]="currentImportRequestCode"
+    ></app-cancel-request>
+  </ng-template>
+</nz-modal>
+
+<app-popup-cancel
+  [isVisible]="isVisibleWithDrawRequest"
+  (cancel)="onHandleCancelPopup($event)"
+  (isVisibleChange)="onHandleConfirmPopup($event)"
+>
+</app-popup-cancel>
+
+<app-popup-withdraw
+  [isVisible]="isVisibleConfirmWithDraw"
+  (cancel)="onHandleCancelWithDraw($event)"
+  [importRequestCode]="currentImportRequestCode"
+>
+</app-popup-withdraw>

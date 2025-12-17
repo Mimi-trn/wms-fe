@@ -1,0 +1,11 @@
+.transparent-input {
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.transparent-input:focus {
+  outline: none;
+}

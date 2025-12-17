@@ -1,0 +1,67 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancel()"
+  [nzWidth]="800"
+>
+  <ng-template #modalTitle>
+    <h2 style="text-align: center; color: #ff7a00" class="m-0">
+      {{ title }}
+    </h2>
+  </ng-template>
+
+  <ng-template #modalContent>
+    <p class="m-0 mb-12">
+      Bạn có chắc chắn muốn xóa
+      <span style="font-weight: 800">{{ nameData }}</span
+      >?
+    </p>
+    <div
+      style="
+        width: 100%;
+        background-color: #ffe0d5;
+        padding: 12px;
+        border-left: 4px solid #ff7a00;
+        border-radius: 3px;
+      "
+    >
+      <h2 style="color: #ff7a00; font-weight: bold" class="m-0">
+        <span nz-icon nzType="warning" nzTheme="outline"></span>
+        Lưu ý:
+      </h2>
+      <p class="m-0">
+        Khi bạn xóa <span style="font-weight: 800">{{ nameData }}</span> thì
+        {{ content }}
+      </p>
+    </div>
+    <div nz-row nzJustify="center" nzGutter="24" class="mt-24">
+      <nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6" nzXXl="6">
+        <button
+          nz-button
+          (click)="handleCancel()"
+          style="
+            background-color: #e5e5e5;
+            color: #000;
+            border: 1px solid #e5e5e5;
+            width: 100%;
+          "
+          nzType="primary"
+        >
+          {{ "btn.delete.cancel" | translate }}
+        </button>
+      </nz-col>
+      <nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6" nzXXl="6">
+        <button
+          nz-button
+          (click)="handleSubmit()"
+          style="width: 100%"
+          nzType="primary"
+        >
+          {{ "btn.delete" | translate }}
+        </button>
+      </nz-col>
+    </div>
+  </ng-template>
+</nz-modal>

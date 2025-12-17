@@ -1,0 +1,115 @@
+<nz-spin [nzTip]="'Loading...'" [nzSpinning]="isSpinning">
+  <nz-row nzAlign="middle" class="mb-12">
+    <app-breadcrumb
+      nz-col
+      [nzSpan]="24"
+      [listBreadCrumb]="breadcrumbs"
+    ></app-breadcrumb>
+  </nz-row>
+  <div class="common-bg">
+    <nz-row class="mb-24">
+      <h2 class="m-0">
+        {{ "sidebar.warning.child.configWarning" | translate }}
+      </h2>
+    </nz-row>
+    <div class="pl-24">
+      <nz-row class="mb-24">
+        <nz-switch
+          [(ngModel)]="configWarning.systemWarning"
+          (ngModelChange)="updateConfiguration()"
+          class="mr-24"
+        >
+        </nz-switch>
+        Nhận cảnh báo trên hệ thống
+      </nz-row>
+      <nz-row class="mb-24">
+        <nz-switch
+          [(ngModel)]="configWarning.emailWarning"
+          (ngModelChange)="updateConfiguration()"
+          class="mr-24"
+        >
+        </nz-switch>
+        Nhận cảnh báo qua Email
+      </nz-row>
+      <nz-row class="mb-24">
+        <nz-col span="24">
+          <nz-switch
+            [(ngModel)]="configWarning.inventoryWarning"
+            (ngModelChange)="updateConfiguration()"
+            class="mr-24"
+          >
+          </nz-switch>
+          Nhận cảnh báo tồn kho nguyên vật liệu
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="configWarning.inventoryWarning">
+          <div class="pl-24">
+            <div>
+              <label
+                class="mt-24"
+                nz-checkbox
+                [(ngModel)]="configWarning.lessThanMinQuantityInventoryWarning"
+                (ngModelChange)="updateConfiguration()"
+                >Cảnh báo khi tồn kho nhỏ hơn</label
+              >
+              <nz-input-number
+                [nzMin]="1"
+                [(ngModel)]="configWarning.warningQuantity"
+                (ngModelChange)="updateConfiguration()"
+              ></nz-input-number>
+            </div>
+            <div>
+              <label
+                class="mt-24"
+                nz-checkbox
+                [(ngModel)]="
+                  configWarning.lessThanDefiniteQuantityInventoryWarning
+                "
+                (ngModelChange)="updateConfiguration()"
+                >Cảnh báo khi tồn kho nhỏ hơn mức tối thiểu</label
+              >
+            </div>
+          </div>
+        </nz-col>
+      </nz-row>
+      <nz-row>
+        <nz-col span="24">
+          <nz-switch
+            [(ngModel)]="configWarning.expirationWarning"
+            class="mr-24"
+            (ngModelChange)="updateConfiguration()"
+          >
+          </nz-switch>
+          Nhận cảnh báo nguyên vật liệu hết hạn
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="configWarning.expirationWarning">
+          <div class="pl-24">
+            <label
+              class="mt-24"
+              nz-checkbox
+              [(ngModel)]="configWarning.soonExpirationWarning"
+              (ngModelChange)="updateConfiguration()"
+              >Cảnh báo trước khi hàng hóa hết hạn</label
+            >
+            <nz-input-number
+              [nzMin]="1"
+              [(ngModel)]="configWarning.duration"
+              (ngModelChange)="updateConfiguration()"
+            ></nz-input-number>
+            <nz-select
+              class="ml-12"
+              [(ngModel)]="configWarning.durationType"
+              (ngModelChange)="updateConfiguration()"
+            >
+              <nz-option
+                *ngFor="let item of listDate"
+                [nzLabel]="item.text"
+                [nzValue]="item.value"
+              >
+              </nz-option>
+            </nz-select>
+          </div>
+        </nz-col>
+      </nz-row>
+    </div>
+  </div>
+</nz-spin>

@@ -1,0 +1,7 @@
+.choosePackage {
+  cursor: pointer;
+}
+
+.choosePackage:hover>td {
+  background-color: bisque;
+}

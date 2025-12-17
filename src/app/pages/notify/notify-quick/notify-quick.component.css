@@ -1,0 +1,38 @@
+.mark__all-read:hover {
+  cursor: pointer;
+  color: #ddd;
+}
+
+.mark__see-notify:hover {}
+
+.box-notify:hover {
+  cursor: pointer;
+  background-color: #FF7A00;
+  color: #fff
+}
+
+.box {
+  height: 417px;
+  overflow-y: scroll;
+  margin-top: 12px;
+  background: #ddd;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.box-notify {
+  background: #fff;
+  border-radius: 8px;
+  display: block;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  color: black
+}
+
+.box .ellipsis-container {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 42px;
+}

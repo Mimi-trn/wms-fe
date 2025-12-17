@@ -1,0 +1,212 @@
+<div style="display: block">
+  <nz-row nzGutter="24">
+    <nz-col nzXs="24" nzSm="24" nzMd="18" nzLg="18" nzXl="18">
+      <nz-row nzAlign="top" nzJustify="space-between" nzGutter="24">
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{ "table.status" | translate }}</nz-col>
+            <nz-col nzSpan="24">
+              <nz-select
+                [nzDisabled]="true"
+                [(ngModel)]="dataInformation.status"
+                class="w-100"
+              >
+                <ng-container *ngFor="let option of listStatus">
+                  <nz-option
+                    [nzValue]="option.value"
+                    [nzLabel]="option.text"
+                  ></nz-option>
+                </ng-container>
+              </nz-select>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.productCode" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <input
+                class="mb-12"
+                type="text"
+                [disabled]="true"
+                nz-input
+                [(ngModel)]="dataInformation.productCode"
+              />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.itemName" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <textarea
+                class="mb-12"
+                [disabled]="true"
+                nz-input
+                [(ngModel)]="dataInformation.itemName"
+              ></textarea>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.description" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <textarea
+                class="mb-12"
+                [disabled]="true"
+                nz-input
+                [(ngModel)]="dataInformation.description"
+              ></textarea>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.grnCode" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <input
+                class="mb-12"
+                [disabled]="true"
+                type="text"
+                nz-input
+                [(ngModel)]="dataInformation.grnCode"
+              />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.expiredDate" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <nz-date-picker
+                [nzDisabled]="true"
+                nzFormat="dd/MM/YYYY"
+                class="w-100"
+                [(ngModel)]="dataInformation.expiredDate"
+              ></nz-date-picker>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.uom" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <input
+                class="mb-12"
+                type="text"
+                [disabled]="true"
+                nz-input
+                [(ngModel)]="dataInformation.uom"
+              />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.importDate" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <nz-date-picker
+                [nzDisabled]="true"
+                nzFormat="dd/MM/YYYY"
+                class="w-100"
+                [(ngModel)]="dataInformation.importDate"
+              ></nz-date-picker>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.itemQuantity" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <input
+                class="mb-12"
+                [disabled]="dataInformation.status == 1 ? false : true"
+                type="number"
+                nz-input
+                [(ngModel)]="dataInformation.itemQuantity"
+              />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <nz-row>
+            <nz-col nzSpan="24">{{
+              "sidebar.barcodeItem.listQR.packageQuantity" | translate
+            }}</nz-col>
+            <nz-col nzSpan="24">
+              <input
+                class="mb-12"
+                [disabled]="dataInformation.status == 1 ? false : true"
+                type="number"
+                nz-input
+                [(ngModel)]="dataInformation.packageQuantity"
+              />
+            </nz-col>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="6" nzLg="6" nzXl="6">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.barcodeItem.listQR.qrCode" | translate
+        }}</nz-col>
+        <nz-col nzSpan="24">
+          <div id="download">
+            <nz-qrcode
+              [nzSize]="180"
+              class="w-100 d-flex j-content-center"
+              [nzValue]="uuidQR"
+              [nzLevel]="'H'"
+            ></nz-qrcode>
+            <a #download></a>
+          </div>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <nz-row class="mt-12 mb-12">
+    <nz-divider class="m-0 w-100"></nz-divider>
+  </nz-row>
+  <nz-row nzAlign="middle" nzGutter="24" nzJustify="end">
+    <nz-col>
+      <app-button
+        [className]="'common-btn-close '"
+        [title]="'sidebar.barcodeItem.readQR.button.cancel'"
+        [buttonType]="'primary'"
+        (btnClick)="onHandleCancel()"
+      ></app-button>
+    </nz-col>
+    <nz-col *ngIf="dataInformation.status == 2">
+      <app-button
+        [title]="'sidebar.barcodeItem.readQR.button.print'"
+        [buttonType]="'primary'"
+        (btnClick)="onHandlePrint()"
+      ></app-button>
+    </nz-col>
+    <nz-col *ngIf="dataInformation.status == 1">
+      <app-button
+        [title]="'sidebar.barcodeItem.readQR.button.update'"
+        [buttonType]="'primary'"
+        (btnClick)="onHandleUpdate()"
+      ></app-button>
+    </nz-col>
+  </nz-row>
+</div>

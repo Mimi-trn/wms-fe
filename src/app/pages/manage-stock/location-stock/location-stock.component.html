@@ -1,0 +1,202 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb nz-col [nzSpan]="23" *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row>
+    <h2 class="m-0">
+      {{ "Thông tin hàng hóa" | translate }}
+    </h2>
+  </nz-row>
+
+  <nz-row nzAlign="top" nzJustify="start" [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }">
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Mã hàng hóa" }}<span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input type="text" readonly nz-input [(ngModel)]="dataInformation.itemCode" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Tên hàng hóa" }}<span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input type="text" readonly nz-input [(ngModel)]="dataInformation.itemName" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Mã kho" }}<span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input type="text" readonly nz-input [(ngModel)]="dataInformation.warehouseCode" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Nhóm hàng hóa" }}<span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input type="text" readonly nz-input [(ngModel)]="dataInformation.itemGroup" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Số lượng tồn" }}<span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input type="text" readonly nz-input [(ngModel)]="dataInformation.totalStockQuantity" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "Đơn vị tính" }}<span class="error-span">*</span>
+        </nz-col>
+        <nz-col nzSpan="24">
+          <input type="text" readonly nz-input [(ngModel)]="dataInformation.uom" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+
+<div class="common-bg mt-24">
+  <nz-row class="mb-12">
+    <h2 class="m-0">
+      {{ "Danh sách vị trí" | translate }}
+    </h2>
+  </nz-row>
+  <nz-row>
+    <nz-table nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{ y: '500px' }"
+      [nzData]="dataItems" #dataItem nzSize="small" class="w-100">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <ng-container *ngIf="column.check">
+              <th nz-resizable [nzWidth]="column.width" (nzResize)="onResize($event, i)" [nzMaxWidth]="500"
+                [nzMinWidth]="100" nzAlign="center">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody [class]="dataItems.length > 0 ? 'striped-tr' : ''">
+        <tr *ngFor="let row of dataItem.data">
+          <ng-container *ngFor="let column of columns">
+            <ng-container *ngIf="column.check">
+              <td *ngIf="column.keyName !== 'warehouseCode'">
+                {{ row[column.keyName] }}
+              </td>
+              <td *ngIf="column.keyName == 'warehouseCode'">
+                {{ dataInformation?.warehouseCode }}
+              </td>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+  <nz-row class="mt-24" nzGutter="24" nzJustify="end">
+    <nz-col>
+      <app-button [className]="'w-100 common-btn-close '" [title]="'Quay lại'" [buttonType]="'primary'"
+        (btnClick)="handleClose()"></app-button>
+    </nz-col>
+  </nz-row>
+</div>
+
+<div class="common-bg mt-24">
+  <nz-row class="mb-12">
+    <h2 class="m-0">
+      {{ "Danh sách phiếu nhập" | translate }}
+    </h2>
+  </nz-row>
+  <nz-row>
+    <nz-table nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{ y: '500px' }"
+      [nzData]="dataGrnLocations" #dataItem nzSize="small" class="w-100">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let column of grnColumms; let i = index">
+            <ng-container *ngIf="column.check">
+              <th nz-resizable [nzWidth]="column.width" (nzResize)="onResize($event, i)" [nzMaxWidth]="500"
+                [nzMinWidth]="100" nzAlign="center">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody [class]="dataGrnLocations.length > 0 ? 'striped-tr' : ''">
+        <tr *ngFor="let row of dataGrnLocations">
+          <ng-container *ngFor="let column of grnColumms">
+            <td>
+              {{ row[column.keyName] }}
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+
+</div>
+
+<div class="common-bg mt-24">
+  <nz-row class="mb-12">
+    <h2 class="m-0">
+      {{ "Danh sách phiếu xuất" | translate }}
+    </h2>
+  </nz-row>
+  <nz-row>
+    <nz-table nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{ y: '500px' }"
+      [nzData]="dataGdnLocations" #dataItem nzSize="small" class="w-100">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let column of gdnColumms; let i = index">
+            <ng-container *ngIf="column.check">
+              <th nz-resizable [nzWidth]="column.width" (nzResize)="onResize($event, i)" [nzMaxWidth]="500"
+                [nzMinWidth]="100" nzAlign="center">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody [class]="dataGdnLocations.length > 0 ? 'striped-tr' : ''">
+        <tr *ngFor="let row of dataGdnLocations">
+          <ng-container *ngFor="let column of gdnColumms">
+            <ng-container *ngIf="column.check">
+              <td>
+                {{ row[column.keyName] }}
+              </td>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+  <nz-row class="mt-24" nzGutter="24" nzJustify="end">
+    
+  </nz-row>
+</div>

@@ -1,0 +1,146 @@
+<app-breadcrumb nz-row [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+<nz-card style="height: 100%;">
+  <h2 style="text-align: center; font-weight: 600; margin-top: 5px;">{{"Quản lý thay đổi" | translate}}</h2>
+  <div class="search">
+    <h4>{{"Tìm kiếm chung" | translate}}</h4>
+    <nz-input-group [nzPrefix]="searchPrefix" [nzSuffix]="searchSuffix" style="width: 35%; height: 40px;">
+      <ng-template #searchSuffix><span *ngIf="common" (click)="common = ''; handleSearch()" nz-icon
+          nzType="close-circle" nzTheme="fill"
+          style="font-size: 12px; cursor: pointer; color: rgb(172, 170, 170);"></span></ng-template>
+      <ng-template #searchPrefix><span nz-icon nzType="search" nzTheme="outline"
+          style="color: #BDBDBD;margin-right: 12px;"></span></ng-template>
+      <input type="text" [nzAutocomplete]="auto" [(ngModel)]="common" (keyup)="search($event)" nz-input
+        placeholder="{{'Nhập thông tin và nhấn Enter để tìm kiếm' | translate}}">
+      <nz-autocomplete #auto [nzDefaultActiveFirstOption]="false">
+        <nz-auto-option *ngFor="let option of optionsCompleteCommon" [nzValue]="option">{{ option | translate
+          }}</nz-auto-option>
+      </nz-autocomplete>
+    </nz-input-group>
+  </div>
+  <div nz-row nzGutter="24" nzAlign="bottom" nzJustify="end" class="mt-24">
+    <div nz-col *ngIf="checkRoles(['mdm_busines_log_excel-export'])">
+      <button style="color: #FF7A00" nz-button nzType="text" (click)="export()" class="mb-24"
+        nz-tooltip="{{'Xuất excel' | translate}}">
+        <span nz-icon nzType="download" nzTheme="outline"></span>
+        {{ "export.btn" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <nz-table nzBordered nzShowPagination="false" [nzScroll]="{ x: '1200px'}" [nzData]="listChangeLog" #vendorTable
+    [nzSize]="'small'">
+
+    <thead>
+      <tr>
+        <ng-container *ngFor="let col of header; let i = index">
+          <th nz-resizable [nzMinWidth]="60" [nzWidth]="col.width" (nzResize)="onResize($event, i)" [nzAlign]="'center'"
+            (nzSortOrderChange)="customSortFunction($event,  col.name)">
+            <div class="editable-cell">
+              {{col.name | translate}}
+              <nz-resize-handle nzDirection="right">
+                <div class="resize-trigger"></div>
+              </nz-resize-handle>
+            </div>
+            <span *ngIf="orderSort=='DESC'"
+              style="float: right;position: absolute; bottom: 12px; right: 10px; cursor: pointer;"
+              nz-tooltip="{{'Sắp xếp tăng dần' | translate}}" (click)="customSortFunction($event,  col.name)" nz-icon
+              nzType="sort-ascending" nzTheme="outline"></span>
+            <span *ngIf="orderSort=='ASC'"
+              style="float: right;position: absolute; bottom: 12px; right: 10px; cursor: pointer;"
+              nz-tooltip="{{'Sắp xếp giảm dần' | translate}}" (click)="customSortFunction($event, col.name)" nz-icon
+              nzType="sort-descending" nzTheme="outline"></span>
+          </th>
+
+        </ng-container>
+
+        <th nzAlign="center" [nzRight]="true" nzWidth="100px">
+          {{"Thao tác" | translate }}
+
+        </th>
+      </tr>
+    </thead>
+    <tbody class="striped-tr">
+      <tr class="search-table">
+        <td>
+          <nz-input-group [nzPrefix]="machineCodePrefix" [nzSuffix]="machineSuffix">
+            <ng-template #machineSuffix><span *ngIf="userName" (click)="clearInput('userName')" nz-icon
+                nzType="close-circle" nzTheme="fill"
+                style="font-size: 12px; cursor: pointer; color: rgb(172, 170, 170);"></span></ng-template>
+            <ng-template #machineCodePrefix><span nz-icon nzType="search" nzTheme="outline"
+                style="color: #BDBDBD"></span></ng-template>
+            <input [nzAutocomplete]="autoUserName" type="text" nz-input [(ngModel)]="userName"
+              (input)="searchAutoComplete('userName', 'userName')" (keyup)="search($event)">
+            <nz-autocomplete #autoUserName [nzDefaultActiveFirstOption]="false">
+              <nz-auto-option *ngFor="let option of optionsCompleteColumnUserName" [nzValue]="option">{{ option
+                }}</nz-auto-option>
+            </nz-autocomplete>
+          </nz-input-group>
+        </td>
+        <td>
+          <nz-select class="select-search " style="width: 100%;" nzAllowClear [(ngModel)]="actionName"
+            (ngModelChange)="searchSelectBox('actionName')">
+            <nz-option *ngFor="let act of action; let i = index" [nzValue]="act.value" [nzLabel]="act.label">
+            </nz-option>
+          </nz-select>
+        </td>
+        <td>
+          <nz-input-group [nzPrefix]="machineCodePrefix" [nzSuffix]="functionNameSuffix">
+            <ng-template #functionNameSuffix><span *ngIf="functionName" (click)="clearInput('functionName')" nz-icon
+                nzType="close-circle" nzTheme="fill"
+                style="font-size: 12px; cursor: pointer; color: rgb(172, 170, 170);"></span></ng-template>
+            <ng-template #machineCodePrefix><span nz-icon nzType="search" nzTheme="outline"
+                style="color: #BDBDBD"></span></ng-template>
+            <input [nzAutocomplete]="autoFunction" type="text" nz-input [(ngModel)]="functionName"
+              (input)="searchAutoComplete('functionName', 'functionName')" (keyup)="search($event)">
+            <nz-autocomplete #autoFunction [nzDefaultActiveFirstOption]="false">
+              <nz-auto-option *ngFor="let option of optionsCompleteColumnFunctionName" [nzValue]="option">{{ option
+                }}</nz-auto-option>
+            </nz-autocomplete>
+          </nz-input-group>
+
+        </td>
+        <td>
+          <nz-range-picker class="select-search" [nzPlaceHolder]="['Start Date' | translate, 'End Date' | translate]"
+            style="width: 100%;" [(ngModel)]="createdAt" (ngModelChange)="searchSelectBox('createdAt')">
+          </nz-range-picker>
+        </td>
+        <td [nzRight]="true"></td>
+      </tr>
+
+
+      <ng-container *ngFor="let changeLog of listChangeLog">
+        <tr>
+          <td nzAlign="left">
+            <p>{{changeLog.userName}}</p>
+          </td>
+          <td nzAlign="left">
+            <p>{{changeLog.actionName}}</p>
+          </td>
+          <td nzAlign="left">
+            <p>{{changeLog.functionName}}</p>
+          </td>
+          <td nzAlign="right">
+            <p>{{ formatDate(changeLog.createdAt) }}</p>
+          </td>
+          <td nzAlign="center" [nzRight]="true">
+            <button style="color: #FF7A00" nz-button nzType="link" (click)="editChangeLog(changeLog)"
+              nz-tooltip='{{"Xem chi tiết" | translate}}'>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M7 14C8.85652 14 10.637 13.2625 11.9497 11.9497C13.2625 10.637 14 8.85652 14 7C14 5.14348 13.2625 3.36301 11.9497 2.05025C10.637 0.737498 8.85652 0 7 0C5.14348 0 3.36301 0.737498 2.05025 2.05025C0.737498 3.36301 0 5.14348 0 7C0 8.85652 0.737498 10.637 2.05025 11.9497C3.36301 13.2625 5.14348 14 7 14ZM7.81375 5.7645L6.93875 9.88138C6.8775 10.1789 6.96413 10.3477 7.20475 10.3477C7.3745 10.3477 7.63088 10.2865 7.805 10.1325L7.728 10.4965C7.47687 10.7993 6.923 11.0197 6.44613 11.0197C5.831 11.0197 5.56938 10.6505 5.73913 9.86562L6.38487 6.83113C6.44088 6.57475 6.39013 6.482 6.13375 6.41988L5.73913 6.349L5.81087 6.01562L7.81375 5.7645ZM7 4.8125C6.76794 4.8125 6.54538 4.72031 6.38128 4.55622C6.21719 4.39212 6.125 4.16956 6.125 3.9375C6.125 3.70544 6.21719 3.48288 6.38128 3.31878C6.54538 3.15469 6.76794 3.0625 7 3.0625C7.23206 3.0625 7.45462 3.15469 7.61872 3.31878C7.78281 3.48288 7.875 3.70544 7.875 3.9375C7.875 4.16956 7.78281 4.39212 7.61872 4.55622C7.45462 4.72031 7.23206 4.8125 7 4.8125Z"
+                  fill="#FF7A00" />
+              </svg>
+            </button>
+          </td>
+
+        </tr>
+      </ng-container>
+
+    </tbody>
+  </nz-table>
+  <app-pagination *ngIf="total" [currentPage]="pageNumber" [currentSize]="pageSize" [total]="total"
+    (emitPage)="getData($event)">
+  </app-pagination>
+</nz-card>
+<app-info-change-log *ngIf="ivisibleInfor" [changeLog]="currentChangeLog" [(isvisible)]="ivisibleInfor">
+</app-info-change-log>

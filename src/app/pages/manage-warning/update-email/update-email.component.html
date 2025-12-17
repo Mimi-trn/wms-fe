@@ -1,0 +1,161 @@
+<nz-row nzGutter="24">
+  <nz-col nzSpan="12" class="mb-12">
+    <nz-row>
+      <nz-col nzSpan="24"
+        >Tiêu đề Email <span class="error-span">*</span></nz-col
+      >
+      <nz-col nzSpan="24">
+        <nz-input-group [nzSuffix]="emailHeader">
+          <input nz-input [(ngModel)]="dataInformation.emailHeader" />
+        </nz-input-group>
+        <ng-template #emailHeader>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="dataInformation.emailHeader"
+            (click)="dataInformation.emailHeader = ''"
+          ></span>
+        </ng-template>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+  <nz-col nzSpan="12" class="mb-12">
+    <nz-row>
+      <nz-col nzSpan="24">Loại thông báo</nz-col>
+      <nz-col nzSpan="24">
+        <nz-select
+          class="w-100"
+          [(ngModel)]="dataInformation.emailType"
+          [nzDisabled]="true"
+        >
+          <nz-option
+            *ngFor="let item of listEmailType"
+            [nzLabel]="item.label"
+            [nzValue]="item.value"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+  <nz-col nzSpan="12" class="mb-12">
+    <nz-row>
+      <nz-col nzSpan="24">Trạng thái <span class="erorr-span">*</span></nz-col>
+      <nz-col nzSpan="24">
+        <nz-select class="w-100" [(ngModel)]="dataInformation.status">
+          <nz-option
+            *ngFor="let item of listStatus"
+            [nzLabel]="item.label"
+            [nzValue]="item.value"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+  <nz-col nzSpan="12" class="mb-12">
+    <nz-row>
+      <nz-col nzSpan="24">Nhóm người nhận</nz-col>
+      <nz-col nzSpan="24">
+        <nz-select
+          class="w-100"
+          [compareWith]="compareFn"
+          [(ngModel)]="dataInformation.groupEmail"
+          (ngModelChange)="changeGroup($event)"
+          nzAllowClear
+          nzMode="tags"
+        >
+          <nz-option
+            *ngFor="let item of listGroup"
+            [nzLabel]="item.teamGroup"
+            [nzValue]="item"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+
+  <nz-col nzSpan="12" class="mb-12">
+    <nz-row>
+      <nz-col nzSpan="24">Email người nhận <span class="error-span">*</span> </nz-col>
+      <nz-col nzSpan="24">
+        <nz-select
+          class="w-100"
+          [compareWith]="compareFnEmployee"
+          [(ngModel)]="dataInformation.listEmployeeReceiver"
+          (ngModelChange)="changeEmployee($event)"
+          nzAllowClear
+          nzMode="tags"
+        >
+          <nz-option
+            *ngFor="let item of listEmployee"
+            [nzLabel]="item.employeeEmail"
+            [nzValue]="item"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+
+
+  <nz-col nzSpan="12" class="mb-12">
+    <nz-row>
+      <nz-col nzSpan="24">Nhóm người được CC</nz-col>
+      <nz-col nzSpan="24">
+        <nz-select
+          class="w-100"
+          [compareWith]="compareFn"
+          [(ngModel)]="dataInformation.listGroupCC"
+          (ngModelChange)="changeGroupCC($event)"
+          nzAllowClear
+          nzMode="tags"
+        >
+          <nz-option
+            *ngFor="let item of listGroup"
+            [nzLabel]="item.teamGroup"
+            [nzValue]="item"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+
+  <nz-col nzSpan="12" class="mb-12">
+    <nz-row>
+      <nz-col nzSpan="24">Email CC <span class="error-span">*</span> </nz-col>
+      <nz-col nzSpan="24">
+        <nz-select
+          class="w-100"
+          [compareWith]="compareFnEmployee"
+          [(ngModel)]="dataInformation.emailCC"
+          nzAllowClear
+          nzMode="tags"
+        >
+          <nz-option
+            *ngFor="let item of listEmployee"
+            [nzLabel]="item.employeeEmail"
+            [nzValue]="item"
+          >
+          </nz-option>
+        </nz-select>
+      </nz-col>
+    </nz-row>
+  </nz-col>
+</nz-row>
+
+<nz-row class="mt-24" nzJustify="end" nzGutter="24">
+  <nz-col nzXs="12" nzSm="12" nzMd="6" nzLg="4" nzXl="4" nzXXl="4">
+    <app-button [className]="'common-btn-close w-100'" [title]="'Hủy bỏ'" [buttonType]="'primary'"
+      [tooltipTitle]="'Click here'" (btnClick)="onHandleCancel()"></app-button>
+  </nz-col>
+  <nz-col nzXs="12" nzSm="12" nzMd="6" nzLg="4" nzXl="4" nzXXl="4">
+    <app-button [className]="'w-100'" [title]="'Cập nhật'" [buttonType]="'primary'" [tooltipTitle]="'Click here '"
+      (btnClick)="update()"></app-button>
+  </nz-col>
+</nz-row>
+

@@ -1,0 +1,121 @@
+// Custom Theming for NG-ZORRO
+// For more information: https://ng.ant.design/docs/customize-theme/en
+@import "../node_modules/ng-zorro-antd/ng-zorro-antd.less";
+
+// Override less variables to here
+// View all variables: https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/components/style/themes/default.less
+
+// @primary-color: #1890ff;
+@primary-color: #FF7A00;
+// @primary-color: #ff794e;
+
+.ant-modal-header {
+  background: #FFE0C2;
+}
+
+.ant-table-thead>tr>th {
+  background-color: #FFE0C2;
+}
+
+.select-language>nz-select-arrow {
+  color: #ffffff
+}
+
+
+.ant-menu-sub.ant-menu-inline {
+  background: #E5E5E5;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  // background-color: #FF7A00;
+  background-color: rgba(255, 255, 255, 0);
+  color: white;
+}
+
+.ant-menu-item-selected a,
+.ant-menu-item-selected a:hover {
+  color: white;
+}
+
+
+.ant-menu-item-selected a::before {
+  background-color: #FF7A00;
+  left: 22px;
+  border-radius: 10px 0px 0px 10px;
+  z-index: -1;
+}
+
+.ant-pagination-options {
+  float: right;
+}
+
+
+.ant-menu-light .ant-menu-item:hover,
+.ant-menu-light .ant-menu-item-active,
+.ant-menu-light .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
+.ant-menu-light .ant-menu-submenu-active,
+.ant-menu-light .ant-menu-submenu-title:hover {
+  color: black;
+}
+
+.li-menu.ant-menu-item-selected>a {
+  color: #FF7A00;
+}
+
+.li-menu.ant-menu-item-selected>a::after {
+  content: '';
+  width: 100%;
+  height: 2px;
+  background-color: #FF7A00;
+  position: absolute;
+  top: 38px;
+  left: 24px;
+}
+
+.ant-menu-submenu-selected .ant-menu-submenu-title::before {
+  // border-bottom:  3px solid #FF7A00;
+  content: '';
+  width: 100%;
+  height: 2px;
+  background-color: #FF7A00;
+  position: absolute;
+  top: 38px;
+}
+
+.li-menu.ant-menu-item-selected>a {
+  color: #FF7A00;
+}
+
+.li-menu.ant-menu-item-selected>a::after {
+  content: '';
+  width: 100%;
+  height: 2px;
+  background-color: #FF7A00;
+  position: absolute;
+  top: 38px;
+  left: 24px;
+}
+
+.ant-menu-submenu-selected {
+  color: #FF7A00 !important;
+}
+
+.ant-menu-inline .ant-menu-item::after {
+  border: 0;
+}
+
+// .ant-menu-submenu-selected .ant-menu-submenu-title {
+//   border-bottom: 3px solid #FF7A00;
+// }
+
+// .ant-menu-submenu-selected {
+//   color: #FF7A00 !important;
+// }
+
+// .li-menu .ant-menu-item .ng-star-inserted .ant-menu-item-selected a {
+//   color: #FF7A00;
+// }
+
+// .ant-menu-submenu-selected .ant-menu-submenu-arrow {
+//   color: #FF7A00 !important;
+// }

@@ -1,0 +1,38 @@
+<nz-row>
+  <nz-col>
+    <b>Số chứng từ xuất:</b> &nbsp;
+  </nz-col>
+  <nz-col>
+    {{ child }}
+  </nz-col>
+</nz-row>
+<nz-row class="mt-12">
+  <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzXXl="24">
+    <b>Lý do từ chối yêu cầu <span class="error-span">*</span></b>
+  </nz-col>
+  <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzXXl="24">
+    <nz-input-group [nzSuffix]="inputClearNote" class="ant-input-affix-wrapper-textarea-with-clear-btn">
+      <textarea rows="3" nz-input [(ngModel)]="reason" placeholder="Nhập lý do từ chối yêu cầu"></textarea>
+    </nz-input-group>
+    <ng-template #inputClearNote>
+      <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="reason"
+        (click)="reason = null"></span>
+    </ng-template>
+  </nz-col>
+</nz-row>
+
+<nz-row class="mt-24" nzJustify="end" nzGutter="24">
+  <nz-col nzXs="12" nzSm="12" nzMd="6" nzLg="4" nzXl="4" nzXXl="4">
+    <app-button [className]="'common-btn-close w-100'" [title]="'Hủy bỏ'" [buttonType]="'primary'"
+      [tooltipTitle]="'Click here'" (btnClick)="cancel()"></app-button>
+  </nz-col>
+  <nz-col nzXs="12" nzSm="12" nzMd="6" nzLg="4" nzXl="4" nzXXl="4">
+    <app-button [className]="'w-100'" [title]="'Xác nhận'" [buttonType]="'primary'" [tooltipTitle]="'Click here '"
+      (btnClick)="confirm()"></app-button>
+  </nz-col>
+</nz-row>
+
+
+<app-popup-cancel [isVisible]="isVisibleCancel" (cancel)="onHandleCancelPopup($event)"
+  (isVisibleChange)="onHandleConfirmPopup($event)">
+</app-popup-cancel>

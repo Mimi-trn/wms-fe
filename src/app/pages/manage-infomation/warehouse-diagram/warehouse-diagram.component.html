@@ -1,0 +1,78 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    nzSpan="24"
+    [listBreadCrumb]="breadcrumbs"
+  ></app-breadcrumb>
+</nz-row>
+
+<div class="common-bg">
+  <nz-row class="mb-12">
+    <nz-col nzSpan="12">
+      <span
+        style="color: rgba(0, 0, 0, 0.7); font-size: 20px; font-weight: 600"
+      >
+        {{ "sidebar.information.child.warehouseDiagram" | translate }}
+      </span>
+    </nz-col>
+  </nz-row>
+
+  <div style="display: flex; justify-content: space-between">
+    <nz-input-group
+      [nzPrefix]="prefixTemplate"
+      [nzSuffix]="suffixTemplate"
+      style="max-width: 250px; margin-bottom: 20px"
+    >
+      <input
+        nz-input
+        placeholder="Tìm kiếm kho"
+        [(ngModel)]="searchCommon"
+        (keydown.enter)="searchWarehouse($event)"
+      />
+    </nz-input-group>
+
+    <ng-template #prefixTemplate>
+      <span
+        nz-icon
+        nzType="search"
+        nzTheme="outline"
+        style="cursor: pointer"
+      ></span>
+    </ng-template>
+
+    <ng-template #suffixTemplate>
+      <span
+        *ngIf="searchCommon != ''"
+        nz-icon
+        nzType="close-circle"
+        nzTheme="outline"
+        style="cursor: pointer"
+        (click)="searchCommon = ''; getDataListWarehouse('')"
+      ></span>
+    </ng-template>
+
+    <app-button
+      [title]="'add.new'"
+      [buttonType]="'text'"
+      [iconType]="'plus-circle'"
+      [iconTheme]="'outline'"
+      [tooltipTitle]="'Nhấn để tạo vị trí kho mới'"
+      (btnClick)="isVisibleCreateLocation = true"
+    ></app-button>
+  </div>
+
+  <app-location [listLocations]="listOfLocation"></app-location>
+
+  <app-pagination
+    [currentPage]="pageIndex"
+    [currentSize]="pageSize"
+    [total]="total"
+    (emitPage)="pagination($event)"
+  ></app-pagination>
+</div>
+
+<app-create-location
+  [isVisible]="isVisibleCreateLocation"
+  (isVisibleChange)="isVisibleCreateLocation = $event"
+  (isSuccess)="onCreateSuccessfully($event)"
+></app-create-location>

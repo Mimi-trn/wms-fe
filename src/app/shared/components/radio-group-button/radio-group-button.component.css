@@ -1,0 +1,32 @@
+.radio-group-container {
+  display: flex;
+  gap: 10px;
+}
+
+.radio-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 148px;
+  border-radius: 16px;
+  background: #f0f0f0;
+}
+
+.radio-btn:hover {
+  cursor: pointer;
+}
+
+.radio-btn:not(.active-radio-btn):hover {
+  color: #ff7a00;
+}
+
+.active-radio-btn {
+  border: 1px solid #ff7a00;
+  background: #ffe0c2;
+}
+
+@media only screen and (max-width: 440px) {
+  .radio-group-container {
+    flex-direction: column;
+  }
+}

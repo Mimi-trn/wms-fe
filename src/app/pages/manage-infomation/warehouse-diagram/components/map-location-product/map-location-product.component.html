@@ -1,0 +1,261 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancel()"
+  [nzWidth]="1300"
+>
+  <ng-template #modalTitle>
+    <h2 style="text-align: center; color: #ff7a00" class="m-0">
+      {{ "Map vị trí kho với sản phẩm" | translate }}
+    </h2>
+  </ng-template>
+  <ng-template #modalContent>
+    <nz-row nzJustify="end" style="margin-bottom: 10px">
+      <app-button
+        [title]="'add.new'"
+        [buttonType]="'text'"
+        [iconType]="'plus-circle'"
+        [iconTheme]="'outline'"
+        [tooltipTitle]="'Click here to add new mapped product'"
+        (btnClick)="handleAddNew()"
+      ></app-button>
+      <app-button
+        [title]="'import file'"
+        [buttonType]="'text'"
+        [iconType]="'upload'"
+        [iconTheme]="'outline'"
+        [tooltipTitle]="'Click here to import file'"
+        (btnClick)="onHandleOpenImportFile()"
+      ></app-button>
+    </nz-row>
+    <nz-table
+      nzBordered
+      nzShowPagination="false"
+      [nzScroll]="{ x: '1200px' }"
+      [nzData]="listMapped"
+      #mapperTable
+      [nzSize]="'small'"
+    >
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of columns; let i = index">
+            <th
+              *ngIf="col.check"
+              nz-resizable
+              [nzMinWidth]="60"
+              [nzWidth]="col.width"
+              (nzResize)="onResize($event, i)"
+              [nzAlign]="'center'"
+              (nzSortOrderChange)="customSortFunction($event, col.name)"
+            >
+              <div class="editable-cell">
+                {{ col.keyTitle | translate }}
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </div>
+              <span
+                *ngIf="orderSort == 'DESC'"
+                style="
+                  float: right;
+                  position: absolute;
+                  bottom: 12px;
+                  right: 10px;
+                  cursor: pointer;
+                "
+                nz-tooltip="{{ 'Sắp xếp tăng dần' | translate }}"
+                (click)="customSortFunction($event, col.name)"
+                nz-icon
+                nzType="sort-ascending"
+                nzTheme="outline"
+              ></span>
+              <span
+                *ngIf="orderSort == 'ASC'"
+                style="
+                  float: right;
+                  position: absolute;
+                  bottom: 12px;
+                  right: 10px;
+                  cursor: pointer;
+                "
+                nz-tooltip="{{ 'Sắp xếp giảm dần' | translate }}"
+                (click)="customSortFunction($event, col.name)"
+                nz-icon
+                nzType="sort-descending"
+                nzTheme="outline"
+              ></span>
+            </th>
+          </ng-container>
+          <th nzAlign="center" [nzRight]="true" nzWidth="100px">
+            {{ "Thao tác" | translate }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="striped-tr">
+        <tr class="search-table">
+          <ng-container *ngFor="let col of columns">
+            <td>
+              <nz-input-group
+                [nzPrefix]="machineCodePrefix"
+                [nzSuffix]="machineSuffix"
+              >
+                <ng-template #machineSuffix
+                  ><span
+                    *ngIf="searchData[col.keyName]"
+                    (click)="clearInput(col.keyName)"
+                    nz-icon
+                    nzType="close-circle"
+                    nzTheme="fill"
+                    style="
+                      font-size: 12px;
+                      cursor: pointer;
+                      color: rgb(172, 170, 170);
+                    "
+                  ></span
+                ></ng-template>
+                <ng-template #machineCodePrefix
+                  ><span
+                    nz-icon
+                    nzType="search"
+                    nzTheme="outline"
+                    style="color: #bdbdbd"
+                  ></span
+                ></ng-template>
+                <input
+                  type="text"
+                  nz-input
+                  [(ngModel)]="searchData[col.keyName]"
+                  (keyup)="search($event)"
+                />
+              </nz-input-group>
+            </td>
+          </ng-container>
+        </tr>
+        <ng-container *ngFor="let item of listMapped; let index = index">
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <ng-container *ngIf="col.keyName == 'stt'">
+                <td nzAlign="right">
+                  <p>{{ index + 1 }}</p>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="col.keyName != 'stt'">
+                <td nzAlign="left">
+                  <p>{{ item[col.keyName] }}</p>
+                </td>
+              </ng-container>
+            </ng-container>
+            <td nzAlign="center" [nzRight]="true">
+              <button
+                style="color: #ff7a00"
+                nz-button
+                nzType="link"
+                nz-tooltip="{{ 'xóa' | translate }}"
+                (click)="handleDelete(item)"
+              >
+                <span nz-icon nzType="delete" nzTheme="fill"></span>
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngFor="let item of listNewMapped; let index = index">
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <ng-container *ngIf="col.keyName == 'stt'">
+                <td nzAlign="right">
+                  <p>{{ index + listMapped.length + 1 }}</p>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="col.keyName == 'itemCode'">
+                <td>
+                  <nz-select
+                    class="select-search"
+                    style="width: 100%"
+                    nzAllowClear
+                    nzShowSearch
+                    [(ngModel)]="listNewMapped[index]"
+                    (ngModelChange)="onSearchProduct($event)"
+                  >
+                    <nz-option
+                      *ngFor="let product of filteredListProduct; let i = index"
+                      [nzValue]="product"
+                      [nzLabel]="product.productCode"
+                    >
+                    </nz-option>
+                  </nz-select>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="col.keyName == 'itemName'">
+                <td>
+                  <input
+                    nz-input
+                    type="text"
+                    [value]="item['proName'] || ''"
+                    readonly="true"
+                  />
+                </td>
+              </ng-container>
+              <ng-container *ngIf="col.keyName == 'note'">
+                <td>
+                  <input
+                    nz-input
+                    type="text"
+                    [value]="item['note'] || ''"
+                    readonly="true"
+                  />
+                </td>
+              </ng-container>
+            </ng-container>
+            <td nzAlign="center" [nzRight]="true">
+              <button
+                style="color: #ff7a00"
+                nz-button
+                nzType="link"
+                nz-tooltip="{{ 'save' | translate }}"
+                (click)="addMappedProduct(item)"
+              >
+                <span nz-icon nzType="save" nzTheme="fill"></span>
+              </button>
+              <button
+                style="color: #ff7a00"
+                nz-button
+                nzType="link"
+                nz-tooltip="{{ 'xóa' | translate }}"
+                (click)="handleDeleteNew(item)"
+              >
+                <span nz-icon nzType="delete" nzTheme="fill"></span>
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+    <app-pagination
+      *ngIf="total"
+      [currentPage]="pageNumber"
+      [currentSize]="pageSize"
+      [total]="total"
+      (emitPage)="getMappedProduct($event)"
+    >
+    </app-pagination>
+  </ng-template>
+</nz-modal>
+
+<app-popup-delete
+  [isVisible]="visibleConfirmDelete"
+  [title]="'Xóa Map vị trí kho với sản phẩm' | translate"
+  [nameData]="currentMapped.itemName"
+  (hidePopup)="hidePopupDelete($event)"
+  (confirmDelete)="deleteMappedProduct()"
+></app-popup-delete>
+
+<app-popup-upload-file
+  *ngIf="isVisibleImportFile"
+  [(isVisible)]="isVisibleImportFile"
+  (downloadChange)="downloadTemplateFile()"
+  (import)="onHandleImportFile($event)"
+  [isMultiple]="false"
+>
+</app-popup-upload-file>

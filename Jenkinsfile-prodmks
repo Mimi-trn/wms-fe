@@ -1,0 +1,16 @@
+pipeline {
+    agent {label "Mksmart_WMS"}
+    stages{
+        stage("Check old image") {
+            steps {
+                sh 'docker rm -f wms-frontend || echo "this container does not exist" '
+                sh 'docker image rm -f wms-frontend || echo "this image dose not exist" '
+            }
+        }
+        stage('Build and Run') {
+            steps {
+                sh 'env=prodmks docker compose up -d --build'
+             }
+        }
+    }
+}

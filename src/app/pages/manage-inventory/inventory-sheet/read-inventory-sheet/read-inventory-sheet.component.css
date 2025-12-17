@@ -1,0 +1,12 @@
+#pdf-content {
+  display: none; /* ẩn mặc định */
+  position: fixed; /* cố định trên viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.95); /* nền trắng mờ */
+  z-index: 1000; /* nằm trên các phần tử khác */
+  overflow: auto; /* cuộn nếu nội dung dài */
+  padding: 20px;
+}

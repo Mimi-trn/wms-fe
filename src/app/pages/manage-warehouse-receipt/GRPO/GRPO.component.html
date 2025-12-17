@@ -1,0 +1,885 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb
+    nz-col
+    [nzSpan]="23"
+    *ngIf="isBreadcrumb"
+    [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"
+  ></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <nz-row nzJustify="center" class="mb-12">
+    <h2 class="m-0">{{ "ui.receipt.GRN.title" | translate }}</h2>
+  </nz-row>
+  <nz-row>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzXXl="24">
+      <h4 class="m-0">{{ "search.general" | translate }}</h4>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="10" nzXl="8" nzXXl="6">
+      <form (ngSubmit)="searchGeneralFunc()">
+        <nz-input-group
+          [nzPrefix]="prefixButtonSearch"
+          [nzSuffix]="suffixButtonClear"
+        >
+          <input
+            type="text"
+            nz-input
+            placeholder="{{ 'search.general.placeholder' | translate }}"
+            [(ngModel)]="searchGeneral"
+            name="searchGeneral"
+            (keyup.enter)="searchGeneralFunc()"
+          />
+        </nz-input-group>
+        <ng-template #prefixButtonSearch>
+          <span
+            class="search-click"
+            style="color: #d9d9d9"
+            nz-icon
+            nzType="search"
+            (click)="searchGeneralFunc()"
+          ></span>
+        </ng-template>
+        <ng-template #suffixButtonClear>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="searchGeneral"
+            (click)="searchGeneral = ''; searchGeneralFunc()"
+          ></span>
+        </ng-template>
+      </form>
+    </nz-col>
+  </nz-row>
+  <nz-row nzAlign="middle" nzJustify="end" nzGutter="16" class="mb-12">
+    <nz-col>
+      <nz-row nzJustify="end" nzGutter="16">
+        <nz-col
+          *ngIf="checkIsRole('wms_grn_create') || checkIsRole('FCIM_ADMIN')"
+        >
+          <app-button
+            [title]="'add.new'"
+            [buttonType]="'text'"
+            [iconType]="'plus-circle'"
+            [iconTheme]="'outline'"
+            [tooltipTitle]="'Nhấp vào đây để thêm mới'"
+            (btnClick)="onClickAddNew()"
+          ></app-button>
+        </nz-col>
+        <nz-col>
+          <button
+            nz-button
+            nzType="text"
+            class="p-0"
+            nz-tooltip
+            nz-dropdown
+            [nzDropdownMenu]="configColumns"
+          >
+            <img src="./assets/image/svg/grn_column.svg" alt="" />
+            <nz-dropdown-menu #configColumns="nzDropdownMenu">
+              <div
+                style="
+                  background-color: white;
+                  padding: 8px 12px;
+                  border: 1px solid #ccc;
+                "
+              >
+                <ng-container *ngFor="let column of columns; let i = index">
+                  <label
+                    [(ngModel)]="column.check"
+                    nz-checkbox
+                    (ngModelChange)="onClickCheckBox(column)"
+                    >{{ column.keyTitle | translate }}</label
+                  >
+                  <br />
+                </ng-container>
+              </div>
+            </nz-dropdown-menu>
+          </button>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+  <nz-row>
+    <nz-col nzSpan="24">
+      <nz-table
+        nzBordered
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+        [nzScroll]="{ x: 'auto' }"
+        [nzData]="datas"
+        [nzPageSize]="per_page"
+        [nzPageIndex]="page"
+        #warehouseTable
+        nzSize="small"
+        class="w-100"
+      >
+        <thead>
+          <tr>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <ng-container *ngIf="column.check">
+                <th
+                  nz-resizable
+                  [nzWidth]="column.width"
+                  (nzResize)="onResize($event, i)"
+                  [nzMaxWidth]="500"
+                  [nzMinWidth]="100"
+                  style="cursor: pointer"
+                  (click)="customSortFunction(column)"
+                >
+                  <div class="editable-cell">
+                    {{ column.keyTitle | translate }}
+                    <nz-resize-handle nzDirection="right">
+                      <div class="resize-trigger"></div>
+                    </nz-resize-handle>
+                  </div>
+                  <span
+                    *ngIf="column.count == 0"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                    "
+                    nz-tooltip="Sắp xếp giảm dần"
+                    nz-icon
+                    nzType="swap"
+                    [nzRotate]="90"
+                    nzTheme="outline"
+                  ></span>
+                  <span
+                    *ngIf="column.count > 0 && column.sortOrder == 'descend'"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                    "
+                    nz-tooltip="Sắp xếp tăng dần"
+                    nz-icon
+                    nzType="arrow-down"
+                    nzTheme="outline"
+                  ></span>
+                  <span
+                    *ngIf="column.count > 0 && column.sortOrder == 'ascend'"
+                    style="
+                      float: right;
+                      position: absolute;
+                      bottom: 12px;
+                      right: 10px;
+                      cursor: pointer;
+                    "
+                    nz-tooltip="Sắp xếp giảm dần"
+                    nz-icon
+                    nzType="arrow-up"
+                    nzTheme="outline"
+                  ></span>
+                </th>
+              </ng-container>
+            </ng-container>
+            <th nzWidth="100px" nzAlign="center" nzRight>
+              {{ "table.action" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody [class]="datas.length == 0 ? '' : 'striped-tr'">
+          <tr>
+            <ng-container *ngFor="let column of columns; let j = index">
+              <td
+                *ngIf="
+                  column.check &&
+                  column.keyName !== 'grnCode' &&
+                  column.keyName !== 'vendorName' &&
+                  column.keyName !== 'importRequestCode' &&
+                  column.keyName !== 'importType' &&
+                  column.keyName !== 'warehouseCode' &&
+                  column.keyName !== 'poCode' &&
+                  column.keyName !== 'woCode' &&
+                  column.keyName !== 'poArrivedAt' &&
+                  column.keyName !== 'shipper' &&
+                  column.keyName !== 'customerName' &&
+                  column.keyName !== 'productName' &&
+                  column.keyName !== 'productCode' &&
+                  column.keyName !== 'soCode' &&
+                  column.keyName !== 'customerCode' &&
+                  column.keyName !== 'customerAddress' &&
+                  column.keyName !== 'customerPhoneNumber' &&
+                  column.keyName !== 'contractCreatedAt' &&
+                  column.keyName !== 'createdBy' &&
+                  column.keyName !== 'createdAt' &&
+                  column.keyName !== 'updatedAt' &&
+                  column.keyName !== 'importTypeId' &&
+                  column.keyName !== 'note' &&
+                  column.keyName !== 'docDate' && 
+                  column.keyName !== 'postDate'
+                "
+              ></td>
+              <td *ngIf="column.check && column.keyName == 'grnCode'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixGRNCode"
+                  [nzSuffix]="suffixGRNCode"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.grnCode"
+                  />
+                </nz-input-group>
+                <ng-template #prefixGRNCode>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixGRNCode>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.grnCode"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'vendorName'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixsupplier"
+                  [nzSuffix]="suffixsupplier"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.vendorName"
+                  />
+                </nz-input-group>
+                <ng-template #prefixsupplier>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixsupplier>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.vendorName"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'importRequestCode'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixImportRequestCode"
+                  [nzSuffix]="suffixImportRequestCode"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.importRequestCode"
+                  />
+                </nz-input-group>
+                <ng-template #prefixImportRequestCode>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixImportRequestCode>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.importRequestCode"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'importType'">
+                <nz-select
+                  class="select-search"
+                  style="width: 100%"
+                  [nzAllowClear]="true"
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="search()"
+                  nzPlaceHolder="{{ 'all_select' | translate }}"
+                >
+                  <nz-option
+                    *ngFor="let item of listImportType"
+                    [nzValue]="item.value"
+                    [nzLabel]="item.text"
+                  ></nz-option>
+                </nz-select>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'warehouseCode'">
+                <nz-select
+                  class="select-search"
+                  style="width: 100%"
+                  [nzAllowClear]="true"
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="search()"
+                  [nzDropdownMatchSelectWidth]="false"
+                  [nzPlacement]="'bottomLeft'"
+                  nzPlaceHolder="{{ 'all_select' | translate }}"
+                >
+                  <nz-option
+                    *ngFor="let item of listWarehouse"
+                    [nzValue]="item.value"
+                    [nzLabel]="item.text"
+                  ></nz-option>
+                </nz-select>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'poCode'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixPOCode"
+                  [nzSuffix]="suffixPOCode"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.poCode"
+                  />
+                </nz-input-group>
+                <ng-template #prefixPOCode>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixPOCode>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.poCode"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'woCode'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixwoCode"
+                  [nzSuffix]="suffixwoCode"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.woCode"
+                  />
+                </nz-input-group>
+                <ng-template #prefixwoCode>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixwoCode>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.woCode"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'poArrivedAt'">
+                <nz-range-picker
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="rangeDate()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'shipper'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixshipper"
+                  [nzSuffix]="suffixshipper"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.shipper"
+                  />
+                </nz-input-group>
+                <ng-template #prefixshipper>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixshipper>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.shipper"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td
+                *ngIf="
+                  column.check &&
+                  (column.keyName == 'customerName' ||
+                    column.keyName == 'productName' ||
+                    column.keyName == 'productCode' ||
+                    column.keyName == 'soCode')
+                "
+              >
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixInput"
+                  [nzSuffix]="suffixInput"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter[column.keyName]"
+                  />
+                </nz-input-group>
+                <ng-template #prefixInput>
+                  <span
+                    style="color: #d9d9d9"
+                    (click)="search()"
+                    class="search-click"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixInput>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter[column.keyName]"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'customerCode'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixcustomerCode"
+                  [nzSuffix]="suffixcustomerCode"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.customerCode"
+                  />
+                </nz-input-group>
+                <ng-template #prefixcustomerCode>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixcustomerCode>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.customerCode"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'customerAddress'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixcustomerAddress"
+                  [nzSuffix]="suffixcustomerAddress"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.customerAddress"
+                  />
+                </nz-input-group>
+                <ng-template #prefixcustomerAddress>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixcustomerAddress>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.customerAddress"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td
+                *ngIf="column.check && column.keyName == 'customerPhoneNumber'"
+              >
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixcustomerPhoneNumber"
+                  [nzSuffix]="suffixcustomerPhoneNumber"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.customerPhoneNumber"
+                  />
+                </nz-input-group>
+                <ng-template #prefixcustomerPhoneNumber>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixcustomerPhoneNumber>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.customerPhoneNumber"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'contractCreatedAt'">
+                <nz-range-picker
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="rangeDate()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'createdBy'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixCreateBy"
+                  [nzSuffix]="suffixCreateBy"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.createdBy"
+                  />
+                </nz-input-group>
+                <ng-template #prefixCreateBy>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixCreateBy>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.createdBy"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'createdAt'">
+                <nz-range-picker
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="rangeDate()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'updatedAt'">
+                <nz-range-picker
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="rangeDate()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'docDate'">
+                <nz-range-picker
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="rangeDate()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'postDate'">
+                <nz-range-picker
+                  [(ngModel)]="dataFilter[column.keyName]"
+                  (ngModelChange)="rangeDate()"
+                  [nzPlaceHolder]="[
+                    'start_date' | translate,
+                    'end_date' | translate
+                  ]"
+                ></nz-range-picker>
+              </td>
+
+              <td *ngIf="column.check && column.keyName == 'importTypeId'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefiximportTypeId"
+                  [nzSuffix]="suffiximportTypeId"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.importTypeId"
+                  />
+                </nz-input-group>
+                <ng-template #prefiximportTypeId>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffiximportTypeId>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.importTypeId"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+              <td *ngIf="column.check && column.keyName == 'note'">
+                <nz-input-group
+                  nzSearch
+                  [nzPrefix]="prefixNote"
+                  [nzSuffix]="suffixNote"
+                >
+                  <input
+                    (keyup)="enterSearch($event)"
+                    type="text"
+                    nz-input
+                    [(ngModel)]="dataFilter.note"
+                  />
+                </nz-input-group>
+                <ng-template #prefixNote>
+                  <span
+                    (click)="search()"
+                    class="search-click"
+                    style="color: #d9d9d9"
+                    nz-icon
+                    nzType="search"
+                  ></span>
+                </ng-template>
+                <ng-template #suffixNote>
+                  <span
+                    nz-icon
+                    class="ant-input-clear-icon"
+                    nzTheme="fill"
+                    nzType="close-circle"
+                    *ngIf="dataFilter.note"
+                    (click)="clear(column)"
+                  ></span>
+                </ng-template>
+              </td>
+            </ng-container>
+            <td nzRight></td>
+          </tr>
+          <ng-container *ngFor="let row of warehouseTable.data; let i = index">
+            <tr>
+              <ng-container *ngFor="let column of columns; let j = index">
+                <ng-container *ngIf="column.check">
+                  <td
+                    *ngIf="
+                      column.keyName !== 'importType' &&
+                      column.keyName !== 'warehouseCode' &&
+                      column.keyName !== 'poArrivedAt' &&
+                      column.keyName !== 'createdAt' &&
+                      column.keyName !== 'updatedAt' &&
+                      column.keyName !== 'docDate' &&
+                      column.keyName !== 'postDate' &&
+                      column.keyName !== 'vendorName'
+                    "
+                  >
+                    {{ row[column.keyName] }}
+                  </td>
+                  <td *ngIf="column.keyName === 'deliveryAt'" nzAlign="right">
+                    {{ row["deliveryAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName === 'createdAt'" nzAlign="right">
+                    {{ row["createdAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName === 'updatedAt'" nzAlign="right">
+                    {{ row["updatedAt"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName === 'docDate'" nzAlign="right">
+                    {{ row["docDate"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName === 'postDate'" nzAlign="right">
+                    {{ row["postDate"] | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td *ngIf="column.keyName == 'importType'">
+                    <ng-container *ngFor="let item of listImportType">
+                      <ng-container *ngIf="row['importType'] == item.value">
+                        {{ item.text }}
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <td *ngIf="column.keyName == 'warehouseCode'">
+                    <ng-container *ngFor="let item of listWarehouse">
+                      <ng-container *ngIf="row['warehouseCode'] == item.value">
+                        {{ item.text }}
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <td *ngIf="column.keyName === 'vendorName'" nzAlign="right">
+                    {{ row["vendorName"] }}
+                  </td>
+                </ng-container>
+              </ng-container>
+              <td nzAlign="center" nzRight>
+                <div class="d-flex j-content-center">
+                  <div class="w-32px">
+                    <app-button
+                      [iconType]="'info-circle'"
+                      [iconTheme]="'fill'"
+                      [buttonType]="'text'"
+                      nz-tooltip="Xem chi tiết phiếu nhập kho"
+                      (btnClick)="onHandleView(row)"
+                    ></app-button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
+  <nz-row
+    *ngIf="total"
+    nzGutter="24"
+    nzAlign="middle"
+    nzJustify="center"
+    class="mt-12"
+  >
+    <div nz-col nzSpan="24">
+      <app-pagination
+        [currentPage]="page"
+        [currentSize]="per_page"
+        [total]="total"
+        (emitPage)="pagination($event)"
+      ></app-pagination>
+    </div>
+  </nz-row>
+</div>
+<app-modal-confirm
+  [content]="'Bạn có chắc chắn muốn phê duyệt phiếu nhập kho'"
+  [title]="'Xác nhận phê duyệt'"
+  [isVisible]="showModalApprove"
+  (cancel)="onHandleModalCancel($event)"
+  (isVisibleChange)="onHandleModalConfirm($event)"
+></app-modal-confirm>
+<nz-modal
+  nzWidth="800px"
+  [(nzVisible)]="visibleRevoke"
+  [nzFooter]="null"
+  (nzOnCancel)="onClickCancelRevoke()"
+  [nzContent]="showAddNewContentRevoke"
+  [nzTitle]="showAddNewTitleRevoke"
+>
+  <ng-template #showAddNewTitleRevoke>
+    <div class="d-flex">
+      <img src="./assets/image/svg/grn_modal.svg" alt="" />
+      <h2 class="m-0 ml-24">{{ "Thu hồi duyệt" | translate }}</h2>
+    </div>
+  </ng-template>
+  <ng-template #showAddNewContentRevoke>
+    <app-grn-revoke
+      (childOut)="hide($event)"
+      [child]="grnRevoke"
+    ></app-grn-revoke>
+  </ng-template>
+</nz-modal>
+
+<app-popup-cancel
+  [isVisible]="isVisibleCancel"
+  (cancel)="onHandleCancelPopup($event)"
+  (isVisibleChange)="onHandleConfirmPopup($event)"
+>
+</app-popup-cancel>

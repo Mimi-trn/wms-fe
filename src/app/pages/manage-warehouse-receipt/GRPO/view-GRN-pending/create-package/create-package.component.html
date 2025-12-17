@@ -1,0 +1,100 @@
+<div>
+  <nz-row nzGutter="24" nzJustify="space-between" nzAlign="top">
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ 'sidebar.barcodeItem.listQR.productCode' | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <input class="mb-12" type="text" [disabled]="true" nz-input [(ngModel)]="dataInformation.productCode">
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ 'sidebar.barcodeItem.listQR.grnCode' | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <input class="mb-12" [disabled]="true" type="text" nz-input [(ngModel)]="dataInformation.grnCode">
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ 'sidebar.barcodeItem.listQR.itemName' | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <textarea class="mb-12" [disabled]="true" nz-input [(ngModel)]="dataInformation.itemName"></textarea>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ 'sidebar.barcodeItem.listQR.description' | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <textarea class="mb-12" [disabled]="true" nz-input [(ngModel)]="dataInformation.description"></textarea>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ 'sidebar.barcodeItem.listQR.expiredDate' | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [nzDisabled]="true" nzFormat="dd/MM/YYYY" class="w-100"
+            [(ngModel)]="dataInformation.expiredDate"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ 'sidebar.barcodeItem.listQR.uom' | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <input type="text" [disabled]="true" nz-input [(ngModel)]="dataInformation.uom">
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col class="mt-12" nzSpan="24">{{ 'sidebar.barcodeItem.listQR.importDate' | translate }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [nzDisabled]="true" nzFormat="dd/MM/YYYY" class="w-100"
+            [(ngModel)]="dataInformation.importDate"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col class="mt-12" nzSpan="24">{{ 'sidebar.barcodeItem.listQR.itemQuantity' | translate }} <span
+            class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <input type="number" nz-input [(ngModel)]="dataInformation.itemQuantity">
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.itemQuantity">
+          <span class="error-span">Bạn phải nhập số lượng hàng hóa</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+      <nz-row>
+        <nz-col class="mt-12" nzSpan="24">{{ 'sidebar.barcodeItem.listQR.packageQuantity' | translate }} <span
+            class="error-span">*</span></nz-col>
+        <nz-col nzSpan="24">
+          <input type="number" nz-input [(ngModel)]="dataInformation.packageQuantity">
+        </nz-col>
+        <nz-col nzSpan="24" *ngIf="!dataInformation.packageQuantity">
+          <span class="error-span">Bạn phải nhập số lượng kiện hàng</span>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+
+  <nz-row class="mt-12 mb-12">
+    <nz-divider class="m-0 w-100"></nz-divider>
+  </nz-row>
+  <nz-row nzAlign="top" nzGutter="24" nzJustify="end">
+    <nz-col>
+      <app-button [className]="'common-btn-close '" [title]="'sidebar.barcodeItem.createQR.button.cancel'"
+        [buttonType]="'primary'" (btnClick)="onHandleCancel()"></app-button>
+    </nz-col>
+    <nz-col>
+      <app-button [title]="'sidebar.barcodeItem.createQR.button.create'" [buttonType]="'primary'"
+        (btnClick)="onHandleCreate()"></app-button>
+    </nz-col>
+  </nz-row>
+</div>

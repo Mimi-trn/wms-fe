@@ -1,0 +1,251 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb nz-col nzSpan="24" *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"></app-breadcrumb>
+</nz-row>
+
+<div class="common-bg">
+  <nz-row>
+    <h2 class="m-0">
+      {{
+      "sidebar.information.child.listSO.child.read" | translate
+      }}
+    </h2>
+  </nz-row>
+  <nz-row nzAlign="top" nzJustify="start" [nzGutter]="{ xs: 0, sm: 0, md: 24, lg: 24, xl: 48, xxl: 48 }">
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listSO.child.soCode"
+          | translate
+          }}</nz-col>
+        <nz-col nzSpan="24">
+          <input [disabled]="true" type="text" nz-input [(ngModel)]="dataInformation.productOrderCode" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{ "sidebar.information.child.listSO.child.status" | translate }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-select [disabled]="true" nzShowSearch nzAllowClear nzPlaceHolder="-- Chọn --"
+            [(ngModel)]="dataInformation.status" class="w-100">
+            <nz-option *ngFor="let option of listStatus" [nzValue]="option.value" [nzLabel]="option.text"></nz-option>
+          </nz-select>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listSO.child.customerCode"
+          | translate
+          }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group [nzSuffix]="inputClearcustomerCode">
+            <input [disabled]="true" type="text" nz-input [(ngModel)]="dataInformation.customerCode" />
+          </nz-input-group>
+          <ng-template #inputClearcustomerCode>
+            <span nz-icon nzType="caret-down" nzTheme="outline"></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listSO.child.customerName"
+          | translate
+          }}</nz-col>
+        <nz-col nzSpan="24">
+          <input [disabled]="true" type="text" nz-input [(ngModel)]="dataInformation.customerName" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listSO.child.customerAddress"
+          | translate
+          }}</nz-col>
+        <nz-col nzSpan="24">
+          <input [disabled]="true" type="text" nz-input [(ngModel)]="dataInformation.customerAddress" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listSO.child.customerPhone"
+          | translate
+          }}</nz-col>
+        <nz-col nzSpan="24">
+          <input [disabled]="true" type="text" nz-input [(ngModel)]="dataInformation.customerPhone" />
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listSO.child.orderDate" | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [disabled]="true" nzPlaceHolder="dd/MM/yyyy" class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.orderDate"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpan="24">{{
+          "sidebar.information.child.listSO.child.deliveryAt" | translate
+          }}
+        </nz-col>
+        <nz-col nzSpan="24">
+          <nz-date-picker [disabled]="true" nzPlaceHolder="dd/MM/yyyy" class="w-100" nzFormat="dd/MM/yyyy"
+            [(ngModel)]="dataInformation.deliveryAt"></nz-date-picker>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
+      <nz-row>
+        <nz-col nzSpa n="24">{{
+          "sidebar.information.child.listSO.child.note" | translate
+          }}</nz-col>
+        <nz-col nzSpan="24">
+          <nz-input-group [nzSuffix]="inputClearNote" class="ant-input-affix-wrapper-textarea-with-clear-btn">
+            <textarea [disabled]="true" rows="3" [disabled]="dataInformation.status !== 0" nz-input
+              [(ngModel)]="dataInformation.note" placeholder="Nhập nội dung ghi chú"></textarea>
+          </nz-input-group>
+          <ng-template #inputClearNote>
+            <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="dataInformation.note"
+              (click)="dataInformation.note = null"></span>
+          </ng-template>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+  </nz-row>
+</div>
+
+
+<div class="common-bg mt-24">
+  <nz-row class="mb-12">
+    <h2 class="m-0">
+      {{
+      "sidebar.information.child.listContract.child.listProduct" | translate
+      }}
+    </h2>
+  </nz-row>
+  <nz-row>
+    <nz-table nzBordered [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{ x: 'auto', y: '500px' }"
+      [nzData]="dataItems" #dataItem nzSize="small" class="w-100">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <ng-container *ngIf="column.check && lastObject(column) && column.keyName != 'quantity'">
+              <th nz-resizable [nzWidth]="column.width" (nzResize)="onResize($event, i)" [nzMaxWidth]="500"
+                [nzMinWidth]="100" style="cursor: pointer">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+            <ng-container *ngIf="column.check && lastObject(column) && column.keyName == 'quantity'">
+              <th nz-resizable [nzWidth]="column.width" (nzResize)="onResize($event, i)" [nzMaxWidth]="500"
+                [nzMinWidth]="100" style="cursor: pointer">
+                <div class="editable-cell">
+                  {{ column.keyTitle | translate }}
+                </div>
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </th>
+            </ng-container>
+
+            <ng-container *ngIf="column.check && !lastObject(column)">
+              <th [nzWidth]="column.width" nzAlign="right">
+                {{ column.keyTitle | translate }}
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody [class]="dataItems.length > 0 ? 'striped-tr' : ''">
+        <tr>
+          <ng-container *ngFor="let column of columns">
+            <ng-container *ngIf="column.check && column.keyName != 'quantity' && column.keyName != 'holdQuantity'">
+              <td>
+                <nz-input-group nzSearch [nzPrefix]="prefixKeyName" [nzSuffix]="suffixKeyName">
+                  <input type="text" nz-input [(ngModel)]="dataFilter[column.keyName]" />
+                </nz-input-group>
+                <ng-template #prefixKeyName>
+                  <span class="search-click" style="color: #d9d9d9" nz-icon nzType="search"></span>
+                </ng-template>
+                <ng-template #suffixKeyName>
+                  <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                    *ngIf="dataFilter[column.keyName]" (click)="clear(column.keyName)"></span>
+                </ng-template>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column.check && column.keyName == 'quantity' ">
+              <td nzAlign="right">
+                <b>{{ calculateQuantity }}</b>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column.check && column.keyName == 'holdQuantity' ">
+              <td nzAlign="right">
+                <b>{{ calculateHoldQuantity }}</b>
+              </td>
+            </ng-container>
+          </ng-container>
+        </tr>
+        <tr *ngFor="
+            let row of dataItem.data | filterProductSo : dataFilter.productCode : dataFilter.productName : dataFilter.description : dataFilter.uom
+          ">
+          <ng-container *ngFor="let column of columns">
+            <ng-container *ngIf="column.check">
+              <td *ngIf="column.keyName == 'productCode'">
+                {{ row["productCode"] }}
+              </td>
+              <td *ngIf="column.keyName == 'productName'">
+                {{ row["productName"] }}
+              </td>
+              <td *ngIf="column.keyName == 'description'">
+                {{ row["description"] }}
+              </td>
+              <td *ngIf="column.keyName == 'uom'">
+                {{ row["uom"] }}
+              </td>
+              <td *ngIf="column.keyName == 'holdQuantity'" nzAlign="right">
+                {{ row["holdQuantity"] }}
+              </td>
+              <td *ngIf="column.keyName == 'quantity'" nzAlign="right">
+                {{ row["quantity"] }}
+              </td>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+  <nz-row nzJustify="end" nzGutter="24" class="mt-24">
+    <nz-col>
+      <app-button [className]="'w-100 common-btn-close '" [title]="'btn.close'" [buttonType]="'primary'"
+        [tooltipTitle]="'btn.close' | translate" (btnClick)="onHandleClose()"></app-button>
+    </nz-col>
+    <nz-col *ngIf="dataInformation.status == 1">
+      <app-button [title]="'sidebar.information.child.listSO.child.createExportRequest'" [buttonType]="'primary'"
+        [tooltipTitle]="'sidebar.information.child.listSO.child.createExportRequest' | translate"
+        (btnClick)="onHandleCreateExportRequest()"></app-button>
+    </nz-col>
+    <nz-col *ngIf="dataInformation.status == 0">
+      <app-button [title]="'sidebar.information.child.listSO.child.createImportRequestIQC'" [buttonType]="'primary'"
+        [tooltipTitle]="'sidebar.information.child.listSO.child.createImportRequestIQC' | translate"
+        (btnClick)="onHandleCreateIQC()"></app-button>
+    </nz-col>
+  </nz-row>
+</div>

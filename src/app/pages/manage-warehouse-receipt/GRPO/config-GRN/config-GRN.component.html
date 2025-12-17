@@ -1,0 +1,192 @@
+<nz-row nzAlign="middle" class="mb-12">
+  <app-breadcrumb nz-col [nzSpan]="23" *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"
+    [isHidden]="isHidden"></app-breadcrumb>
+</nz-row>
+<div class="common-bg">
+  <div nz-row nzGutter="40" id="print">
+    <div id="content" #content nz-col nzSpan="16" style="border: 1px solid rgba(0, 0, 0, 0.2); padding: 40px 20px">
+      <div nz-row>
+        <div nz-col nzSpan="16">
+          <img style="height: 72px" [src]="'./assets/image/logo_mk_smart.png'" alt="Ảnh xem trước" />
+
+        </div>
+        <div nz-col nzSpan="8">
+          <div nz-row>
+            <span nz-col nzSpan="24" style="font-weight: bold" class="d-flex j-content-center">Mẫu số/Form No:
+            </span>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center"></span>
+          </div>
+        </div>
+      </div>
+      <div nz-row class="mt-8">
+        <div nz-col nzSpan="16">
+          <span nz-row>
+            <b style="text-transform: uppercase">CÔNG TY CỔ PHẦN THÔNG MINH MK</b>
+          </span>
+          <span nz-row>
+            Lô 40, KCN Quang Minh, TT. Quang Minh, H. Mê Linh, TP Hà Nội, Việt Nam
+          </span>
+        </div>
+        <!-- <div nz-col nzSpan="8">
+          <div nz-row>
+            <span
+              nz-col
+              nzSpan="24"
+              style="margin-left: auto; margin-right: auto; text-align: center"
+              >{{ inforCompany }}</span
+            >
+          </div>
+        </div> -->
+      </div>
+      <div nz-row nzJustify="center" class="mt-24">
+        <span style="text-transform: uppercase">
+          <b>PHIẾU NHẬP KHO/ GOOD RECEIPT PO</b>
+        </span>
+      </div>
+      <div nz-row nzJustify="center">
+        <span> <b>Ngày tháng năm </b> </span>
+      </div>
+      <div nz-row nzJustify="center">
+        <span> Số/ No: 100015703 </span>
+      </div>
+      <div class="mt-12">
+        <span>
+          Họ tên người giao/ Full name of deliverer:
+        </span>
+      </div>
+      <div>
+        <span class="mr-12">
+          Nhập hiện tại kho: <b>{{inforGRN.warehouseName}}</b>
+        </span>
+        <!--        <span-->
+        <!--          >Địa điểm/ At:-->
+        <!--          <b-->
+        <!--            >(150-872) 8th Excon Venture Tower, Seoul, Repulic of Korea</b-->
+        <!--          ></span-->
+        <!--        >-->
+      </div>
+      <div class="mt-24">
+        <nz-table [nzData]="dataPrintPDF" #dataTable nzBordered [nzFrontPagination]="false" [nzShowPagination]="false"
+          style="width: 100%">
+          <thead>
+            <tr>
+              <th rowspan="2">STT/No</th>
+              <th rowspan="2">
+                Tên nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ, sản phẩm,
+                hàng hóa/ The name, brand, specifications, quality of materials
+                and tools products and goods
+              </th>
+              <th rowspan="2">Mã số/ Code</th>
+              <th rowspan="2">Đơn vị tính/ Unit</th>
+              <th colspan="2">Số lượng/ Quanlity</th>
+            </tr>
+            <tr>
+              <th>Yêu cầu/ Request</th>
+              <th>Thực nhập/ Actual</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let row of dataTable.data; let i = index">
+              <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ row.itemName }}</td>
+                <td>{{ row.productCode }}</td>
+                <td>{{ row.uom }}</td>
+                <td>{{ row.requestQuantity }}</td>
+                <td>{{ row.actualQuantity }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="mt-12">
+        <span>
+          <i>Số chứng từ gốc kèm theo/ Original renfo following: </i>
+        </span>
+      </div>
+      <div class="mt-12" nz-row nzJustify="end">
+        <span style="padding: 0 40px">
+          <b>Ngày tháng năm </b>
+        </span>
+      </div>
+      <div nz-row nzGutter="24" nzJustify="space-between" class="mt-24">
+        <div nz-col nzSpan="4">
+          <div nz-row>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>Người lập phiếu</b>
+            </span>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>
+                <i>Prepared by</i>
+              </b>
+            </span>
+          </div>
+        </div>
+        <div nz-col nzSpan="4">
+          <div nz-row>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>Người giao hàng</b>
+            </span>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>
+                <i>Roundsman</i>
+              </b>
+            </span>
+          </div>
+        </div>
+        <div nz-col nzSpan="4">
+          <div nz-row>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>Thủ kho</b>
+            </span>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>
+                <i>Storekeeper</i>
+              </b>
+            </span>
+          </div>
+        </div>
+        <div nz-col nzSpan="8">
+          <div nz-row>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>Kế toán trưởng hoặc bộ phận nhận</b>
+            </span>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>
+                <i> Chief accountant or Dept of Reciver </i>
+              </b>
+            </span>
+          </div>
+        </div>
+        <div nz-col nzSpan="4">
+          <div nz-row>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>Giám đốc</b>
+            </span>
+            <span nz-col nzSpan="24" style="margin-left: auto; margin-right: auto; text-align: center">
+              <b>
+                <i>General Director</i>
+              </b>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div nz-row nzGutter="40" class="mt-12">
+    <div nz-col nzSpan="8"></div>
+    <div nz-col nzSpan="16">
+      <div>
+        <app-button [buttonType]="'text'" [title]="'Tải xuống bản xem trước'" [iconType]="'download'"
+          (btnClick)="print()">
+        </app-button>
+      </div>
+      <div>
+        <div nz-row nzGutter="24" nzJustify="end">
+          <app-button [className]="'common-btn-close w-100'" [title]="'btn.cancel'" [buttonType]="'primary'"
+            [tooltipTitle]="'Click here to cancel '" (btnClick)="close()"></app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

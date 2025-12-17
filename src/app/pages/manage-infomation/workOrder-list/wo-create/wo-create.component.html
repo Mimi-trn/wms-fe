@@ -1,0 +1,22 @@
+<app-breadcrumb [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+
+<h2>Tạo Work Order mới</h2>
+
+<button (click)="onClickAddNew()">Tạo WO mới</button>
+
+<table *ngIf="listItem.length > 0">
+    <thead>
+        <tr>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Đơn vị</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of listItem">
+            <td>{{ item.productCode }}</td>
+            <td>{{ item.itemName }}</td>
+            <td>{{ item.unit }}</td>
+        </tr>
+    </tbody>
+</table>

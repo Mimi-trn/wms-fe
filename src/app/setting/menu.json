@@ -1,0 +1,318 @@
+[
+  {
+    "name": "Dashboard",
+    "url": "/dashboard",
+    "classIcon": "warning",
+    "permission": null
+  },
+  {
+    "name": "Quản lý danh mục",
+    "url": null,
+    "classIcon": "appstore",
+    "permission": [
+      "wms_po_view",
+      "FCIM_ADMIN"
+    ],
+    "lstChild": [
+      {
+        "name": "sidebar.information.child.listWorkOrder.name",
+        "url": "/manage-info/list-wo",
+        "classIcon": null,
+        "permission": [
+          "wms_wo_view"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.information.child.listPO",
+        "url": "/manage-info/manage-list-po",
+        "classIcon": null,
+        "permission": [
+          "wms_po_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.information.child.listWarehouse",
+        "url": "/manage-info/manage-inventory-list",
+        "classIcon": null,
+        "permission": [
+          "wms_warehouse_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.information.child.warehouseDiagram",
+        "url": "/manage-info/warehouse-diagram",
+        "classIcon": null,
+        "permission": [
+          "wms_location_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "Danh sách nhà cung cấp",
+        "url": "/manage-info/list-vender",
+        "classIcon": null,
+        "permission": [
+          "wms_wo_view"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "Danh sách nhân viên",
+        "url": "/manage-info/manage-list-employee",
+        "classIcon": null,
+        "permission": [
+          "wms_po_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      }
+    ]
+  },
+  {
+    "name": "menu.manage.receipt",
+    "url": null,
+    "classIcon": "appstore",
+    "permission": [
+      "wms_iqc_create",
+      "wms_iqc_view",
+      "wms_import-request_view",
+      "FCIM_ADMIN"
+    ],
+    "lstChild": [
+      {
+        "name": "sidebar.receipt.child.CreateIQCRequest.name",
+        "url": "/manage-warehouse-receipt/create-iqc-request",
+        "classIcon": null,
+        "permission": [
+          "wms_iqc_create",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.receipt.child.IQCOrderProcessingFailed",
+        "url": "/manage-warehouse-receipt/handle-iqc-failed",
+        "classIcon": null,
+        "permission": [
+          "Hidden"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.receipt.child.ListOfIQCRequirements",
+        "url": "/manage-warehouse-receipt/list-of-iqc",
+        "classIcon": null,
+        "permission": [
+          "wms_iqc_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "menu.manage.receipt.list",
+        "url": "/manage-warehouse-receipt/required-receipt-warehouse",
+        "classIcon": null,
+        "permission": [
+          "wms_import-request_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.receipt.child.ProceedToReceipt.name",
+        "url": "/manage-warehouse-receipt/create-good-receipt-note",
+        "classIcon": null,
+        "permission": [
+          "wms_grn_create",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "ui.receipt.GRN.title",
+        "url": "/manage-warehouse-receipt/good-receipt-note",
+        "classIcon": null,
+        "permission": [
+          "wms_grn_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      }
+    ]
+  },
+  {
+    "name": "sidebar.export.name",
+    "url": null,
+    "classIcon": "appstore",
+    "permission": [
+      "wms_export-request_view",
+      "wms_gdn_create",
+      "wms_gdn_view",
+      "FCIM_ADMIN"
+    ],
+    "lstChild": [
+      {
+        "name": "sidebar.export.child.exportRequest.name",
+        "url": "/export/list-request-export",
+        "classIcon": null,
+        "permission": [
+          "wms_export-request_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.export.child.ProceedToExport.name",
+        "url": "/export/new-GDN",
+        "classIcon": null,
+        "permission": [
+          "wms_gdn_create",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.export.child.goodDeliveryNote.name",
+        "url": "/export/list-GDN",
+        "classIcon": null,
+        "permission": [
+          "wms_gdn_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      }
+    ]
+  },
+  {
+    "name": "sidebar.inventory.name",
+    "url": null,
+    "classIcon": "appstore",
+    "permission": [
+      "wms_inventory-audit-request_view",
+      "FCIM_ADMIN"
+    ],
+    "lstChild": [
+      {
+        "name": "Khai báo kiểm kê",
+        "url": "/manage-inventory/new-inventory-sheet-list",
+        "classIcon": null,
+        "permission": [
+          "wms_inventory-audit-sheet_create",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      },
+      {
+        "name": "Danh sách phiếu kiểm kê",
+        "url": "/manage-inventory/inventory-sheet-list",
+        "classIcon": null,
+        "permission": [
+          "wms_menu-inventory-audit-sheet_view",
+          "FCIM_ADMIN"
+        ],
+        "lstChild": null
+      }
+    ]
+  },
+  {
+    "name": "sidebar.stock.name",
+    "url": null,
+    "classIcon": "appstore",
+    "permission": null,
+    "lstChild": [
+      {
+        "name": "sidebar.stock.child.inventoryAdjustment",
+        "url": "/manage-stock/inventory-adjustment",
+        "classIcon": null,
+        "permission": [],
+        "lstChild": null
+      },
+      {
+        "name": "sidebar.stock.child.inventorySituation",
+        "url": "/manage-stock/inventory-situation",
+        "classIcon": null,
+        "permission": null,
+        "lstChild": null
+      }
+    ]
+  },
+  {
+    "name": "sidebar.acceptHoldMaterial",
+    "url": "/accept-hold-material",
+    "classIcon": "appstore",
+    "permission": [],
+    "lstChild": null
+  },
+  {
+    "name": "sidebar.barcodeItem.name",
+    "url": "/barcode-item",
+    "classIcon": "plus-square",
+    "permission": [],
+    "lstChild": null
+  },
+  {
+    "name": "sidebar.warning.name",
+    "url": null,
+    "classIcon": "warning",
+    "permission": null,
+    "lstChild": [
+      {
+        "name": "sidebar.warning.child.listOfWarning",
+        "url": "/manage-warning/list-of-warning",
+        "classIcon": null,
+        "permission": null,
+        "lstChild": null
+      }
+    ]
+  },
+  {
+    "name": "Cấu hình",
+    "url": null,
+    "classIcon": "warning",
+    "permission": [],
+    "lstChild": [
+      {
+        "name": "sidebar.warning.child.configWarning",
+        "url": "/manage-warning/warning-configuration",
+        "classIcon": null,
+        "permission": [],
+        "lstChild": null
+      },
+      {
+        "name": "Cấu hình email nhận thông báo",
+        "url": "/manage-warning/email-configuration",
+        "classIcon": null,
+        "permission": [],
+        "lstChild": null
+      }
+    ]
+  },
+  {
+    "name": "sidebar.statistic.name",
+    "url": null,
+    "classIcon": "warning",
+    "permission": null,
+    "lstChild": [
+      {
+        "name": "sidebar.stock.child.inventorySituation",
+        "url": "/manage-stock/inventory-situation",
+        "classIcon": null,
+        "permission": [],
+        "lstChild": null
+      },
+      {
+        "name": "BC vật tư nhập kho theo NCC",
+        "url": "/export_report",
+        "classIcon": "plus-square",
+        "permission": null,
+        "lstChild": null
+      }
+    ]
+  }
+]

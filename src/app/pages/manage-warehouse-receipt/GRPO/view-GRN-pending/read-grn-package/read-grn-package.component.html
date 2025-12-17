@@ -1,0 +1,265 @@
+<!-- Danh sách kiện hanngf -->
+<div style="display: block; border: 1px solid #ddd" class="common-bg">
+  <nz-row
+    nzAlign="middle"
+    nzJustify="space-between"
+    nzGutter="12"
+    class="mb-12"
+  >
+    <nz-col>
+      <h2 class="m-0">{{ "sidebar.location.list" | translate }}</h2>
+    </nz-col>
+    <nz-col class="d-flex" *ngIf="!isView">
+      <app-button
+        [title]="'Thêm mới vị trí'"
+        [buttonType]="'text'"
+        [iconType]="'plus-circle'"
+        [iconTheme]="'outline'"
+        [tooltipTitle]="'Thêm mới vị trí hàng hóa' | translate"
+        (btnClick)="onHandleCreateNew()"
+      ></app-button>
+    </nz-col>
+  </nz-row>
+  <nz-table
+    nzBordered
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+    [nzScroll]="{ x: 'auto', y: '400px' }"
+    [nzData]="listPackage"
+    #table
+    nzSize="small"
+  >
+    <thead>
+      <tr>
+        <th nzWidth="50px" nzAlign="center">STT</th>
+        <ng-container *ngFor="let column of columns; let i = index">
+          <ng-container *ngIf="column.check">
+            <th
+              nz-resizable
+              [nzWidth]="column.width"
+              (nzResize)="onResize($event, i)"
+              [nzMaxWidth]="500"
+              [nzMinWidth]="100"
+            >
+              <div class="editable-cell">
+                {{ column.keyTitle | translate }}
+                <nz-resize-handle nzDirection="right">
+                  <div class="resize-trigger"></div>
+                </nz-resize-handle>
+              </div>
+            </th>
+          </ng-container>
+        </ng-container>
+        <th nzWidth="100px" nzAlign="center" *ngIf="!isView">
+          {{ "table.action" | translate }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <ng-container *ngFor="let column of columns; let i = index">
+          <ng-container *ngIf="column.check && column.keyName != 'totalItem'">
+            <td></td>
+          </ng-container>
+          <ng-container *ngIf="column.check && column.keyName == 'totalItem'">
+            <td>
+              <b>{{ countTotalQuantity | number }}</b>
+            </td>
+          </ng-container>
+        </ng-container>
+        <td *ngIf="!isView"></td>
+      </tr>
+      <ng-container *ngFor="let row of table.data; let i = index">
+        <tr>
+          <td nzAlign="center">{{ i + 1 }}</td>
+          <ng-container *ngFor="let column of columns; let j = index">
+            <ng-container *ngIf="column.check">
+              <td
+                *ngIf="
+                  column.keyName !== 'itemQuantity' &&
+                  column.keyName !== 'packageQuantity' &&
+                  column.keyName !== 'locationCode'
+                "
+              >
+                {{ row[column.keyName] }}
+              </td>
+              <td *ngIf="column.keyName == 'locationCode'">
+                <ng-container *ngIf="isView">
+                  {{ row["locationCode"] }}
+                </ng-container>
+                <ng-container *ngIf="!isView">
+                  <nz-input-group [nzSuffix]="arrowDown">
+                    <input
+                      nz-input
+                      [(ngModel)]="row.locationCode"
+                      nz-popover
+                      [(nzPopoverVisible)]="row.visible"
+                      (nzPopoverVisibleChange)="changeLocation($event, row)"
+                      nzPopoverTrigger="click"
+                      [nzPopoverContent]="contentTemplateLocation"
+                      (click)="onHandleOpenLocation(row)"
+                    />
+                  </nz-input-group>
+                  <ng-container *ngIf="!row.locationCode">
+                    <span class="error-span">Bạn phải chọn mã vị trí</span>
+                  </ng-container>
+                  <ng-template #arrowDown>
+                    <span
+                      style="color: #d9d9d9; font-size: 12px"
+                      nz-icon
+                      nzType="down"
+                    ></span>
+                  </ng-template>
+                  <ng-template #contentTemplateLocation>
+                    <nz-table
+                      style="width: 800px"
+                      nzBordered
+                      [nzFrontPagination]="false"
+                      [nzShowPagination]="false"
+                      [nzScroll]="{ y: '400px', x: 'auto' }"
+                      [nzData]="listLocationFromBE"
+                      #tableLocation
+                      nzSize="small"
+                    >
+                      <thead>
+                        <tr>
+                          <th nzAlign="center">
+                            {{ "Mã kho" | translate }}
+                          </th>
+                          <th nzAlign="center">
+                            {{ "Tên kho" | translate }}
+                          </th>
+                          <th nzAlign="center">
+                            {{ "sidebar.location.code" | translate }}
+                          </th>
+                          <th nzAlign="center">
+                            {{ "sidebar.location.name" | translate }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container
+                          *ngFor="let rowLocation of tableLocation.data"
+                        >
+                          <tr
+                            (click)="onHandleChooseLocation(row, rowLocation)"
+                            style="cursor: pointer"
+                          >
+                            <td>{{ rowLocation["locationWarehouseCode"] }}</td>
+                            <td>{{ rowLocation["locationWarehouseName"] }}</td>
+                            <td>{{ rowLocation["locationCode"] }}</td>
+                            <td>{{ rowLocation["locationName"] }}</td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </nz-table>
+                    <nz-row
+                      *ngIf="totalLocation"
+                      nzGutter="24"
+                      nzAlign="middle"
+                      nzJustify="center"
+                      class="mt-12"
+                    >
+                      <div nz-col nzSpan="24">
+                        <app-pagination
+                          [currentPage]="pageLocation"
+                          [currentSize]="perPageLocation"
+                          [total]="totalLocation"
+                          (emitPage)="paginationLocation($event)"
+                        ></app-pagination>
+                      </div>
+                    </nz-row>
+                  </ng-template>
+                </ng-container>
+              </td>
+              <td *ngIf="column.keyName == 'itemQuantity'">
+                <ng-container *ngIf="isView">{{
+                  row["itemQuantity"] | number
+                }}</ng-container>
+                <ng-container *ngIf="!isView">
+                  <nz-input-group>
+                    <input
+                      type="number"
+                      nz-input
+                      [(ngModel)]="row['itemQuantity']"
+                      (ngModelChange)="onHandleItemPackage(row)"
+                    />
+                  </nz-input-group>
+                </ng-container>
+              </td>
+              <td *ngIf="column.keyName == 'packageQuantity'">
+                <ng-container *ngIf="isView">{{
+                  row["packageQuantity"] | number
+                }}</ng-container>
+                <ng-container *ngIf="!isView">
+                  <nz-input-group>
+                    <input
+                      type="number"
+                      nz-input
+                      [(ngModel)]="row['packageQuantity']"
+                      (ngModelChange)="onHandlePackageQuantity(row)"
+                    />
+                  </nz-input-group>
+                </ng-container>
+              </td>
+            </ng-container>
+          </ng-container>
+          <td *ngIf="!isView">
+            <div class="d-flex a-items-center j-content-center">
+              <a
+                nz-popconfirm
+                [nzPopconfirmTitle]="'modal.hintTitleFull' | translate"
+                nzPopconfirmPlacement="topRight"
+                [nzOkText]="'modal.yes' | translate"
+                [nzCancelText]="'modal.no' | translate"
+                (nzOnConfirm)="onHandleDelete(row)"
+              >
+                <app-button
+                  *ngIf="row.status == 1"
+                  [iconTheme]="'fill'"
+                  [iconType]="'delete'"
+                  [buttonType]="'text'"
+                >
+                </app-button>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+</div>
+
+<app-confirm-delete
+  [isVisible]="visibleConfirmDelete"
+  [title]="'Xóa kiện hàng'"
+  [content]="'thông tin kiện hàng sẽ bị xóa khỏi hàng hóa'"
+  [nameData]="'kiện hàng này'"
+  (hidePopup)="hidePopupDelete($event)"
+  (confirmDelete)="confirmDelete($event)"
+></app-confirm-delete>
+
+<nz-modal
+  nzWidth="400px"
+  [(nzVisible)]="visibleRead"
+  [nzFooter]="null"
+  (nzOnCancel)="onHandleCancelRead()"
+  [nzContent]="showContentRead"
+  [nzTitle]="showTitleRead"
+>
+  <ng-template #showTitleRead>
+    <div class="d-flex">
+      <img src="./assets/image/modalInfor.svg" alt="" />
+      <h2 class="m-0 ml-24">
+        {{ "sidebar.receipt.child.package.child.read" | translate }}
+      </h2>
+    </div>
+  </ng-template>
+  <ng-template #showContentRead>
+    <app-read-package
+      [product]="dataRead"
+      (childOut)="onHandleReturnRead($event)"
+    ></app-read-package>
+  </ng-template>
+</nz-modal>
