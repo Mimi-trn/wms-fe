@@ -108,7 +108,7 @@ export class ViewRequestIqcComponent {
     },
     {
       keyTitle: 'ui.receitp.GRN.create.unit',
-      keyName: 'supplierUom',
+      keyName: 'uom',
       width: '100px',
       check: true,
     },

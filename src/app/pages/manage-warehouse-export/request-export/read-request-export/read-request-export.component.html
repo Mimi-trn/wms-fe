@@ -183,12 +183,6 @@
                         | translate
                     }}
                   </th>
-                  <!-- <th>
-                    {{
-                      "sidebar.export.child.exportRequest.child.totalLotNumber"
-                        | translate
-                    }}
-                  </th> -->
                   <th nzWidth="240px">
                     {{
                       "sidebar.export.child.exportRequest.child.startDate"
@@ -207,12 +201,7 @@
                         | translate
                     }}
                   </th>
-                  <th nzWidth="240px">
-                    {{
-                      "sidebar.export.child.exportRequest.child.updatedAt"
-                        | translate
-                    }}
-                  </th>
+                 
                 </tr>
               </thead>
               <tbody>
@@ -300,16 +289,7 @@
                       ></span>
                     </ng-template>
                   </td>
-                  <td>
-                    <nz-range-picker
-                      [(ngModel)]="dataFilterWoCode.updatedAt"
-                      (ngModelChange)="onHandleFetchListWo()"
-                      [nzPlaceHolder]="[
-                        'start_date' | translate,
-                        'end_date' | translate
-                      ]"
-                    ></nz-range-picker>
-                  </td>
+                 
                 </tr>
                 <tr
                   style="cursor: pointer"
@@ -318,8 +298,6 @@
                   (click)="chooseWoCode(row)"
                 >
                   <td>{{ row.woCode }}</td>
-                  <!-- <td>{{ row.techFormCode }}</td> -->
-                  <!-- <td nzAlign="right">{{ row.totalLotNumber }}</td> -->
                   <td nzAlign="right">
                     {{ row.startDate | date : "dd/MM/YYYY" }}
                   </td>
@@ -327,9 +305,7 @@
                     {{ row.endDate | date : "dd/MM/YYYY" }}
                   </td>
                   <td>{{ row.createdBy }}</td>
-                  <td nzAlign="right">
-                    {{ row.updatedAt | date : "dd/MM/YYYY" }}
-                  </td>
+                  
                 </tr>
               </tbody>
             </nz-table>
@@ -352,51 +328,6 @@
         </nz-col>
         <nz-col nzSpan="24" *ngIf="!dataInformation.woCode">
           <span class="error-span">Bạn phải chọn mã WO</span>
-        </nz-col>
-      </nz-row>
-    </nz-col>
-    
-    <nz-col
-      nzXs="24"
-      nzSm="24"
-      nzMd="12"
-      nzLg="12"
-      nzXl="8"
-      nzXXl="8"
-      class="mt-12"
-      *ngIf="dataInformation.exportType == 1 || dataInformation.exportType == 2"
-    >
-      <nz-row>
-        <nz-col nzSpan="24">{{ "Mã phiếu công nghệ" }} </nz-col>
-        <nz-col nzSpan="24">
-          <input
-            [disabled]="true"
-            type="text"
-            nz-input
-            [(ngModel)]="dataInformation.lotId"
-          />
-        </nz-col>
-      </nz-row>
-    </nz-col>
-    <nz-col
-      nzXs="24"
-      nzSm="24"
-      nzMd="12"
-      nzLg="12"
-      nzXl="8"
-      nzXXl="8"
-      class="mt-12"
-      *ngIf="dataInformation.exportType == 1 || dataInformation.exportType == 2"
-    >
-      <nz-row>
-        <nz-col nzSpan="24">{{ "Lô số" }} </nz-col>
-        <nz-col nzSpan="24">
-          <input
-            [disabled]="true"
-            type="number"
-            nz-input
-            [(ngModel)]="dataInformation.lotNumber"
-          />
         </nz-col>
       </nz-row>
     </nz-col>
@@ -500,178 +431,6 @@
       </nz-row>
     </nz-col>
 
-    <nz-col
-      nzXs="24"
-      nzSm="24"
-      nzMd="12"
-      nzLg="12"
-      nzXl="8"
-      nzXXl="8"
-      class="mt-12"
-      *ngIf="dataInformation.exportType == 1 || dataInformation.exportType == 2"
-    >
-      <nz-row>
-        <nz-col nzSpan="24">{{
-          "Thông tin người nhận hàng" | translate
-        }}</nz-col>
-        <nz-col nzSpan="24">
-          <nz-input-group
-            [nzSuffix]="receriverSuffix"
-            (click)="showReceiverList()"
-          >
-            <input
-              readonly
-              placeholder="-- Chọn -- "
-              type="text"
-              nz-input
-              [(ngModel)]="dataInformation.receiverName"
-              [disabled]="
-                (dataInformation.status == 0 || dataInformation.status == 2) &&
-                (checkGroupsInTokenQCER ||
-                  checkGroupsInTokenAdmin ||
-                  checkIsRole('FCIM_ADMIN'))
-                  ? false
-                  : true
-              "
-            />
-            <span
-              *ngIf="
-                (dataInformation.status == 0 || dataInformation.status == 2) &&
-                (checkGroupsInTokenQCER ||
-                  checkGroupsInTokenAdmin ||
-                  checkIsRole('FCIM_ADMIN'))
-                  ? true
-                  : false
-              "
-              nz-popover
-              nzPopoverTrigger="click"
-              [nzPopoverContent]="contentReceiver"
-              nzPopoverPlacement="bottomRight"
-              [nzPopoverVisible]="showReceiver"
-              (nzPopoverVisibleChange)="popoverVisibleChangeReceiver($event)"
-            >
-            </span>
-          </nz-input-group>
-          <ng-template #receriverSuffix>
-            <span
-              nz-icon
-              class="ant-input-clear-icon"
-              nzTheme="outline"
-              nzType="down"
-            ></span>
-          </ng-template>
-          <ng-template #contentReceiver>
-            <nz-table
-              #tableReceiver
-              [nzData]="listReceiver"
-              nzBordered
-              nzFrontPagination="false"
-              nzShowPagination="false"
-              style="width: 600px"
-              [nzScroll]="{ y: '500px' }"
-              nzSize="small"
-            >
-              <thead>
-                <tr>
-                  <th>Mã nhân viên</th>
-                  <th>Tên nhân viên</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <nz-input-group
-                      [nzSuffix]="receiverCode"
-                      [nzPrefix]="receiverCodePre"
-                      (keyup)="filterSearchReceiver($event)"
-                    >
-                      <input
-                        type="text"
-                        nz-input
-                        [(ngModel)]="dataFilterReceiverCode.receiverCode"
-                      />
-                    </nz-input-group>
-                    <ng-template #receiverCodePre>
-                      <span
-                        nz-icon
-                        nzType="search"
-                        style="cursor: pointer; color: #d9d9d9"
-                        (click)="filterSearchReceiver($event)"
-                      ></span>
-                    </ng-template>
-                    <ng-template #receiverCode>
-                      <span
-                        nz-icon
-                        class="ant-input-clear-icon"
-                        nzTheme="fill"
-                        nzType="close-circle"
-                        *ngIf="dataFilterReceiverCode.receiverCode"
-                        (click)="clearReceiver('receiverCode')"
-                      ></span>
-                    </ng-template>
-                  </td>
-                  <td>
-                    <nz-input-group
-                      [nzSuffix]="receiverName"
-                      [nzPrefix]="receiverNamePre"
-                      (keyup)="filterSearchReceiver($event)"
-                    >
-                      <input
-                        type="text"
-                        nz-input
-                        [(ngModel)]="dataFilterReceiverCode.receiverName"
-                      />
-                    </nz-input-group>
-                    <ng-template #receiverNamePre>
-                      <span
-                        nz-icon
-                        nzType="search"
-                        style="cursor: pointer; color: #d9d9d9"
-                        (click)="filterSearchReceiver($event)"
-                      ></span>
-                    </ng-template>
-                    <ng-template #receiverName>
-                      <span
-                        nz-icon
-                        class="ant-input-clear-icon"
-                        nzTheme="fill"
-                        nzType="close-circle"
-                        *ngIf="dataFilterReceiverCode.receiverName"
-                        (click)="clearReceiver('receiverName')"
-                      ></span>
-                    </ng-template>
-                  </td>
-                </tr>
-                <tr
-                  style="cursor: pointer"
-                  class="click-row"
-                  *ngFor="let row of tableReceiver.data"
-                  (click)="chooseReceiver(row)"
-                >
-                  <td>{{ row.receiverCode }}</td>
-                  <td>{{ row.receiverName }}</td>
-                </tr>
-              </tbody>
-            </nz-table>
-            <nz-row
-              *ngIf="totalReceiver"
-              nzGutter="24"
-              nzAlign="middle"
-              nzJustify="center"
-            >
-              <div nz-col nzSpan="24">
-                <app-pagination
-                  [currentPage]="pageReceiver"
-                  [currentSize]="perPageReceiver"
-                  [total]="totalReceiver"
-                  (emitPage)="paginationWoCode($event)"
-                ></app-pagination>
-              </div>
-            </nz-row>
-          </ng-template>
-        </nz-col>
-      </nz-row>
-    </nz-col>
     <!-- xuất kho thành khasc -->
     <nz-col
       nzXs="24"
@@ -724,33 +483,6 @@
         </nz-col>
       </nz-row>
     </nz-col>
-    <nz-col
-      nzXs="24"
-      nzSm="24"
-      nzMd="12"
-      nzLg="12"
-      nzXl="8"
-      nzXXl="8"
-      class="mt-12"
-    >
-      <nz-row>
-        <nz-col nzSpan="24"
-          >{{
-            "sidebar.export.child.exportRequest.child.updatedAt" | translate
-          }}
-        </nz-col>
-        <nz-col nzSpan="24">
-          <nz-date-picker
-            [disabled]="true"
-            nzPlaceHolder="dd/MM/yyyy"
-            class="w-100"
-            nzFormat="dd/MM/yyyy"
-            [(ngModel)]="dataInformation.updatedAt"
-          ></nz-date-picker>
-        </nz-col>
-      </nz-row>
-    </nz-col>
- 
     <nz-col
       nzXs="24"
       nzSm="24"
