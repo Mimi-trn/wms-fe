@@ -34,19 +34,6 @@
     <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
       <nz-row>
         <nz-col nzSpan="24">{{
-          "sidebar.information.child.listWorkOrder.list.status" | translate
-          }}
-        </nz-col>
-        <nz-col nzSpan="24">
-          <nz-select [disabled]="true" [(ngModel)]="dataInformation.status" class="w-100">
-            <nz-option *ngFor="let option of listStatus" [nzValue]="option.value" [nzLabel]="option.text"></nz-option>
-          </nz-select>
-        </nz-col>
-      </nz-row>
-    </nz-col>
-    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
-      <nz-row>
-        <nz-col nzSpan="24">{{
           "sidebar.information.child.listWorkOrder.list.startDate" | translate
           }}
         </nz-col>

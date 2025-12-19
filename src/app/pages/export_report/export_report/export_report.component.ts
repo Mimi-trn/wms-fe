@@ -47,7 +47,6 @@ export class ExportReportComponent {
         { keyName: 'uom', keyTitle: 'Đơn vị', width: 100, check: true, sortOrder: '' },
         { keyName: 'itemType', keyTitle: 'Loại hàng hóa', width: 150, check: true, sortOrder: '' },
         { keyName: 'vendorName', keyTitle: 'Nhà cung cấp', width: 150, check: true, sortOrder: '' },
-        { keyName: 'totalPoQuantity', keyTitle: 'Tổng mua', width: 150, check: true, sortOrder: '' },
         { keyName: 'totalImportPoQuantity', keyTitle: 'Tổng nhập', width: 150, check: true, sortOrder: '' },
 
     ];

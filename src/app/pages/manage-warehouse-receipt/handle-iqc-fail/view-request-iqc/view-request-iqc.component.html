@@ -184,18 +184,7 @@
         </nz-col>
       </nz-row>
     </nz-col>
-    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
-      <nz-row>
-        <nz-col nzSpan="24">{{ "table.status" | translate }} </nz-col>
-        <nz-col nzSpan="24">
-          <nz-select disabled nzShowSearch nzAllowClear nzPlaceHolder="-- Chọn --" [(ngModel)]="dataInformation.status"
-            class="w-100">
-            <nz-option *ngFor="let option of listStatus" [nzValue]="option.value"
-              [nzLabel]="option.label | translate"></nz-option>
-          </nz-select>
-        </nz-col>
-      </nz-row>
-    </nz-col>
+   
     <nz-col *ngIf="dataInformation.importType == 1" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8"
       class="mt-12">
       <nz-row>
@@ -293,19 +282,6 @@
       </nz-row>
     </nz-col>
 
-    <nz-col *ngIf="dataInformation.importType == 1" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8"
-      class="mt-12">
-      <nz-row>
-        <nz-col nzSpan="24">{{ "ui.receipt.GRN.requestExpirationDate" | translate }}
-        </nz-col>
-        <nz-col nzSpan="24">
-          <nz-date-picker nzPlaceHolder="dd/mm/yyyy" class="w-100" nzFormat="dd/MM/yyyy"
-            [(ngModel)]="dataInformation.requestExpirationDate"
-            [nzDisabled]="dataInformation.status !== 0"></nz-date-picker>
-        </nz-col>
-
-      </nz-row>
-    </nz-col>
     <nz-col *ngIf="dataInformation.importType == 1 || dataInformation.importType == 4" nzXs="24" nzSm="24" nzMd="12"
       nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
       <nz-row>

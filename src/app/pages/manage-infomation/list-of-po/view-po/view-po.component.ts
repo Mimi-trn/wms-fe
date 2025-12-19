@@ -187,12 +187,6 @@ export class ViewPoComponent implements OnInit {
         width: '200px',
       },
       {
-        keyTitle: 'menu.manage.po.item.openQuantity',
-        keyName: 'openQuantity',
-        check: true,
-        width: '200px',
-      },
-      {
         keyTitle: 'menu.manage.po.item.supplierUnitPrice',
         keyName: 'supplierUnitPrice',
         check: true,

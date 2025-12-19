@@ -54,24 +54,6 @@
                   </th>
                   <th>
                     {{
-                    "sidebar.export.child.goodDeliveryNote.child.warehouse"
-                    | translate
-                    }}
-                  </th>
-                  <th>
-                    {{
-                    "sidebar.export.child.goodDeliveryNote.child.customerCode"
-                    | translate
-                    }}
-                  </th>
-                  <th>
-                    {{
-                    "sidebar.export.child.goodDeliveryNote.child.customerName"
-                    | translate
-                    }}
-                  </th>
-                  <th>
-                    {{
                     "sidebar.export.child.goodDeliveryNote.child.woCode"
                     | translate
                     }}
@@ -294,20 +276,6 @@
         <nz-col nzSpan="24">
           <nz-date-picker [disabled]="true" nzPlaceHolder="-- Chọn --" class="w-100" nzFormat="dd/MM/yyyy"
             [(ngModel)]="dataInformation.endAt"></nz-date-picker>
-        </nz-col>
-      </nz-row>
-    </nz-col>
-
-    <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8" nzXXl="8" class="mt-12">
-      <nz-row>
-        <nz-col nzSpan="24">{{
-          "sidebar.export.child.goodDeliveryNote.child.receiverName"
-          | translate
-          }}
-        </nz-col>
-        <nz-col nzSpan="24">
-          <textarea rows="1" nz-input [disabled]="true" [(ngModel)]="dataInformation.receiverName"
-            placeholder="Nhập thông tin người nhận hàng"></textarea>
         </nz-col>
       </nz-row>
     </nz-col>

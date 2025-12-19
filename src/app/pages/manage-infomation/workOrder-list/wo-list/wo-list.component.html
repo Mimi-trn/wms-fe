@@ -277,7 +277,7 @@
       <!-- Mã sản xuất (select từ listItem) -->
       <nz-select formControlName="productCode" nzShowSearch nzPlaceHolder="Chọn mã sản phẩm"
         (ngModelChange)="onSelectProduct($event)">
-        <nz-option *ngFor="let item of listItemTP" [nzValue]="item.itemCode" [nzLabel]="item.itemCode">
+        <nz-option *ngFor="let item of listItemTP" [nzValue]="item.itemCode" [nzLabel]="item.itemCode + '-' + item.itemName">
         </nz-option>
       </nz-select>
 

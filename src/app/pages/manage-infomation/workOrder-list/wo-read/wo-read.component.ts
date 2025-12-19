@@ -520,14 +520,6 @@ export class WoReadComponent implements OnInit {
       check: true,
       count: 0,
       sortOrder: '',
-    },
-    {
-      keyTitle: 'Số lượng đã xuất',
-      keyName: 'issuedQuantity',
-      width: '200px',
-      check: true,
-      count: 0,
-      sortOrder: '',
-    },
+    }
   ];
 }

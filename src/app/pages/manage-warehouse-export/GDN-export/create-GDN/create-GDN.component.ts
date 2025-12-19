@@ -638,6 +638,7 @@ export class CreateGDNComponent implements OnInit {
         finalListItem.push({
           itemCode: item.itemCode,
           itemName: item.itemName,
+          uom: item.uom,
           warehouseCode: item.warehouseCode,
           requestQuantity: item.requestQuantity,
           issuedQuantity: item.issuedQuantity,
@@ -783,7 +784,7 @@ export class CreateGDNComponent implements OnInit {
     this.getListShipper();
   }
 
-  listOfRadioButton: string[] = ['button.detail', 'button.documentConfirm'];
+  listOfRadioButton: string[] = ['button.detail'];
   choose: number = 0;
   changeSelect(event: any) {
     this.choose = event;

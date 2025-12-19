@@ -379,7 +379,7 @@ export class WoListComponent implements OnInit {
     this.mergedList = [...this.listItemNVL]; // <-- Chỉ NVL
 
     this.newWoForm = this.fb.group({
-      productCode: [null, Validators.required],
+      productCode: [{ value: '', disabled: false }, Validators.required],
       productName: [{ value: '', disabled: true }, Validators.required],
       uom: [{ value: '', disabled: true }, Validators.required],
       startDate: [null, Validators.required],
@@ -439,9 +439,12 @@ export class WoListComponent implements OnInit {
     const selectedItem = this.listItemTP.find((item: any) => item.itemCode === itemCode);
     if (selectedItem) {
       this.newWoForm.patchValue({
+        productCode: selectedItem.itemCode,
         productName: selectedItem.itemName,
         uom: selectedItem.unit
       });
+
+      console.log("selectedItem", this.newWoForm);
     } else {
       this.newWoForm.patchValue({
         productName: ''
